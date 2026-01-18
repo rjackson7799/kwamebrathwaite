@@ -23,10 +23,11 @@
 ### In Progress
 - [ ] None
 
-### Not Started
-- [ ] Header component
-- [ ] Footer component
-- [ ] Mobile navigation
+### Recently Completed
+- [x] Header component (sticky, text logo, desktop nav, mobile hamburger)
+- [x] Footer component (3-column layout, newsletter form, Instagram icon)
+- [x] Mobile navigation (slide-in drawer from right)
+- [x] LanguageSwitcher component (locale-preserving dropdown)
 
 ---
 
@@ -134,6 +135,7 @@ Run the SQL in `/docs/DATABASE_SCHEMA.sql` in your Supabase project's SQL editor
 
 1. Set up Supabase project and add credentials to `.env.local`
 2. Run database schema in Supabase SQL editor
-3. Implement Header and Footer components
+3. ~~Implement Header and Footer components~~ ✓ COMPLETED
 4. Start building actual components (ArtworkCard, etc.)
 5. Implement API routes for data fetching
+6. Newsletter form ready but needs POST /api/newsletter/subscribe endpoint
