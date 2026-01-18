@@ -1,0 +1,102 @@
+{
+  "navigation": {
+    "home": "ホーム",
+    "works": "作品",
+    "exhibitions": "展覧会",
+    "press": "プレス",
+    "about": "について",
+    "archive": "アーカイブ",
+    "contact": "お問い合わせ"
+  },
+  "hero": {
+    "title": "クワメ・ブラスウェイト写真アーカイブ",
+    "subtitle": "スタイル。文化。自己定義。"
+  },
+  "works": {
+    "title": "作品",
+    "filter": {
+      "all": "すべて",
+      "photography": "写真",
+      "print": "版画",
+      "historical": "歴史的"
+    },
+    "availability": {
+      "available": "販売中",
+      "sold": "売却済み",
+      "on_loan": "貸出中",
+      "not_for_sale": "非売品",
+      "inquiry_only": "要問い合わせ"
+    },
+    "inquire": "この作品についてお問い合わせ"
+  },
+  "exhibitions": {
+    "title": "展覧会",
+    "current": "開催中",
+    "upcoming": "今後の予定",
+    "past": "過去の展覧会",
+    "viewDetails": "詳細を見る"
+  },
+  "press": {
+    "title": "プレス",
+    "readMore": "続きを読む",
+    "downloadPressKit": "プレスキットをダウンロード"
+  },
+  "about": {
+    "title": "について",
+    "biography": "略歴",
+    "movement": "ブラック・イズ・ビューティフル運動"
+  },
+  "archive": {
+    "title": "アーカイブ",
+    "mission": "私たちの使命"
+  },
+  "contact": {
+    "title": "お問い合わせ",
+    "intro": "コレクター、美術館、教育者、報道関係者からのお問い合わせを歓迎いたします。",
+    "form": {
+      "name": "お名前",
+      "email": "メールアドレス",
+      "phone": "電話番号（任意）",
+      "subject": "件名",
+      "message": "メッセージ",
+      "inquiryType": "お問い合わせの種類",
+      "submit": "送信"
+    },
+    "inquiryTypes": {
+      "general": "一般的なお問い合わせ",
+      "purchase": "購入に関するお問い合わせ",
+      "exhibition": "展覧会に関するお問い合わせ",
+      "press": "報道関係のお問い合わせ"
+    },
+    "success": "お問い合わせありがとうございます。24時間以内にご返信いたします。",
+    "error": "エラーが発生しました。もう一度お試しください。"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "notFound": "ページが見つかりません",
+    "backToHome": "ホームに戻る",
+    "viewAll": "すべて見る",
+    "share": "共有",
+    "close": "閉じる"
+  },
+  "footer": {
+    "newsletter": {
+      "title": "最新情報を受け取る",
+      "placeholder": "メールアドレスを入力",
+      "subscribe": "登録",
+      "success": "ご登録ありがとうございます！"
+    },
+    "copyright": "© {year} クワメ・ブラスウェイト・アーカイブ 無断複写・転載を禁じます。",
+    "links": {
+      "privacy": "プライバシーポリシー",
+      "terms": "利用規約"
+    }
+  },
+  "languageSwitcher": {
+    "label": "言語",
+    "en": "English",
+    "fr": "Français",
+    "ja": "日本語"
+  }
+}

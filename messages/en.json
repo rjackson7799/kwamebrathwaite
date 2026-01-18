@@ -1,0 +1,102 @@
+{
+  "navigation": {
+    "home": "Home",
+    "works": "Works",
+    "exhibitions": "Exhibitions",
+    "press": "Press",
+    "about": "About",
+    "archive": "The Archive",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Kwame Brathwaite Photo Archive",
+    "subtitle": "Style. Culture. Self-Definition."
+  },
+  "works": {
+    "title": "Works",
+    "filter": {
+      "all": "All",
+      "photography": "Photography",
+      "print": "Print",
+      "historical": "Historical"
+    },
+    "availability": {
+      "available": "Available",
+      "sold": "Sold",
+      "on_loan": "On Loan",
+      "not_for_sale": "Not for Sale",
+      "inquiry_only": "Inquiry Only"
+    },
+    "inquire": "Inquire About This Work"
+  },
+  "exhibitions": {
+    "title": "Exhibitions",
+    "current": "Current",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "viewDetails": "View Details"
+  },
+  "press": {
+    "title": "Press",
+    "readMore": "Read More",
+    "downloadPressKit": "Download Press Kit"
+  },
+  "about": {
+    "title": "About",
+    "biography": "Biography",
+    "movement": "The Black is Beautiful Movement"
+  },
+  "archive": {
+    "title": "The Archive",
+    "mission": "Our Mission"
+  },
+  "contact": {
+    "title": "Contact",
+    "intro": "We welcome inquiries from collectors, museums, educators, and press.",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone (Optional)",
+      "subject": "Subject",
+      "message": "Message",
+      "inquiryType": "Inquiry Type",
+      "submit": "Submit Inquiry"
+    },
+    "inquiryTypes": {
+      "general": "General Inquiry",
+      "purchase": "Purchase Inquiry",
+      "exhibition": "Exhibition Inquiry",
+      "press": "Press Inquiry"
+    },
+    "success": "Thank you for your inquiry. We will respond within 24 hours.",
+    "error": "There was an error submitting your inquiry. Please try again."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "notFound": "Page not found",
+    "backToHome": "Back to Home",
+    "viewAll": "View All",
+    "share": "Share",
+    "close": "Close"
+  },
+  "footer": {
+    "newsletter": {
+      "title": "Stay Updated",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "success": "Thank you for subscribing!"
+    },
+    "copyright": "© {year} Kwame Brathwaite Archive. All rights reserved.",
+    "links": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use"
+    }
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "fr": "Français",
+    "ja": "日本語"
+  }
+}

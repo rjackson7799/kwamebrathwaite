@@ -1,0 +1,102 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "works": "Œuvres",
+    "exhibitions": "Expositions",
+    "press": "Presse",
+    "about": "À propos",
+    "archive": "Les Archives",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Archives Photographiques Kwame Brathwaite",
+    "subtitle": "Style. Culture. Auto-définition."
+  },
+  "works": {
+    "title": "Œuvres",
+    "filter": {
+      "all": "Tout",
+      "photography": "Photographie",
+      "print": "Impression",
+      "historical": "Historique"
+    },
+    "availability": {
+      "available": "Disponible",
+      "sold": "Vendu",
+      "on_loan": "En prêt",
+      "not_for_sale": "Non à vendre",
+      "inquiry_only": "Sur demande"
+    },
+    "inquire": "Renseignements sur cette œuvre"
+  },
+  "exhibitions": {
+    "title": "Expositions",
+    "current": "En cours",
+    "upcoming": "À venir",
+    "past": "Passées",
+    "viewDetails": "Voir les détails"
+  },
+  "press": {
+    "title": "Presse",
+    "readMore": "Lire la suite",
+    "downloadPressKit": "Télécharger le dossier de presse"
+  },
+  "about": {
+    "title": "À propos",
+    "biography": "Biographie",
+    "movement": "Le mouvement Black is Beautiful"
+  },
+  "archive": {
+    "title": "Les Archives",
+    "mission": "Notre mission"
+  },
+  "contact": {
+    "title": "Contact",
+    "intro": "Nous accueillons les demandes de collectionneurs, musées, éducateurs et de la presse.",
+    "form": {
+      "name": "Nom",
+      "email": "E-mail",
+      "phone": "Téléphone (Optionnel)",
+      "subject": "Sujet",
+      "message": "Message",
+      "inquiryType": "Type de demande",
+      "submit": "Envoyer"
+    },
+    "inquiryTypes": {
+      "general": "Demande générale",
+      "purchase": "Demande d'achat",
+      "exhibition": "Demande d'exposition",
+      "press": "Demande de presse"
+    },
+    "success": "Merci pour votre demande. Nous vous répondrons dans les 24 heures.",
+    "error": "Une erreur s'est produite. Veuillez réessayer."
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "notFound": "Page non trouvée",
+    "backToHome": "Retour à l'accueil",
+    "viewAll": "Voir tout",
+    "share": "Partager",
+    "close": "Fermer"
+  },
+  "footer": {
+    "newsletter": {
+      "title": "Restez informé",
+      "placeholder": "Entrez votre e-mail",
+      "subscribe": "S'abonner",
+      "success": "Merci de vous être abonné!"
+    },
+    "copyright": "© {year} Archives Kwame Brathwaite. Tous droits réservés.",
+    "links": {
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation"
+    }
+  },
+  "languageSwitcher": {
+    "label": "Langue",
+    "en": "English",
+    "fr": "Français",
+    "ja": "日本語"
+  }
+}
