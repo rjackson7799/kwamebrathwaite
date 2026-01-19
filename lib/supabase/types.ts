@@ -16,11 +16,14 @@ export type Database = {
           year: number | null
           medium: string | null
           dimensions: string | null
+          dimensions_cm: string | null
           description: string | null
           image_url: string
           image_thumbnail_url: string | null
           category: string | null
           series: string | null
+          edition: string | null
+          archive_reference: string | null
           availability_status: AvailabilityStatus
           is_featured: boolean
           display_order: number | null
@@ -38,11 +41,14 @@ export type Database = {
           year?: number | null
           medium?: string | null
           dimensions?: string | null
+          dimensions_cm?: string | null
           description?: string | null
           image_url: string
           image_thumbnail_url?: string | null
           category?: string | null
           series?: string | null
+          edition?: string | null
+          archive_reference?: string | null
           availability_status?: AvailabilityStatus
           is_featured?: boolean
           display_order?: number | null
@@ -60,11 +66,14 @@ export type Database = {
           year?: number | null
           medium?: string | null
           dimensions?: string | null
+          dimensions_cm?: string | null
           description?: string | null
           image_url?: string
           image_thumbnail_url?: string | null
           category?: string | null
           series?: string | null
+          edition?: string | null
+          archive_reference?: string | null
           availability_status?: AvailabilityStatus
           is_featured?: boolean
           display_order?: number | null
@@ -387,6 +396,61 @@ export type Database = {
           created_at?: string
         }
       }
+      hero_slides: {
+        Row: {
+          id: string
+          image_url: string
+          overlay_opacity: number
+          display_order: number
+          is_active: boolean
+          status: ContentStatus
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          image_url: string
+          overlay_opacity?: number
+          display_order: number
+          is_active?: boolean
+          status?: ContentStatus
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          image_url?: string
+          overlay_opacity?: number
+          display_order?: number
+          is_active?: boolean
+          status?: ContentStatus
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      artwork_literature: {
+        Row: {
+          id: string
+          artwork_id: string
+          citation: string
+          display_order: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          artwork_id: string
+          citation: string
+          display_order?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          artwork_id?: string
+          citation?: string
+          display_order?: number
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -408,7 +472,7 @@ export type PressType = 'article' | 'review' | 'interview' | 'feature'
 export type InquiryType = 'general' | 'purchase' | 'exhibition' | 'press'
 export type InquiryStatus = 'new' | 'read' | 'responded' | 'archived'
 export type ActivityAction = 'create' | 'update' | 'delete' | 'status_change' | 'reorder'
-export type EntityType = 'artwork' | 'exhibition' | 'press' | 'inquiry' | 'content'
+export type EntityType = 'artwork' | 'exhibition' | 'press' | 'inquiry' | 'content' | 'media' | 'hero_slide'
 
 // Convenience type aliases
 export type Artwork = Database['public']['Tables']['artworks']['Row']
@@ -430,3 +494,11 @@ export type InquiryUpdate = Database['public']['Tables']['inquiries']['Update']
 export type SiteContent = Database['public']['Tables']['site_content']['Row']
 export type NewsletterSubscriber = Database['public']['Tables']['newsletter_subscribers']['Row']
 export type ActivityLog = Database['public']['Tables']['activity_log']['Row']
+
+export type HeroSlide = Database['public']['Tables']['hero_slides']['Row']
+export type HeroSlideInsert = Database['public']['Tables']['hero_slides']['Insert']
+export type HeroSlideUpdate = Database['public']['Tables']['hero_slides']['Update']
+
+export type ArtworkLiterature = Database['public']['Tables']['artwork_literature']['Row']
+export type ArtworkLiteratureInsert = Database['public']['Tables']['artwork_literature']['Insert']
+export type ArtworkLiteratureUpdate = Database['public']['Tables']['artwork_literature']['Update']

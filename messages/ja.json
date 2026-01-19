@@ -9,11 +9,20 @@
     "contact": "お問い合わせ"
   },
   "hero": {
-    "title": "クワメ・ブラスウェイト写真アーカイブ",
-    "subtitle": "スタイル。文化。自己定義。"
+    "overline": "写真アーカイブ",
+    "title": "クワメ・ブラスウェイト",
+    "subtitle": "「ブラック・イズ・ビューティフル」運動の創始者。写真家。文化的アイコン。",
+    "meta": {
+      "title": "クワメ・ブラスウェイト写真アーカイブ | Black is Beautiful",
+      "description": "ブラック・イズ・ビューティフル運動の創始者、伝説的写真家クワメ・ブラスウェイトの公式アーカイブ。作品、展覧会、文化的アイコンの遺産をご覧ください。"
+    }
   },
   "works": {
     "title": "作品",
+    "meta": {
+      "title": "作品 | クワメ・ブラスウェイト・アーカイブ",
+      "description": "クワメ・ブラスウェイトの写真アーカイブをご覧ください。ブラック・イズ・ビューティフル運動、グランダッサ・モデルズ、AJASSセッションの象徴的な作品を収録。"
+    },
     "filter": {
       "all": "すべて",
       "photography": "写真",
@@ -27,31 +36,108 @@
       "not_for_sale": "非売品",
       "inquiry_only": "要問い合わせ"
     },
-    "inquire": "この作品についてお問い合わせ"
+    "inquire": "この作品についてお問い合わせ",
+    "detail": {
+      "backToGallery": "ギャラリーに戻る",
+      "year": "年",
+      "medium": "技法",
+      "dimensions": "サイズ",
+      "series": "シリーズ",
+      "category": "カテゴリー",
+      "edition": "エディション",
+      "archiveReference": "アーカイブ参照番号",
+      "literature": "文献",
+      "relatedWorks": "関連作品",
+      "viewFullSize": "フルサイズで表示",
+      "viewOnWall": "壁に表示",
+      "shareLink": "リンクをコピー",
+      "shareLinkCopied": "リンクをコピーしました！",
+      "viewFullPage": "詳細ページを見る",
+      "inquiry": {
+        "title": "この作品についてお問い合わせ",
+        "submit": "送信",
+        "success": "お問い合わせありがとうございます。24時間以内にご返信いたします。",
+        "error": "送信できませんでした。もう一度お試しください。"
+      }
+    },
+    "search": {
+      "placeholder": "作品を検索...",
+      "clear": "検索をクリア",
+      "noResults": "「{query}」に一致する作品はありません",
+      "resultsCount": "{count}件の結果",
+      "clearFilters": "すべてのフィルターをクリア"
+    }
   },
   "exhibitions": {
     "title": "展覧会",
+    "meta": {
+      "title": "展覧会 | クワメ・ブラスウェイト・アーカイブ",
+      "description": "世界中の美術館やギャラリーで開催される、クワメ・ブラスウェイトの写真展。現在開催中、今後の予定、過去の展覧会をご覧ください。"
+    },
     "current": "開催中",
     "upcoming": "今後の予定",
     "past": "過去の展覧会",
-    "viewDetails": "詳細を見る"
+    "viewDetails": "詳細を見る",
+    "status": {
+      "current": "開催中",
+      "upcoming": "近日公開",
+      "past": "終了"
+    },
+    "detail": {
+      "backToExhibitions": "展覧会一覧に戻る",
+      "dates": "会期",
+      "venue": "会場",
+      "location": "所在地",
+      "visitVenue": "会場ウェブサイトを見る",
+      "aboutExhibition": "この展覧会について",
+      "featuredWorks": "展示作品",
+      "inquire": "この展覧会についてお問い合わせ",
+      "viewFullSize": "フルサイズで表示"
+    }
   },
   "press": {
     "title": "プレス",
+    "meta": {
+      "title": "プレス | クワメ・ブラスウェイト・アーカイブ",
+      "description": "クワメ・ブラスウェイトの写真とブラック・イズ・ビューティフル運動に関するメディア報道、レビュー、記事をご覧ください。"
+    },
     "readMore": "続きを読む",
     "downloadPressKit": "プレスキットをダウンロード"
   },
   "about": {
     "title": "について",
+    "meta": {
+      "title": "について | クワメ・ブラスウェイト・アーカイブ",
+      "description": "ブラック・イズ・ビューティフル運動を創設し、作品を通じてアフリカの自然な美しさを称えた伝説的写真家、クワメ・ブラスウェイトについて。"
+    },
     "biography": "略歴",
-    "movement": "ブラック・イズ・ビューティフル運動"
+    "movement": "ブラック・イズ・ビューティフル運動",
+    "timeline": {
+      "title": "人生とキャリア",
+      "events": "キャリアのタイムライン",
+      "filter": {
+        "all": "すべて",
+        "biography": "人生の出来事",
+        "milestone": "マイルストーン",
+        "exhibition": "展覧会"
+      },
+      "noEvents": "表示するイベントがありません"
+    }
   },
   "archive": {
     "title": "アーカイブ",
+    "meta": {
+      "title": "アーカイブ | クワメ・ブラスウェイト",
+      "description": "クワメ・ブラスウェイト公式アーカイブは、60年にわたる写真とブラック・イズ・ビューティフル運動を記録した10,000点以上の画像を保存しています。"
+    },
     "mission": "私たちの使命"
   },
   "contact": {
     "title": "お問い合わせ",
+    "meta": {
+      "title": "お問い合わせ | クワメ・ブラスウェイト・アーカイブ",
+      "description": "作品の購入、展覧会、プレス、一般的な情報に関するお問い合わせは、クワメ・ブラスウェイト・アーカイブまでご連絡ください。"
+    },
     "intro": "コレクター、美術館、教育者、報道関係者からのお問い合わせを歓迎いたします。",
     "form": {
       "name": "お名前",
@@ -72,20 +158,27 @@
     "error": "エラーが発生しました。もう一度お試しください。"
   },
   "common": {
+    "skipToContent": "メインコンテンツへスキップ",
     "loading": "読み込み中...",
     "error": "エラーが発生しました",
     "notFound": "ページが見つかりません",
     "backToHome": "ホームに戻る",
     "viewAll": "すべて見る",
     "share": "共有",
-    "close": "閉じる"
+    "close": "閉じる",
+    "lightbox": "画像ビューアー",
+    "previousImage": "前の画像",
+    "nextImage": "次の画像"
   },
   "footer": {
     "newsletter": {
       "title": "最新情報を受け取る",
       "placeholder": "メールアドレスを入力",
       "subscribe": "登録",
-      "success": "ご登録ありがとうございます！"
+      "success": "ご登録ありがとうございます！",
+      "alreadySubscribed": "すでに登録されています！",
+      "error": "登録できませんでした。もう一度お試しください。",
+      "rateLimited": "試行回数が多すぎます。しばらくお待ちください。"
     },
     "copyright": "© {year} クワメ・ブラスウェイト・アーカイブ 無断複写・転載を禁じます。",
     "links": {

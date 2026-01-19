@@ -9,11 +9,20 @@
     "contact": "Contact"
   },
   "hero": {
-    "title": "Archives Photographiques Kwame Brathwaite",
-    "subtitle": "Style. Culture. Auto-définition."
+    "overline": "Les Archives Photographiques",
+    "title": "Kwame Brathwaite",
+    "subtitle": "Fondateur du mouvement Black is Beautiful. Photographe. Icône culturelle.",
+    "meta": {
+      "title": "Archives Photo Kwame Brathwaite | Black is Beautiful",
+      "description": "Archives officielles du légendaire photographe Kwame Brathwaite, fondateur du mouvement Black is Beautiful. Explorez ses œuvres, expositions et l'héritage d'une icône culturelle."
+    }
   },
   "works": {
     "title": "Œuvres",
+    "meta": {
+      "title": "Œuvres | Archives Kwame Brathwaite",
+      "description": "Explorez les archives photographiques de Kwame Brathwaite, avec des images iconiques du mouvement Black is Beautiful, des Grandassa Models et des sessions AJASS."
+    },
     "filter": {
       "all": "Tout",
       "photography": "Photographie",
@@ -27,31 +36,108 @@
       "not_for_sale": "Non à vendre",
       "inquiry_only": "Sur demande"
     },
-    "inquire": "Renseignements sur cette œuvre"
+    "inquire": "Renseignements sur cette œuvre",
+    "detail": {
+      "backToGallery": "Retour à la galerie",
+      "year": "Année",
+      "medium": "Technique",
+      "dimensions": "Dimensions",
+      "series": "Série",
+      "category": "Catégorie",
+      "edition": "Édition",
+      "archiveReference": "Référence d'archive",
+      "literature": "Bibliographie",
+      "relatedWorks": "Œuvres associées",
+      "viewFullSize": "Voir en taille réelle",
+      "viewOnWall": "Voir sur un mur",
+      "shareLink": "Copier le lien",
+      "shareLinkCopied": "Lien copié !",
+      "viewFullPage": "Voir la page complète",
+      "inquiry": {
+        "title": "Renseignements sur cette œuvre",
+        "submit": "Envoyer la demande",
+        "success": "Merci pour votre demande. Nous vous répondrons dans les 24 heures.",
+        "error": "Impossible d'envoyer la demande. Veuillez réessayer."
+      }
+    },
+    "search": {
+      "placeholder": "Rechercher des œuvres...",
+      "clear": "Effacer la recherche",
+      "noResults": "Aucune œuvre trouvée pour « {query} »",
+      "resultsCount": "{count, plural, one {# résultat} other {# résultats}}",
+      "clearFilters": "Effacer tous les filtres"
+    }
   },
   "exhibitions": {
     "title": "Expositions",
+    "meta": {
+      "title": "Expositions | Archives Kwame Brathwaite",
+      "description": "Découvrez les expositions actuelles, à venir et passées présentant la photographie de Kwame Brathwaite dans les musées et galeries du monde entier."
+    },
     "current": "En cours",
     "upcoming": "À venir",
     "past": "Passées",
-    "viewDetails": "Voir les détails"
+    "viewDetails": "Voir les détails",
+    "status": {
+      "current": "En cours",
+      "upcoming": "Bientôt",
+      "past": "Passée"
+    },
+    "detail": {
+      "backToExhibitions": "Retour aux expositions",
+      "dates": "Dates",
+      "venue": "Lieu",
+      "location": "Adresse",
+      "visitVenue": "Visiter le site du lieu",
+      "aboutExhibition": "À propos de cette exposition",
+      "featuredWorks": "Œuvres présentées",
+      "inquire": "Renseignements sur cette exposition",
+      "viewFullSize": "Voir en taille réelle"
+    }
   },
   "press": {
     "title": "Presse",
+    "meta": {
+      "title": "Presse | Archives Kwame Brathwaite",
+      "description": "Couverture médiatique, critiques et articles sur la photographie de Kwame Brathwaite et le mouvement Black is Beautiful."
+    },
     "readMore": "Lire la suite",
     "downloadPressKit": "Télécharger le dossier de presse"
   },
   "about": {
     "title": "À propos",
+    "meta": {
+      "title": "À propos | Archives Kwame Brathwaite",
+      "description": "Découvrez Kwame Brathwaite, le photographe légendaire qui a fondé le mouvement Black is Beautiful et a défendu la beauté naturelle africaine à travers son travail."
+    },
     "biography": "Biographie",
-    "movement": "Le mouvement Black is Beautiful"
+    "movement": "Le mouvement Black is Beautiful",
+    "timeline": {
+      "title": "Vie et carrière",
+      "events": "Événements de la carrière",
+      "filter": {
+        "all": "Tout",
+        "biography": "Vie personnelle",
+        "milestone": "Jalons",
+        "exhibition": "Expositions"
+      },
+      "noEvents": "Aucun événement à afficher"
+    }
   },
   "archive": {
     "title": "Les Archives",
+    "meta": {
+      "title": "Les Archives | Kwame Brathwaite",
+      "description": "Les archives officielles de Kwame Brathwaite préservent plus de 10 000 images documentant 60 ans de photographie et le mouvement Black is Beautiful."
+    },
     "mission": "Notre mission"
   },
   "contact": {
     "title": "Contact",
+    "meta": {
+      "title": "Contact | Archives Kwame Brathwaite",
+      "description": "Contactez les archives Kwame Brathwaite pour toute demande concernant l'achat d'œuvres, les expositions, la presse et les informations générales."
+    },
     "intro": "Nous accueillons les demandes de collectionneurs, musées, éducateurs et de la presse.",
     "form": {
       "name": "Nom",
@@ -72,20 +158,27 @@
     "error": "Une erreur s'est produite. Veuillez réessayer."
   },
   "common": {
+    "skipToContent": "Aller au contenu principal",
     "loading": "Chargement...",
     "error": "Une erreur s'est produite",
     "notFound": "Page non trouvée",
     "backToHome": "Retour à l'accueil",
     "viewAll": "Voir tout",
     "share": "Partager",
-    "close": "Fermer"
+    "close": "Fermer",
+    "lightbox": "Visionneuse d'images",
+    "previousImage": "Image précédente",
+    "nextImage": "Image suivante"
   },
   "footer": {
     "newsletter": {
       "title": "Restez informé",
       "placeholder": "Entrez votre e-mail",
       "subscribe": "S'abonner",
-      "success": "Merci de vous être abonné!"
+      "success": "Merci de vous être abonné!",
+      "alreadySubscribed": "Vous êtes déjà abonné!",
+      "error": "Impossible de s'abonner. Veuillez réessayer.",
+      "rateLimited": "Trop de tentatives. Veuillez patienter."
     },
     "copyright": "© {year} Archives Kwame Brathwaite. Tous droits réservés.",
     "links": {

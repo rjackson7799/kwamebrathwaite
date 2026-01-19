@@ -9,11 +9,20 @@
     "contact": "Contact"
   },
   "hero": {
-    "title": "Kwame Brathwaite Photo Archive",
-    "subtitle": "Style. Culture. Self-Definition."
+    "overline": "The Photography Archive",
+    "title": "Kwame Brathwaite",
+    "subtitle": "Founder of the Black is Beautiful movement. Photographer. Cultural icon.",
+    "meta": {
+      "title": "Kwame Brathwaite Photo Archive | Black is Beautiful",
+      "description": "Official archive of legendary photographer Kwame Brathwaite, founder of the Black is Beautiful movement. Explore works, exhibitions, and the legacy of a cultural icon."
+    }
   },
   "works": {
     "title": "Works",
+    "meta": {
+      "title": "Works | Kwame Brathwaite Archive",
+      "description": "Explore the photography archive of Kwame Brathwaite, featuring iconic images from the Black is Beautiful movement, Grandassa Models, and AJASS sessions."
+    },
     "filter": {
       "all": "All",
       "photography": "Photography",
@@ -27,31 +36,108 @@
       "not_for_sale": "Not for Sale",
       "inquiry_only": "Inquiry Only"
     },
-    "inquire": "Inquire About This Work"
+    "inquire": "Inquire About This Work",
+    "detail": {
+      "backToGallery": "Back to Gallery",
+      "year": "Year",
+      "medium": "Medium",
+      "dimensions": "Dimensions",
+      "series": "Series",
+      "category": "Category",
+      "edition": "Edition",
+      "archiveReference": "Archive Reference",
+      "literature": "Literature",
+      "relatedWorks": "Related Works",
+      "viewFullSize": "View full size",
+      "viewOnWall": "View on a Wall",
+      "shareLink": "Copy Link",
+      "shareLinkCopied": "Link copied!",
+      "viewFullPage": "View Full Page",
+      "inquiry": {
+        "title": "Inquire About This Work",
+        "submit": "Send Inquiry",
+        "success": "Thank you for your inquiry. We will respond within 24 hours.",
+        "error": "Unable to submit inquiry. Please try again."
+      }
+    },
+    "search": {
+      "placeholder": "Search works...",
+      "clear": "Clear search",
+      "noResults": "No works found for \"{query}\"",
+      "resultsCount": "{count, plural, one {# result} other {# results}}",
+      "clearFilters": "Clear all filters"
+    }
   },
   "exhibitions": {
     "title": "Exhibitions",
+    "meta": {
+      "title": "Exhibitions | Kwame Brathwaite Archive",
+      "description": "Discover current, upcoming, and past exhibitions featuring the photography of Kwame Brathwaite at museums and galleries worldwide."
+    },
     "current": "Current",
     "upcoming": "Upcoming",
     "past": "Past",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "status": {
+      "current": "Now Showing",
+      "upcoming": "Coming Soon",
+      "past": "Past"
+    },
+    "detail": {
+      "backToExhibitions": "Back to Exhibitions",
+      "dates": "Dates",
+      "venue": "Venue",
+      "location": "Location",
+      "visitVenue": "Visit Venue Website",
+      "aboutExhibition": "About This Exhibition",
+      "featuredWorks": "Featured Works",
+      "inquire": "Inquire About This Exhibition",
+      "viewFullSize": "View full size"
+    }
   },
   "press": {
     "title": "Press",
+    "meta": {
+      "title": "Press | Kwame Brathwaite Archive",
+      "description": "Press coverage, reviews, and articles about Kwame Brathwaite's photography and the Black is Beautiful movement."
+    },
     "readMore": "Read More",
     "downloadPressKit": "Download Press Kit"
   },
   "about": {
     "title": "About",
+    "meta": {
+      "title": "About | Kwame Brathwaite Archive",
+      "description": "Learn about Kwame Brathwaite, the legendary photographer who founded the Black is Beautiful movement and championed natural African beauty through his work."
+    },
     "biography": "Biography",
-    "movement": "The Black is Beautiful Movement"
+    "movement": "The Black is Beautiful Movement",
+    "timeline": {
+      "title": "Life & Career",
+      "events": "Career timeline events",
+      "filter": {
+        "all": "All",
+        "biography": "Life Events",
+        "milestone": "Milestones",
+        "exhibition": "Exhibitions"
+      },
+      "noEvents": "No timeline events to display"
+    }
   },
   "archive": {
     "title": "The Archive",
+    "meta": {
+      "title": "The Archive | Kwame Brathwaite",
+      "description": "The official Kwame Brathwaite Archive preserves over 10,000 images documenting 60 years of photography and the Black is Beautiful movement."
+    },
     "mission": "Our Mission"
   },
   "contact": {
     "title": "Contact",
+    "meta": {
+      "title": "Contact | Kwame Brathwaite Archive",
+      "description": "Contact the Kwame Brathwaite Archive for inquiries about artwork purchases, exhibitions, press, and general information."
+    },
     "intro": "We welcome inquiries from collectors, museums, educators, and press.",
     "form": {
       "name": "Name",
@@ -72,20 +158,27 @@
     "error": "There was an error submitting your inquiry. Please try again."
   },
   "common": {
+    "skipToContent": "Skip to main content",
     "loading": "Loading...",
     "error": "An error occurred",
     "notFound": "Page not found",
     "backToHome": "Back to Home",
     "viewAll": "View All",
     "share": "Share",
-    "close": "Close"
+    "close": "Close",
+    "lightbox": "Image viewer",
+    "previousImage": "Previous image",
+    "nextImage": "Next image"
   },
   "footer": {
     "newsletter": {
       "title": "Stay Updated",
       "placeholder": "Enter your email",
       "subscribe": "Subscribe",
-      "success": "Thank you for subscribing!"
+      "success": "Thank you for subscribing!",
+      "alreadySubscribed": "You are already subscribed!",
+      "error": "Unable to subscribe. Please try again.",
+      "rateLimited": "Too many attempts. Please wait a moment."
     },
     "copyright": "© {year} Kwame Brathwaite Archive. All rights reserved.",
     "links": {
