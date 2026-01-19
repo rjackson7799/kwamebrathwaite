@@ -42,6 +42,7 @@
 ### UI Components Completed
 - [x] ImagePlaceholder component (`components/ui/ImagePlaceholder.tsx`)
 - [x] Lightbox component (`components/ui/Lightbox.tsx`) - Full accessibility
+- [x] ViewOnWallModal component (`components/ui/ViewOnWallModal.tsx`) - Artwork visualization
 - [x] ArtworkCard component (`components/features/artworks/ArtworkCard.tsx`)
 - [x] ArtworkGrid component (`components/features/artworks/ArtworkGrid.tsx`)
 - [x] ExhibitionCard component (`components/features/exhibitions/ExhibitionCard.tsx`)
@@ -87,6 +88,24 @@
   - [x] Added error, alreadySubscribed, rateLimited translation keys (en, fr, ja)
   - [x] Proper handling of API responses including already-subscribed case
   - [x] Error/rate limit messages display in UI
+
+### Completed (View on Wall Feature)
+- [x] View on Wall visualization feature
+  - [x] ViewOnWallModal component (`components/ui/ViewOnWallModal.tsx`)
+    - Portal-based modal with focus trap and keyboard navigation
+    - Room scene with CSS gradient backgrounds (white, gray, dark)
+    - Artwork scaled to real-world proportions
+    - Reference chair silhouette for scale comparison
+    - Responsive design for mobile/tablet/desktop
+  - [x] Dimension parsing utilities (`lib/utils/parseDimensions.ts`)
+    - Parses "20 × 24 inches" and "50.8 × 61 cm" formats
+    - Converts cm to inches for scale calculations
+  - [x] Scale calculation utilities (`lib/utils/calculateArtworkScale.ts`)
+    - Calculates pixel dimensions based on 8-foot wall height
+    - Chair scale and artwork positioning helpers
+  - [x] ArtworkDetail integration - "View on a Wall" button
+  - [x] Translation keys for en, fr, ja
+  - [x] CSS for artwork frame shadow effect
 
 ---
 

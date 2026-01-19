@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useLocale, useTranslations } from 'next-intl'
 import { Lightbox, type LightboxImage } from '@/components/ui/Lightbox'
 import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder'
+import { ViewOnWallModal } from '@/components/ui/ViewOnWallModal'
 import { ShareButton } from './ShareButton'
 import { ArtworkInquiryModal } from './ArtworkInquiryModal'
 import type { Artwork, ArtworkLiterature } from '@/lib/supabase/types'
@@ -50,6 +51,7 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
   const t = useTranslations('works')
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [isInquiryOpen, setIsInquiryOpen] = useState(false)
+  const [isViewOnWallOpen, setIsViewOnWallOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
 
@@ -187,28 +189,30 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
 
             {/* Action Buttons under image */}
             <div className="flex gap-3 mt-4">
-              {/* View on Wall placeholder (Agent 2's feature) */}
-              <button
-                type="button"
-                disabled
-                className="
-                  flex-1
-                  inline-flex items-center justify-center gap-2
-                  px-4 py-3
-                  text-[11px] font-medium uppercase tracking-[0.08em]
-                  text-gray-400
-                  border border-gray-200
-                  rounded-sm
-                  cursor-not-allowed
-                "
-                title="Coming soon"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                {t('detail.viewOnWall')}
-              </button>
+              {/* View on Wall Button - only show if dimensions available */}
+              {artwork.dimensions && (
+                <button
+                  type="button"
+                  onClick={() => setIsViewOnWallOpen(true)}
+                  className="
+                    flex-1
+                    inline-flex items-center justify-center gap-2
+                    px-4 py-3
+                    text-[11px] font-medium uppercase tracking-[0.08em]
+                    text-black
+                    border border-black
+                    rounded-sm
+                    transition-all duration-fast
+                    hover:bg-black hover:text-white
+                  "
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  {t('detail.viewOnWall')}
+                </button>
+              )}
             </div>
           </div>
 
@@ -352,6 +356,20 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
           image_thumbnail_url: artwork.image_thumbnail_url,
         }}
       />
+
+      {/* View on Wall Modal */}
+      {artwork.dimensions && (
+        <ViewOnWallModal
+          artwork={{
+            id: artwork.id,
+            title: artwork.title,
+            image_url: artwork.image_url,
+            dimensions: artwork.dimensions,
+          }}
+          isOpen={isViewOnWallOpen}
+          onClose={() => setIsViewOnWallOpen(false)}
+        />
+      )}
     </>
   )
 }

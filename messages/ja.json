@@ -49,7 +49,13 @@
       "literature": "文献",
       "relatedWorks": "関連作品",
       "viewFullSize": "フルサイズで表示",
-      "viewOnWall": "壁に表示",
+      "viewOnWall": "壁に飾る",
+      "viewOnWallTitle": "壁に飾る",
+      "room": {
+        "white": "白い壁",
+        "gray": "グレーの壁",
+        "dark": "暗い壁"
+      },
       "shareLink": "リンクをコピー",
       "shareLinkCopied": "リンクをコピーしました！",
       "viewFullPage": "詳細ページを見る",

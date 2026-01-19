@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { ArtworkDetail } from '@/components/features/artworks/ArtworkDetail'
 import { ArtworkGrid } from '@/components/features/artworks'
-import type { ArtworkLiterature } from '@/lib/supabase/types'
+import type { Artwork, ArtworkLiterature } from '@/lib/supabase/types'
 
 // Revalidate every hour (ISR)
 export const revalidate = 3600
@@ -23,7 +23,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .select('title, description, image_url, meta_title, meta_description')
     .eq('id', id)
     .eq('status', 'published')
-    .single()
+    .single<{
+      title: string
+      description: string | null
+      image_url: string
+      meta_title: string | null
+      meta_description: string | null
+    }>()
 
   if (!artwork) {
     return {
@@ -76,7 +82,7 @@ export default async function ArtworkDetailPage({ params }: Props) {
     .select('*')
     .eq('id', id)
     .eq('status', 'published')
-    .single()
+    .single<Artwork>()
 
   if (error || !artwork) {
     notFound()

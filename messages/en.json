@@ -50,6 +50,12 @@
       "relatedWorks": "Related Works",
       "viewFullSize": "View full size",
       "viewOnWall": "View on a Wall",
+      "viewOnWallTitle": "View on a Wall",
+      "room": {
+        "white": "White Wall",
+        "gray": "Gray Wall",
+        "dark": "Dark Wall"
+      },
       "shareLink": "Copy Link",
       "shareLinkCopied": "Link copied!",
       "viewFullPage": "View Full Page",

@@ -50,6 +50,12 @@
       "relatedWorks": "Œuvres associées",
       "viewFullSize": "Voir en taille réelle",
       "viewOnWall": "Voir sur un mur",
+      "viewOnWallTitle": "Voir sur un mur",
+      "room": {
+        "white": "Mur blanc",
+        "gray": "Mur gris",
+        "dark": "Mur sombre"
+      },
       "shareLink": "Copier le lien",
       "shareLinkCopied": "Lien copié !",
       "viewFullPage": "Voir la page complète",

@@ -19,6 +19,17 @@
 }
 
 @layer base {
+  /* Skip link for accessibility - hidden until focused */
+  .skip-link {
+    @apply sr-only;
+  }
+
+  .skip-link:focus {
+    @apply not-sr-only fixed z-[9999] top-4 left-4 px-4 py-2 bg-black text-white font-medium;
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
   html {
     font-family: 'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -80,6 +91,35 @@
            hover:text-gray-warm hover:underline;
   }
 
+  /* Gold accent button variants */
+  .btn-gold {
+    @apply bg-gold text-white px-6 py-3 rounded-sm font-medium
+           transition-all duration-normal
+           hover:bg-gold/90 hover:-translate-y-px hover:shadow-md
+           active:translate-y-0
+           disabled:bg-gray-light disabled:text-gray-warm disabled:cursor-not-allowed;
+  }
+
+  .btn-gold-outline {
+    @apply bg-transparent text-gold px-6 py-3 rounded-sm font-medium
+           border border-gold
+           transition-all duration-normal
+           hover:bg-gold hover:text-white
+           active:bg-gold/90;
+  }
+
+  /* Filter pill buttons - per DESIGN_SYSTEM.md */
+  .filter-pill {
+    @apply bg-transparent text-black px-4 py-2 text-body-sm font-normal
+           border border-gray-light rounded-full
+           transition-all duration-normal
+           hover:border-gray-warm;
+  }
+
+  .filter-pill-active {
+    @apply bg-black text-white border-black;
+  }
+
   /* Form input styles */
   .input {
     @apply w-full px-4 py-3 border border-gray-light rounded-sm
@@ -112,6 +152,44 @@
            hover:shadow-lg hover:-translate-y-0.5;
   }
 
+  .card-bordered {
+    @apply bg-white border border-gray-light
+           transition-all duration-slow
+           hover:shadow-lg hover:-translate-y-0.5
+           hover:border-gray-warm/30;
+  }
+
+  .card-elevated {
+    @apply bg-white shadow-sm
+           transition-all duration-slow
+           hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .card-featured {
+    @apply bg-white border-l-2 border-l-gold
+           transition-all duration-slow
+           hover:shadow-lg;
+  }
+
+  /* Gold accent section divider */
+  .section-divider {
+    @apply flex justify-center my-12 md:my-16;
+  }
+
+  .section-divider::before {
+    content: '';
+    @apply w-16 h-px bg-gold;
+  }
+
+  .section-divider-full {
+    @apply w-full h-px bg-gold/30 my-12 md:my-16;
+  }
+
+  /* Exhibition label styling - museum-like metadata display */
+  .exhibition-label {
+    @apply border-l-2 border-gold pl-4 py-1;
+  }
+
   /* Container */
   .container-page {
     @apply max-w-container mx-auto px-6 md:px-12 lg:px-16;
@@ -138,6 +216,111 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Staggered animation delays */
+  .stagger-1 { animation-delay: 0.05s; }
+  .stagger-2 { animation-delay: 0.1s; }
+  .stagger-3 { animation-delay: 0.15s; }
+  .stagger-4 { animation-delay: 0.2s; }
+  .stagger-5 { animation-delay: 0.25s; }
+  .stagger-6 { animation-delay: 0.3s; }
+  .stagger-7 { animation-delay: 0.35s; }
+  .stagger-8 { animation-delay: 0.4s; }
+
+  /* Initial hidden state for animated elements */
+  .animate-hidden {
+    opacity: 0;
+  }
+
+  /* Skeleton loading with shimmer */
+  .skeleton {
+    @apply bg-gray-light rounded-sm;
+    background: linear-gradient(
+      90deg,
+      #E5E5E5 25%,
+      #F0F0F0 50%,
+      #E5E5E5 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+}
+
+/* Subtle grain texture for hero sections */
+.grain-overlay {
+  position: relative;
+}
+
+.grain-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 1;
+}
+
+.grain-overlay > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Hero Slide Opacity Slider Styling */
+.hero-opacity-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(to right, #f3f4f6 0%, #000000 100%);
+  border-radius: 4px;
+  outline: none;
+}
+
+.hero-opacity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #000000;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.hero-opacity-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.hero-opacity-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #000000;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.hero-opacity-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+}
+
+.hero-opacity-slider:focus {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+/* View on Wall - Artwork frame shadow */
+.artwork-on-wall {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    0 16px 32px rgba(0, 0, 0, 0.2);
 }
 
 /* Respect reduced motion preferences */
@@ -149,5 +332,19 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Ensure elements are visible when animations are disabled */
+  .animate-hidden,
+  .animate-fade-up,
+  .animate-fade-in,
+  .animate-scale-in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Disable grain texture animation */
+  .grain-overlay::after {
+    display: none;
   }
 }
