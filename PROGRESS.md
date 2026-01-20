@@ -1,7 +1,7 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** January 18, 2026 (Phase 7 Artwork Detail Page Enhancement Complete!)
+**Last Updated:** January 19, 2026 (About Page CMS Integration)
 
 ---
 
@@ -34,6 +34,10 @@
 - [x] Exhibitions page with tab filtering
 - [x] Press page with press cards
 - [x] About page structure (placeholder content)
+- [x] About page CMS integration
+  - [x] Biography section fetches from `/api/content/about/biography`
+  - [x] Movement section fetches from `/api/content/about/movement`
+  - [x] Server-side rendering with 60-second revalidation
 - [x] Archive page structure (placeholder content)
 - [x] Contact page with form
 - [x] Privacy policy page
@@ -361,6 +365,38 @@
 
 ---
 
+## Phase 8: Featured Artworks Enhancement
+
+### Completed
+- [x] Home page dynamic featured artworks
+  - [x] Removed hardcoded sample artworks array
+  - [x] Created `lib/artworks.ts` with `getFeaturedArtworks()` helper
+  - [x] Server-side fetching with `Promise.all()` for parallel data loading
+  - [x] Conditional rendering (hides section if no featured artworks)
+  - [x] Respects `display_order` field for sorting
+- [x] Works page featured prioritization
+  - [x] Updated `/api/artworks` to sort by `is_featured` first (descending)
+  - [x] Featured artworks appear at top of Works page
+  - [x] Secondary sort by `display_order`, then `created_at`
+- [x] Admin artwork reordering
+  - [x] Created `ArtworkReorderList` component (`components/admin/ArtworkReorderList.tsx`)
+    - [x] Drag-and-drop reordering with `@hello-pangea/dnd`
+    - [x] Filter tabs: "All" / "Featured Only"
+    - [x] Inline featured toggle (star icon)
+    - [x] Auto-save on reorder with loading indicator
+    - [x] Error handling with automatic revert
+  - [x] Created reorder page (`app/admin/artworks/reorder/page.tsx`)
+  - [x] Added "Reorder" button to artworks list page header
+  - [x] Exported component from `components/admin/index.ts`
+
+### How Featured Artworks Work
+1. **Featured star in admin** - Marks artworks to appear on home page AND at top of Works page
+2. **Home page** - Shows up to 8 featured artworks from database (respects display order)
+3. **Works page** - Shows all published artworks with featured ones appearing first
+4. **Reorder page** - Drag-and-drop to set display order, filter to featured-only for easier management
+
+---
+
 ## Blockers / Questions
 
 *None currently*
@@ -390,7 +426,7 @@ Run the SQL in `/docs/DATABASE_SCHEMA.sql` in your Supabase project's SQL editor
 2. ~~Implement API routes for data fetching~~ ✓ COMPLETED (Phase 3)
 3. ~~Create artwork detail page (`works/[id]`)~~ ✓ COMPLETED
 4. ~~Create exhibition detail page (`exhibitions/[id]`)~~ ✓ COMPLETED
-5. Wire up public pages to use API routes (replace sample data)
+5. ~~Wire up public pages to use API routes (replace sample data)~~ ✓ PARTIALLY COMPLETE (Homepage artworks done, exhibitions still sample)
 6. ~~Set up admin authentication~~ ✓ COMPLETED (Phase 4a)
 7. ~~Implement Artworks CRUD pages~~ ✓ COMPLETED (Phase 4a)
 8. ~~Implement remaining Phase 4 items~~ ✓ PHASE 4 COMPLETE!
@@ -455,6 +491,7 @@ components/
     ├── RichTextEditor.tsx
     ├── ArtworkPicker.tsx
     ├── ArtworkForm.tsx
+    ├── ArtworkReorderList.tsx
     └── ExhibitionForm.tsx
 
 lib/
@@ -468,6 +505,8 @@ lib/
 ├── hooks/
 │   ├── useDebounce.ts
 │   └── index.ts
+├── artworks.ts
+├── hero.ts
 └── supabase/
     ├── client.ts
     ├── server.ts
@@ -535,6 +574,7 @@ app/admin/
 ├── artworks/
 │   ├── page.tsx
 │   ├── new/page.tsx
+│   ├── reorder/page.tsx
 │   └── [id]/edit/page.tsx
 ├── content/
 │   └── page.tsx

@@ -83,6 +83,8 @@
     "current": "開催中",
     "upcoming": "今後の予定",
     "past": "過去の展覧会",
+    "listView": "リスト",
+    "mapView": "地図",
     "viewDetails": "詳細を見る",
     "status": {
       "current": "開催中",
@@ -99,6 +101,33 @@
       "featuredWorks": "展示作品",
       "inquire": "この展覧会についてお問い合わせ",
       "viewFullSize": "フルサイズで表示"
+    },
+    "map": {
+      "global": "世界全体",
+      "unitedStates": "アメリカ合衆国",
+      "nearMe": "近くの展覧会",
+      "regionFilter": "地域フィルター",
+      "loading": "地図を読み込んでいます...",
+      "error": "地図の読み込みエラー",
+      "noExhibitions": "このエリアに展覧会はありません",
+      "setReminder": "リマインダー設定",
+      "share": "共有",
+      "addToCalendar": "カレンダーに追加",
+      "getDirections": "道順を取得",
+      "viewDetails": "詳細を見る"
+    },
+    "reminder": {
+      "title": "リマインダーを設定",
+      "name": "お名前",
+      "email": "メールアドレス",
+      "type": "通知タイミング",
+      "typeOpening": "展覧会の開始時",
+      "typeClosing": "展覧会の終了前",
+      "typeBoth": "開始時と終了前の両方",
+      "submit": "リマインダーを設定",
+      "cancel": "キャンセル",
+      "success": "展覧会のリマインダーを設定しました！",
+      "error": "エラーが発生しました。もう一度お試しください。"
     }
   },
   "press": {

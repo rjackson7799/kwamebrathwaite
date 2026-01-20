@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLocale, useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
@@ -23,11 +23,17 @@ const navLinks = [
 ] as const
 
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+  const [isMounted, setIsMounted] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const locale = useLocale()
   const pathname = usePathname()
   const t = useTranslations('navigation')
   const tCommon = useTranslations('common')
+
+  // Track client-side mount to avoid hydration mismatch with createPortal
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   // Body scroll lock
   useEffect(() => {
@@ -95,8 +101,8 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     return currentPath === href || currentPath.startsWith(`${href}/`)
   }
 
-  // Don't render anything on server or when closed
-  if (typeof window === 'undefined') return null
+  // Don't render portal until mounted on client (prevents hydration mismatch)
+  if (!isMounted) return null
 
   return createPortal(
     <>
@@ -146,10 +152,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               key={href}
               href={getLocalizedHref(href)}
               onClick={onClose}
-              className={`block px-6 py-4 text-xl border-b border-gray-light transition-colors duration-fast ${
+              className={`flex items-center px-6 min-h-[44px] text-sm tracking-[0.08em] uppercase border-b border-gray-light transition-colors duration-200 ${
                 isActive(href)
                   ? 'text-black font-medium'
-                  : 'text-black hover:text-gray-warm'
+                  : 'text-black hover:text-gray-600'
               }`}
             >
               {t(key)}

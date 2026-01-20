@@ -61,15 +61,15 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6" aria-label="Main navigation">
+        <nav className="hidden md:flex items-center gap-4" aria-label="Main navigation">
           {navLinks.map(({ href, key }) => (
             <Link
               key={href}
               href={getLocalizedHref(href)}
-              className={`text-body transition-colors duration-fast pb-1 ${
+              className={`text-[11px] font-normal tracking-[0.08em] uppercase transition-colors duration-200 pb-1 ${
                 isActive(href)
-                  ? 'text-black font-medium border-b-2 border-black'
-                  : 'text-black hover:text-gray-warm'
+                  ? 'font-medium text-black border-b-2 border-black'
+                  : 'text-black hover:text-gray-600'
               }`}
             >
               {t(key)}

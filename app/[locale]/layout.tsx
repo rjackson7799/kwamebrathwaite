@@ -35,12 +35,20 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   // Get messages for the current locale
   const messages = await getMessages()
+  const t = await getTranslations({ locale, namespace: 'common' })
 
   return (
     <NextIntlClientProvider messages={messages}>
       <div className="min-h-screen flex flex-col">
+        {/* Skip link for accessibility */}
+        <a
+          href="#main-content"
+          className="skip-link"
+        >
+          {t('skipToContent')}
+        </a>
         <Header />
-        <main className="flex-1">
+        <main id="main-content" className="flex-1">
           {children}
         </main>
         <Footer />

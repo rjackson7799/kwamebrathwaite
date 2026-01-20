@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
 import './globals.css'
+import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -43,6 +44,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <head>
+        {/* Preconnect to Google Fonts (used by next/font) */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Structured data */}
+        <OrganizationJsonLd />
+        <WebSiteJsonLd />
+      </head>
       <body className="font-sans antialiased">
         {children}
       </body>

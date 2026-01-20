@@ -2,13 +2,27 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter } from '@/i18n/navigation'
+import { Globe, ChevronDown } from 'lucide-react'
 
 interface LanguageSwitcherProps {
   variant?: 'light' | 'dark'
 }
 
 const localeOptions = ['en', 'fr', 'ja'] as const
+type Locale = (typeof localeOptions)[number]
+
+const localeNames: Record<Locale, string> = {
+  en: 'English',
+  fr: 'Français',
+  ja: '日本語'
+}
+
+const localeCodes: Record<Locale, string> = {
+  en: 'EN',
+  fr: 'FR',
+  ja: 'JA'
+}
 
 export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false)
@@ -45,20 +59,8 @@ export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
   }, [isOpen])
 
   const switchLocale = (newLocale: string) => {
-    // Remove current locale prefix if present
-    let newPath = pathname
-
-    // If current locale is not default (en), remove its prefix
-    if (currentLocale !== 'en') {
-      newPath = pathname.replace(`/${currentLocale}`, '') || '/'
-    }
-
-    // Add new locale prefix if not default
-    if (newLocale !== 'en') {
-      newPath = `/${newLocale}${newPath}`
-    }
-
-    router.push(newPath)
+    // Use next-intl's locale-aware router to switch locales
+    router.replace(pathname, { locale: newLocale })
     setIsOpen(false)
   }
 
@@ -72,30 +74,26 @@ export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         aria-label={t('label')}
-        className={`flex items-center gap-2 text-body font-sans transition-colors duration-normal ${
+        className={`flex items-center gap-2 px-3 py-2 text-[11px] font-normal tracking-[0.08em] uppercase rounded-md transition-colors duration-200 ${
           isDark
-            ? 'text-white/80 hover:text-white'
-            : 'text-black hover:text-gray-warm'
+            ? 'text-white/80 hover:text-white hover:bg-white/10'
+            : 'text-black hover:bg-gray-100'
         }`}
       >
-        <span>{t(currentLocale as 'en' | 'fr' | 'ja')}</span>
-        <svg
-          className={`w-4 h-4 transition-transform duration-normal ${isOpen ? 'rotate-180' : ''}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+        <Globe className="w-5 h-5" strokeWidth={1.5} aria-hidden="true" />
+        <span>{localeCodes[currentLocale as Locale]}</span>
+        <ChevronDown
+          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           aria-hidden="true"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        />
       </button>
 
       {isOpen && (
         <ul
           role="listbox"
           aria-label={t('label')}
-          className={`absolute top-full mt-2 py-1 min-w-[140px] rounded-md shadow-md z-dropdown ${
-            isDark ? 'bg-charcoal' : 'bg-white border border-gray-light'
+          className={`absolute right-0 top-full mt-2 py-1 w-40 rounded-md shadow-lg z-dropdown ${
+            isDark ? 'bg-charcoal' : 'bg-white border border-gray-200'
           }`}
         >
           {localeOptions.map((locale) => (
@@ -104,17 +102,18 @@ export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
                 type="button"
                 onClick={() => switchLocale(locale)}
                 disabled={locale === currentLocale}
-                className={`w-full text-left px-4 py-2 text-body-sm transition-colors duration-fast ${
+                className={`w-full text-left px-4 py-2 text-sm flex items-center gap-3 transition-colors duration-200 ${
                   locale === currentLocale
                     ? isDark
-                      ? 'text-white font-medium'
-                      : 'text-black font-medium'
+                      ? 'text-white font-medium bg-white/5'
+                      : 'text-black font-medium bg-gray-50'
                     : isDark
                     ? 'text-white/70 hover:text-white hover:bg-white/10'
-                    : 'text-gray-warm hover:text-black hover:bg-gray-light'
+                    : 'text-black hover:bg-gray-50'
                 }`}
               >
-                {t(locale)}
+                <span className="text-xs text-gray-500 uppercase w-6">{localeCodes[locale]}</span>
+                <span>{localeNames[locale]}</span>
               </button>
             </li>
           ))}

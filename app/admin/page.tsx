@@ -1,6 +1,6 @@
 export default function AdminDashboard() {
   return (
-    <div>
+    <div className="px-8">
       <h1 className="text-2xl font-semibold mb-8">Dashboard</h1>
 
       {/* Stats cards */}

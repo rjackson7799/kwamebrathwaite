@@ -17,7 +17,7 @@ const navLinks = [
 export function Footer() {
   const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'alreadySubscribed' | 'error' | 'rateLimited'>('idle')
 
   const locale = useLocale()
   const t = useTranslations('footer')
@@ -42,16 +42,24 @@ export function Footer() {
         body: JSON.stringify({ email, locale }),
       })
 
+      if (response.status === 429) {
+        setSubmitStatus('rateLimited')
+        return
+      }
+
       if (response.ok) {
-        setSubmitStatus('success')
+        const data = await response.json()
+        if (data.data?.alreadySubscribed) {
+          setSubmitStatus('alreadySubscribed')
+        } else {
+          setSubmitStatus('success')
+        }
         setEmail('')
       } else {
         setSubmitStatus('error')
       }
     } catch {
-      // API not implemented yet, show success for demo purposes
-      setSubmitStatus('success')
-      setEmail('')
+      setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
     }
@@ -66,7 +74,10 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
           {/* Column 1: Newsletter */}
           <div>
-            <h3 className="font-serif text-xl mb-4">{t('newsletter.title')}</h3>
+            <h3 className="font-serif text-xl mb-4 flex items-center gap-3">
+              <span className="w-4 h-px bg-gold" aria-hidden="true" />
+              {t('newsletter.title')}
+            </h3>
             <form onSubmit={handleNewsletterSubmit} className="space-y-3">
               <div className="flex gap-2">
                 <input
@@ -81,7 +92,7 @@ export function Footer() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-3 bg-white text-black text-body-sm font-medium hover:bg-white/90 transition-colors duration-fast disabled:opacity-50"
+                  className="px-5 py-3 bg-gold text-white text-body-sm font-medium hover:bg-gold/90 transition-colors duration-fast disabled:opacity-50"
                 >
                   {t('newsletter.subscribe')}
                 </button>
@@ -91,12 +102,30 @@ export function Footer() {
                   {t('newsletter.success')}
                 </p>
               )}
+              {submitStatus === 'alreadySubscribed' && (
+                <p role="status" className="text-body-sm text-gold">
+                  {t('newsletter.alreadySubscribed')}
+                </p>
+              )}
+              {submitStatus === 'error' && (
+                <p role="alert" className="text-body-sm text-red-400">
+                  {t('newsletter.error')}
+                </p>
+              )}
+              {submitStatus === 'rateLimited' && (
+                <p role="alert" className="text-body-sm text-red-400">
+                  {t('newsletter.rateLimited')}
+                </p>
+              )}
             </form>
           </div>
 
           {/* Column 2: Navigation */}
           <div>
-            <h3 className="font-serif text-xl mb-4">Navigate</h3>
+            <h3 className="font-serif text-xl mb-4 flex items-center gap-3">
+              <span className="w-4 h-px bg-gold" aria-hidden="true" />
+              Navigate
+            </h3>
             <nav className="space-y-2">
               {navLinks.map(({ href, key }) => (
                 <Link
@@ -112,7 +141,10 @@ export function Footer() {
 
           {/* Column 3: Connect */}
           <div>
-            <h3 className="font-serif text-xl mb-4">Connect</h3>
+            <h3 className="font-serif text-xl mb-4 flex items-center gap-3">
+              <span className="w-4 h-px bg-gold" aria-hidden="true" />
+              Connect
+            </h3>
 
             {/* Social Icons */}
             <div className="flex gap-4 mb-6">

@@ -177,6 +177,68 @@ export type Database = {
           display_order?: number
         }
       }
+      exhibition_reminders: {
+        Row: {
+          id: string
+          exhibition_id: string
+          name: string
+          email: string
+          reminder_type: 'opening' | 'closing' | 'both'
+          exhibition_title: string | null
+          exhibition_venue: string | null
+          exhibition_city: string | null
+          exhibition_country: string | null
+          exhibition_start_date: string | null
+          exhibition_end_date: string | null
+          locale: string
+          source: string
+          user_agent: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          exhibition_id: string
+          name: string
+          email: string
+          reminder_type?: 'opening' | 'closing' | 'both'
+          exhibition_title?: string | null
+          exhibition_venue?: string | null
+          exhibition_city?: string | null
+          exhibition_country?: string | null
+          exhibition_start_date?: string | null
+          exhibition_end_date?: string | null
+          locale?: string
+          source?: string
+          user_agent?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          exhibition_id?: string
+          name?: string
+          email?: string
+          reminder_type?: 'opening' | 'closing' | 'both'
+          exhibition_title?: string | null
+          exhibition_venue?: string | null
+          exhibition_city?: string | null
+          exhibition_country?: string | null
+          exhibition_start_date?: string | null
+          exhibition_end_date?: string | null
+          locale?: string
+          source?: string
+          user_agent?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'exhibition_reminders_exhibition_id_fkey'
+            columns: ['exhibition_id']
+            isOneToOne: false
+            referencedRelation: 'exhibitions'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       press: {
         Row: {
           id: string
@@ -502,3 +564,7 @@ export type HeroSlideUpdate = Database['public']['Tables']['hero_slides']['Updat
 export type ArtworkLiterature = Database['public']['Tables']['artwork_literature']['Row']
 export type ArtworkLiteratureInsert = Database['public']['Tables']['artwork_literature']['Insert']
 export type ArtworkLiteratureUpdate = Database['public']['Tables']['artwork_literature']['Update']
+
+export type ExhibitionReminder = Database['public']['Tables']['exhibition_reminders']['Row']
+export type ExhibitionReminderInsert = Database['public']['Tables']['exhibition_reminders']['Insert']
+export type ExhibitionReminderUpdate = Database['public']['Tables']['exhibition_reminders']['Update']

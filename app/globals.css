@@ -194,6 +194,31 @@
   .container-page {
     @apply max-w-container mx-auto px-6 md:px-12 lg:px-16;
   }
+
+  /* Admin sidebar scrollbar - subtle and modern */
+  .admin-sidebar-scrollbar {
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  }
+
+  .admin-sidebar-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .admin-sidebar-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .admin-sidebar-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+
+  .admin-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
 }
 
 @layer utilities {

@@ -83,6 +83,8 @@
     "current": "En cours",
     "upcoming": "À venir",
     "past": "Passées",
+    "listView": "Liste",
+    "mapView": "Carte",
     "viewDetails": "Voir les détails",
     "status": {
       "current": "En cours",
@@ -99,6 +101,33 @@
       "featuredWorks": "Œuvres présentées",
       "inquire": "Renseignements sur cette exposition",
       "viewFullSize": "Voir en taille réelle"
+    },
+    "map": {
+      "global": "Monde entier",
+      "unitedStates": "États-Unis",
+      "nearMe": "Près de moi",
+      "regionFilter": "Filtre de région",
+      "loading": "Chargement de la carte...",
+      "error": "Erreur de chargement de la carte",
+      "noExhibitions": "Aucune exposition trouvée dans cette zone",
+      "setReminder": "Définir un rappel",
+      "share": "Partager",
+      "addToCalendar": "Ajouter au calendrier",
+      "getDirections": "Obtenir l'itinéraire",
+      "viewDetails": "Voir les détails"
+    },
+    "reminder": {
+      "title": "Recevoir un rappel",
+      "name": "Nom",
+      "email": "E-mail",
+      "type": "Me rappeler",
+      "typeOpening": "À l'ouverture de l'exposition",
+      "typeClosing": "Avant la fermeture de l'exposition",
+      "typeBoth": "Ouverture et fermeture",
+      "submit": "Définir le rappel",
+      "cancel": "Annuler",
+      "success": "Nous vous rappellerons cette exposition !",
+      "error": "Une erreur s'est produite. Veuillez réessayer."
     }
   },
   "press": {

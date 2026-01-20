@@ -83,6 +83,8 @@
     "current": "Current",
     "upcoming": "Upcoming",
     "past": "Past",
+    "listView": "List",
+    "mapView": "Map",
     "viewDetails": "View Details",
     "status": {
       "current": "Now Showing",
@@ -99,6 +101,33 @@
       "featuredWorks": "Featured Works",
       "inquire": "Inquire About This Exhibition",
       "viewFullSize": "View full size"
+    },
+    "map": {
+      "global": "Global",
+      "unitedStates": "United States",
+      "nearMe": "Near Me",
+      "regionFilter": "Region filter",
+      "loading": "Loading map...",
+      "error": "Error loading map",
+      "noExhibitions": "No exhibitions found in this area",
+      "setReminder": "Set Reminder",
+      "share": "Share",
+      "addToCalendar": "Add to Calendar",
+      "getDirections": "Get Directions",
+      "viewDetails": "View Details"
+    },
+    "reminder": {
+      "title": "Get Reminded",
+      "name": "Name",
+      "email": "Email",
+      "type": "Remind me",
+      "typeOpening": "When exhibition opens",
+      "typeClosing": "Before exhibition closes",
+      "typeBoth": "Both opening and closing",
+      "submit": "Set Reminder",
+      "cancel": "Cancel",
+      "success": "We'll remind you about this exhibition!",
+      "error": "Something went wrong. Please try again."
     }
   },
   "press": {

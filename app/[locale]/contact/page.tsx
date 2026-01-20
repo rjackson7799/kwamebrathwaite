@@ -9,9 +9,22 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'contact' })
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kwamebrathwaite.com'
+  const path = '/contact'
+  const canonicalUrl = locale === 'en' ? `${baseUrl}${path}` : `${baseUrl}/${locale}${path}`
 
   return {
-    title: t('title'),
+    title: t('meta.title'),
+    description: t('meta.description'),
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        en: `${baseUrl}${path}`,
+        fr: `${baseUrl}/fr${path}`,
+        ja: `${baseUrl}/ja${path}`,
+        'x-default': `${baseUrl}${path}`,
+      },
+    },
   }
 }
 
