@@ -8,6 +8,12 @@
     "archive": "アーカイブ",
     "contact": "お問い合わせ"
   },
+  "home": {
+    "featuredWorks": "注目の作品",
+    "featuredExhibitions": "注目の展覧会",
+    "seeAllWorks": "すべての作品を見る",
+    "seeAllExhibitions": "すべての展覧会を見る"
+  },
   "hero": {
     "overline": "写真アーカイブ",
     "title": "クワメ・ブラスウェイト",

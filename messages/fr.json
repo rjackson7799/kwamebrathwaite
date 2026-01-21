@@ -8,6 +8,12 @@
     "archive": "Les Archives",
     "contact": "Contact"
   },
+  "home": {
+    "featuredWorks": "Œuvres en vedette",
+    "featuredExhibitions": "Expositions en vedette",
+    "seeAllWorks": "Voir toutes les œuvres",
+    "seeAllExhibitions": "Voir toutes les expositions"
+  },
   "hero": {
     "overline": "Les Archives Photographiques",
     "title": "Kwame Brathwaite",
