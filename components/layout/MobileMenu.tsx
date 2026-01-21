@@ -5,7 +5,6 @@ import { createPortal } from 'react-dom'
 import { useLocale, useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { LanguageSwitcher } from './LanguageSwitcher'
 
 interface MobileMenuProps {
   isOpen: boolean
@@ -163,10 +162,6 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           ))}
         </nav>
 
-        {/* Language Switcher */}
-        <div className="px-6 py-4">
-          <LanguageSwitcher variant="light" />
-        </div>
       </div>
     </>,
     document.body
