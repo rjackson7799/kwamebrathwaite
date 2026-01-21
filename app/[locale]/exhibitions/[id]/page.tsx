@@ -37,7 +37,13 @@ async function getExhibitionById(id: string): Promise<{ exhibition: DetailedExhi
       .eq('status', 'published')
       .single()
 
-    if (error || !data) {
+    if (error) {
+      console.error('[Exhibition Detail] Database error:', error.code, error.message, error.details)
+      return null
+    }
+
+    if (!data) {
+      console.error('[Exhibition Detail] No data returned for ID:', id)
       return null
     }
 
@@ -80,7 +86,8 @@ async function getExhibitionById(id: string): Promise<{ exhibition: DetailedExhi
     }
 
     return { exhibition, artworks }
-  } catch {
+  } catch (err) {
+    console.error('[Exhibition Detail] Unexpected error:', err)
     return null
   }
 }
