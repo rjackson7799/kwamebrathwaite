@@ -24,7 +24,7 @@ const mapContainerStyle = {
 
 const libraries: ('places' | 'geometry')[] = ['places', 'geometry']
 
-// Default map options
+// Default map options with subtle grayscale styling
 const defaultMapOptions: google.maps.MapOptions = {
   disableDefaultUI: false,
   zoomControl: true,
@@ -32,8 +32,58 @@ const defaultMapOptions: google.maps.MapOptions = {
   streetViewControl: false,
   fullscreenControl: false,
   styles: [
+    // Base: desaturate all elements
+    {
+      elementType: 'geometry',
+      stylers: [{ saturation: -100 }, { lightness: 10 }],
+    },
+    // Water: light gray
+    {
+      featureType: 'water',
+      elementType: 'geometry.fill',
+      stylers: [{ color: '#e0e0e0' }],
+    },
+    // Land/landscape
+    {
+      featureType: 'landscape',
+      elementType: 'geometry.fill',
+      stylers: [{ color: '#f5f5f5' }],
+    },
+    // Roads: white with subtle borders
+    {
+      featureType: 'road',
+      elementType: 'geometry.fill',
+      stylers: [{ color: '#ffffff' }],
+    },
+    {
+      featureType: 'road',
+      elementType: 'geometry.stroke',
+      stylers: [{ color: '#d0d0d0' }],
+    },
+    // Administrative boundaries
+    {
+      featureType: 'administrative',
+      elementType: 'geometry.stroke',
+      stylers: [{ color: '#c0c0c0' }, { lightness: 20 }],
+    },
+    // Labels: dark gray for readability
+    {
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#6b6b6b' }],
+    },
+    {
+      elementType: 'labels.text.stroke',
+      stylers: [{ color: '#ffffff' }, { weight: 2 }],
+    },
+    // Hide POI labels
     {
       featureType: 'poi',
+      elementType: 'labels',
+      stylers: [{ visibility: 'off' }],
+    },
+    // Transit labels off for cleaner look
+    {
+      featureType: 'transit',
       elementType: 'labels',
       stylers: [{ visibility: 'off' }],
     },

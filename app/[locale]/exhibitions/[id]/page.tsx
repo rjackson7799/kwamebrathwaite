@@ -3,102 +3,86 @@ import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import { ExhibitionDetail, type DetailedExhibition } from '@/components/features/exhibitions'
 import { ArtworkGrid, type Artwork } from '@/components/features/artworks'
+import { createClient } from '@/lib/supabase/server'
+import type { Exhibition as DbExhibition, Artwork as DbArtwork } from '@/lib/supabase/types'
 
 // Revalidate every hour (ISR) per TECHNICAL_SPEC_v2.md
 export const revalidate = 3600
 
-// Sample artworks for featured works section (matches component Artwork type)
-const sampleArtworks: Artwork[] = [
-  {
-    id: '1',
-    title: 'Untitled (Grandassa Models)',
-    year: 1966,
-    medium: 'Gelatin silver print',
-    image_url: 'https://picsum.photos/800/1000?grayscale&random=40',
-    image_thumbnail_url: 'https://picsum.photos/400/500?grayscale&random=40',
-    availability_status: 'available',
-  },
-  {
-    id: '2',
-    title: 'African Jazz-Art Society',
-    year: 1962,
-    medium: 'Gelatin silver print',
-    image_url: 'https://picsum.photos/800/1000?grayscale&random=41',
-    image_thumbnail_url: 'https://picsum.photos/400/500?grayscale&random=41',
-    availability_status: 'inquiry_only',
-  },
-  {
-    id: '3',
-    title: "Naturally '68",
-    year: 1968,
-    medium: 'Gelatin silver print',
-    image_url: 'https://picsum.photos/800/1000?grayscale&random=42',
-    image_thumbnail_url: 'https://picsum.photos/400/500?grayscale&random=42',
-    availability_status: 'sold',
-  },
-]
+// Type for the joined query response
+interface ExhibitionArtworkJoin {
+  display_order: number
+  artworks: DbArtwork | null
+}
 
-// Sample data for development - will be replaced with API/DB data
-const sampleExhibitions: DetailedExhibition[] = [
-  {
-    id: '1',
-    title: 'Black is Beautiful: The Photography of Kwame Brathwaite',
-    venue: 'Skirball Cultural Center',
-    street_address: '2701 N. Sepulveda Blvd.',
-    city: 'Los Angeles',
-    state_region: 'CA',
-    postal_code: '90049',
-    country: 'USA',
-    start_date: '2025-10-15',
-    end_date: '2026-03-15',
-    description: 'This landmark exhibition celebrates the work of Kwame Brathwaite, the photographer who documented and helped shape the "Black is Beautiful" movement of the 1960s and 1970s. Featuring over 40 photographs, the exhibition explores Brathwaite\'s pivotal role in promoting natural Black beauty through his images of the Grandassa Models and the African Jazz-Art Society.',
-    image_url: 'https://picsum.photos/1200/900?grayscale&random=50',
-    exhibition_type: 'current',
-    venue_url: 'https://www.skirball.org',
-    meta_title: 'Black is Beautiful Exhibition - Kwame Brathwaite',
-    meta_description: 'Experience the groundbreaking photography of Kwame Brathwaite at the Skirball Cultural Center.',
-  },
-  {
-    id: '2',
-    title: 'Kwame Brathwaite: Black is Beautiful',
-    venue: 'Aperture Gallery',
-    street_address: '547 West 27th Street',
-    city: 'New York',
-    state_region: 'NY',
-    postal_code: '10001',
-    country: 'USA',
-    start_date: '2026-04-01',
-    end_date: '2026-06-30',
-    description: 'Aperture presents a comprehensive survey of Kwame Brathwaite\'s influential photography. This exhibition showcases never-before-seen works alongside iconic images that defined the Black is Beautiful movement. Visitors will experience the full scope of Brathwaite\'s artistic vision and cultural impact.',
-    image_url: 'https://picsum.photos/1200/900?grayscale&random=51',
-    exhibition_type: 'upcoming',
-    venue_url: 'https://aperture.org',
-    meta_title: 'Kwame Brathwaite at Aperture Gallery',
-    meta_description: 'A comprehensive survey of Kwame Brathwaite\'s photography at Aperture Gallery, New York.',
-  },
-  {
-    id: '3',
-    title: 'Harlem on My Mind: Photographs by Kwame Brathwaite',
-    venue: 'Studio Museum in Harlem',
-    street_address: '429 West 127th Street',
-    city: 'New York',
-    state_region: 'NY',
-    postal_code: '10027',
-    country: 'USA',
-    start_date: '2024-01-15',
-    end_date: '2024-05-30',
-    description: 'This exhibition presented a focused look at Brathwaite\'s documentation of Harlem\'s vibrant cultural scene from the 1950s through the 1970s. Through intimate portraits and dynamic event photography, visitors experienced the energy and creativity of a community that shaped American culture.',
-    image_url: 'https://picsum.photos/1200/900?grayscale&random=52',
-    exhibition_type: 'past',
-    venue_url: 'https://www.studiomuseum.org',
-    meta_title: 'Harlem on My Mind - Kwame Brathwaite',
-    meta_description: 'A look at Brathwaite\'s documentation of Harlem\'s vibrant cultural scene at the Studio Museum.',
-  },
-]
+interface ExhibitionWithArtworks extends DbExhibition {
+  exhibition_artworks: ExhibitionArtworkJoin[] | null
+}
 
-// Helper to get exhibition by ID
-function getExhibitionById(id: string): DetailedExhibition | undefined {
-  return sampleExhibitions.find((ex) => ex.id === id)
+// Fetch exhibition from database
+async function getExhibitionById(id: string): Promise<{ exhibition: DetailedExhibition; artworks: Artwork[] } | null> {
+  try {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+      .from('exhibitions')
+      .select(`
+        *,
+        exhibition_artworks (
+          display_order,
+          artworks (*)
+        )
+      `)
+      .eq('id', id)
+      .eq('status', 'published')
+      .single()
+
+    if (error || !data) {
+      return null
+    }
+
+    // Cast to our known type
+    const exhibitionData = data as unknown as ExhibitionWithArtworks
+
+    // Extract artworks from the join table
+    const artworks: Artwork[] = (exhibitionData.exhibition_artworks || [])
+      .sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
+      .map((ea) => ea.artworks)
+      .filter((artwork): artwork is DbArtwork => artwork !== null)
+      .map((artwork) => ({
+        id: artwork.id,
+        title: artwork.title,
+        year: artwork.year,
+        medium: artwork.medium,
+        image_url: artwork.image_url,
+        image_thumbnail_url: artwork.image_thumbnail_url,
+        availability_status: artwork.availability_status,
+      }))
+
+    // Map database fields to DetailedExhibition type
+    const exhibition: DetailedExhibition = {
+      id: exhibitionData.id,
+      title: exhibitionData.title,
+      venue: exhibitionData.venue,
+      street_address: exhibitionData.street_address,
+      city: exhibitionData.city,
+      state_region: exhibitionData.state_region,
+      postal_code: exhibitionData.postal_code,
+      country: exhibitionData.country,
+      start_date: exhibitionData.start_date,
+      end_date: exhibitionData.end_date,
+      description: exhibitionData.description,
+      image_url: exhibitionData.image_url,
+      exhibition_type: exhibitionData.exhibition_type || 'current',
+      venue_url: exhibitionData.venue_url,
+      meta_title: exhibitionData.meta_title,
+      meta_description: exhibitionData.meta_description,
+    }
+
+    return { exhibition, artworks }
+  } catch {
+    return null
+  }
 }
 
 type Props = {
@@ -108,14 +92,15 @@ type Props = {
 // Generate metadata for SEO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id, locale } = await params
-  const exhibition = getExhibitionById(id)
+  const result = await getExhibitionById(id)
 
-  if (!exhibition) {
+  if (!result) {
     return {
       title: 'Exhibition Not Found',
     }
   }
 
+  const { exhibition } = result
   const title = exhibition.meta_title || `${exhibition.title} - Kwame Brathwaite`
   const description = exhibition.meta_description || exhibition.description || `${exhibition.title} exhibition`
 
@@ -155,27 +140,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 // Generate static params for SSG
-export function generateStaticParams() {
-  const locales = ['en', 'fr', 'ja']
-  const paths: { locale: string; id: string }[] = []
-
-  for (const locale of locales) {
-    for (const exhibition of sampleExhibitions) {
-      paths.push({ locale, id: exhibition.id })
-    }
-  }
-
-  return paths
+// With dynamic data, we use dynamic rendering (no pre-generated paths)
+// The revalidate setting above handles ISR caching
+export async function generateStaticParams() {
+  // Return empty array to enable dynamic rendering with ISR
+  // Each page will be generated on first request and cached
+  return []
 }
 
 export default async function ExhibitionDetailPage({ params }: Props) {
-  const { id, locale } = await params
-  const exhibition = getExhibitionById(id)
+  const { id } = await params
+  const result = await getExhibitionById(id)
 
-  if (!exhibition) {
+  if (!result) {
     notFound()
   }
 
+  const { exhibition, artworks } = result
   const t = await getTranslations('exhibitions')
 
   // Schema.org structured data for ExhibitionEvent
@@ -227,11 +208,11 @@ export default async function ExhibitionDetailPage({ params }: Props) {
       <ExhibitionDetail exhibition={exhibition} />
 
       {/* Featured Works Section */}
-      {sampleArtworks.length > 0 && (
+      {artworks.length > 0 && (
         <section className="container-page section-spacing border-t border-gray-light pt-12">
           <h2 className="text-h2 mb-8">{t('detail.featuredWorks')}</h2>
           <ArtworkGrid
-            artworks={sampleArtworks}
+            artworks={artworks}
             showMetadata
             className="lg:grid-cols-3"
           />

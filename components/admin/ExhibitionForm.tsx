@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useForm, Controller, useWatch } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { FormField, Input, Textarea, Select } from './FormField'
 import { ImageUploader } from './ImageUploader'
 import { RichTextEditor } from './RichTextEditor'
@@ -13,11 +13,9 @@ import { LocationMapPreview } from './LocationMapPreview'
 interface ExhibitionFormData {
   title: string
   venue?: string | null
-  street_address?: string | null
   city?: string | null
-  state_region?: string | null
-  postal_code?: string | null
   country?: string | null
+  formatted_address?: string | null
   start_date?: string | null
   end_date?: string | null
   description?: string | null
@@ -53,11 +51,9 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
     defaultValues: exhibition || {
       title: '',
       venue: null,
-      street_address: null,
       city: null,
-      state_region: null,
-      postal_code: null,
       country: null,
+      formatted_address: null,
       start_date: null,
       end_date: null,
       description: null,
@@ -72,30 +68,31 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
     },
   })
 
-  // Watch lat/lng for map preview
+  // Watch fields for display
   const watchedLat = watch('location_lat')
   const watchedLng = watch('location_lng')
+  const watchedAddress = watch('formatted_address')
   const watchedVenue = watch('venue')
 
   // Handle place selection from autocomplete
   const handlePlaceSelected = (place: PlaceResult) => {
     console.log('handlePlaceSelected called with:', place)
 
-    // Use empty string as fallback instead of null to ensure fields are updated
-    setValue('venue', place.name || '')
-    setValue('street_address', place.street || '')
-    setValue('city', place.city || '')
-    setValue('state_region', place.state || '')
-    setValue('postal_code', place.postalCode || '')
-    setValue('country', place.country || '')
-    setValue('location_lat', place.lat)
-    setValue('location_lng', place.lng)
+    const options = { shouldDirty: true }
+
+    setValue('venue', place.name || '', options)
+    setValue('city', place.city || '', options)
+    setValue('country', place.country || '', options)
+    setValue('formatted_address', place.formattedAddress || '', options)
+    setValue('location_lat', place.lat, options)
+    setValue('location_lng', place.lng, options)
   }
 
   // Handle map marker drag
   const handleLocationChange = (lat: number, lng: number) => {
-    setValue('location_lat', lat)
-    setValue('location_lng', lng)
+    const options = { shouldDirty: true }
+    setValue('location_lat', lat, options)
+    setValue('location_lng', lng, options)
   }
 
   // Load linked artworks when editing
@@ -184,10 +181,17 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
 
               <div className="grid grid-cols-2 gap-4">
                 <FormField label="Venue" htmlFor="venue">
-                  <Input
-                    id="venue"
-                    {...register('venue')}
-                    placeholder="e.g., Museum of Modern Art"
+                  <Controller
+                    name="venue"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="venue"
+                        {...field}
+                        value={field.value || ''}
+                        placeholder="e.g., Museum of Modern Art"
+                      />
+                    )}
                   />
                 </FormField>
 
@@ -220,54 +224,29 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
               <FormField label="Search Venue" htmlFor="venue_search">
                 <AddressAutocomplete
                   onPlaceSelected={handlePlaceSelected}
-                  defaultValue={watchedVenue || ''}
+                  defaultValue=""
                   placeholder="Type venue name or address..."
                 />
               </FormField>
 
-              <FormField label="Street Address" htmlFor="street_address">
-                <Input
-                  id="street_address"
-                  {...register('street_address')}
-                  placeholder="123 Main Street"
-                />
-              </FormField>
-
-              <div className="grid grid-cols-2 gap-4">
-                <FormField label="City" htmlFor="city">
-                  <Input
-                    id="city"
-                    {...register('city')}
-                    placeholder="New York"
-                  />
-                </FormField>
-
-                <FormField label="State/Region" htmlFor="state_region">
-                  <Input
-                    id="state_region"
-                    {...register('state_region')}
-                    placeholder="NY"
-                  />
-                </FormField>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <FormField label="Postal Code" htmlFor="postal_code">
-                  <Input
-                    id="postal_code"
-                    {...register('postal_code')}
-                    placeholder="10001"
-                  />
-                </FormField>
-
-                <FormField label="Country" htmlFor="country">
-                  <Input
-                    id="country"
-                    {...register('country')}
-                    placeholder="United States"
-                  />
-                </FormField>
-              </div>
+              {/* Display selected location */}
+              {(watchedVenue || watchedAddress) && (
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="space-y-1">
+                    {watchedVenue && (
+                      <p className="font-medium text-gray-900">{watchedVenue}</p>
+                    )}
+                    {watchedAddress && (
+                      <p className="text-sm text-gray-600">{watchedAddress}</p>
+                    )}
+                    {watchedLat && watchedLng && (
+                      <p className="text-xs text-gray-400 mt-2">
+                        Coordinates: {watchedLat.toFixed(6)}, {watchedLng.toFixed(6)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Map Preview */}
               <LocationMapPreview
@@ -276,32 +255,20 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
                 onLocationChange={handleLocationChange}
               />
 
-              {/* Coordinates (read-only) */}
-              <div className="grid grid-cols-2 gap-4">
-                <FormField label="Latitude" htmlFor="location_lat" hint="Auto-filled from search">
-                  <Input
-                    id="location_lat"
-                    type="number"
-                    step="any"
-                    {...register('location_lat', { valueAsNumber: true })}
-                    placeholder="40.7128"
-                    readOnly
-                    className="bg-gray-50 cursor-not-allowed"
-                  />
-                </FormField>
-
-                <FormField label="Longitude" htmlFor="location_lng" hint="Auto-filled from search">
-                  <Input
-                    id="location_lng"
-                    type="number"
-                    step="any"
-                    {...register('location_lng', { valueAsNumber: true })}
-                    placeholder="-74.0060"
-                    readOnly
-                    className="bg-gray-50 cursor-not-allowed"
-                  />
-                </FormField>
-              </div>
+              {/* Hidden fields for form data */}
+              <input type="hidden" {...register('city')} />
+              <input type="hidden" {...register('country')} />
+              <input type="hidden" {...register('formatted_address')} />
+              <Controller
+                name="location_lat"
+                control={control}
+                render={({ field }) => <input type="hidden" {...field} value={field.value ?? ''} />}
+              />
+              <Controller
+                name="location_lng"
+                control={control}
+                render={({ field }) => <input type="hidden" {...field} value={field.value ?? ''} />}
+              />
             </div>
           </div>
 

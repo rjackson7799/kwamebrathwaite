@@ -18,17 +18,19 @@ export function HeroRotator({ slides }: HeroRotatorProps) {
   const t = useTranslations('hero')
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [hasInteracted, setHasInteracted] = useState(false)
 
   // Auto-advance every 5 seconds
+  // Only respect isPaused after user has interacted (hovered) to ensure rotation starts on page load
   useEffect(() => {
-    if (slides.length <= 1 || isPaused) return
+    if (slides.length <= 1 || (hasInteracted && isPaused)) return
 
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length)
     }, 5000)
 
     return () => clearInterval(timer)
-  }, [slides.length, isPaused])
+  }, [slides.length, isPaused, hasInteracted])
 
   const goToSlide = useCallback((index: number) => {
     setCurrentSlide(index)
@@ -82,7 +84,10 @@ export function HeroRotator({ slides }: HeroRotatorProps) {
   return (
     <section
       className="relative h-screen overflow-hidden"
-      onMouseEnter={() => setIsPaused(true)}
+      onMouseEnter={() => {
+        setHasInteracted(true)
+        setIsPaused(true)
+      }}
       onMouseLeave={() => setIsPaused(false)}
       role="region"
       aria-label="Hero image carousel"

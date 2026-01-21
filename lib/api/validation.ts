@@ -6,6 +6,15 @@ export const paginationSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
 })
 
+// Reusable order schema - handles invalid values gracefully
+const orderSchema = z
+  .string()
+  .optional()
+  .transform((val) => {
+    if (val === 'asc' || val === 'desc') return val
+    return undefined
+  })
+
 // Artwork filters
 export const artworkFiltersSchema = paginationSchema.extend({
   category: z.string().optional(),
@@ -106,7 +115,7 @@ export const adminArtworkFiltersSchema = paginationSchema.extend({
   year: z.coerce.number().int().optional(),
   q: z.string().optional(),
   sort: z.string().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  order: orderSchema,
 })
 
 // Admin reorder schema
@@ -149,7 +158,7 @@ export const adminExhibitionFiltersSchema = paginationSchema.extend({
   status: z.enum(['draft', 'published', 'archived']).optional(),
   q: z.string().optional(),
   sort: z.string().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  order: orderSchema,
 })
 
 // Exhibition artworks linking schema
@@ -185,7 +194,7 @@ export const adminPressFiltersSchema = paginationSchema.extend({
   featured: z.string().transform((val) => val === 'true').optional(),
   q: z.string().optional(),
   sort: z.string().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  order: orderSchema,
 })
 
 // ============================================
@@ -198,7 +207,7 @@ export const adminInquiryFiltersSchema = paginationSchema.extend({
   type: z.enum(['general', 'purchase', 'exhibition', 'press']).optional(),
   q: z.string().optional(),
   sort: z.string().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  order: orderSchema,
 })
 
 // Admin inquiry update
@@ -220,7 +229,7 @@ export const adminNewsletterFiltersSchema = paginationSchema.extend({
   q: z.string().optional(),
   locale: z.enum(['en', 'fr', 'ja']).optional(),
   sort: z.enum(['email', 'subscribed_at']).optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  order: orderSchema,
 })
 
 // ============================================
@@ -246,7 +255,7 @@ export const adminActivityFiltersSchema = paginationSchema.extend({
   user: z.string().optional(),
   q: z.string().optional(),
   sort: z.enum(['created_at']).optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  order: orderSchema,
 })
 
 // ============================================
@@ -269,7 +278,7 @@ export const adminHeroFiltersSchema = paginationSchema.extend({
   status: z.enum(['draft', 'published', 'archived']).optional(),
   active: z.string().transform((val) => val === 'true').optional(),
   sort: z.enum(['display_order', 'created_at']).optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  order: orderSchema,
 })
 
 // Hero slides reorder schema
@@ -313,5 +322,5 @@ export const adminReminderFiltersSchema = paginationSchema.extend({
   reminder_type: z.enum(['opening', 'closing', 'both']).optional(),
   q: z.string().optional(),
   sort: z.enum(['created_at', 'email', 'exhibition_title']).optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  order: orderSchema,
 })

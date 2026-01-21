@@ -325,9 +325,10 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
                 <h2 className="text-h3 font-medium text-black mb-4">
                   {t('detail.aboutExhibition')}
                 </h2>
-                <p className="text-body-lg text-black leading-relaxed">
-                  {exhibition.description}
-                </p>
+                <div
+                  className="prose prose-lg max-w-none text-black"
+                  dangerouslySetInnerHTML={{ __html: exhibition.description }}
+                />
               </div>
             )}
 

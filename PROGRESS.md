@@ -1,7 +1,7 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** January 19, 2026 (About Page CMS Integration)
+**Last Updated:** January 20, 2026 (Hero Rotator Auto-Rotation Fix)
 
 ---
 
@@ -308,6 +308,10 @@
 - [x] ImageUploader extended to support 'hero' bucket
 - [x] Custom CSS for opacity slider (`app/globals.css`)
 - [x] Homepage integration with HeroRotator
+- [x] Hero rotator auto-rotation fix
+  - [x] Added `hasInteracted` state to prevent pause on initial page load
+  - [x] Auto-rotation now starts immediately regardless of mouse position
+  - [x] Hover-to-pause still works after first user interaction
 
 ### Requires Manual Setup in Supabase
 - [ ] Create `hero` storage bucket (public, with RLS policies)
@@ -394,6 +398,24 @@
 2. **Home page** - Shows up to 8 featured artworks from database (respects display order)
 3. **Works page** - Shows all published artworks with featured ones appearing first
 4. **Reorder page** - Drag-and-drop to set display order, filter to featured-only for easier management
+
+---
+
+## Feature Wishlist
+
+Ideas for future enhancements (not yet planned for implementation):
+
+### Admin Panel
+- [ ] **Light/Dark Mode Toggle** - Add theme switching for admin panel
+  - Complexity: Moderate-High (~7-11 hours)
+  - Requires: Tailwind `darkMode: 'class'`, theme context, ~40 file updates
+  - Notes: TipTap editor needs separate dark mode CSS
+
+### Public Site
+- *(Add ideas here)*
+
+### Performance & Infrastructure
+- *(Add ideas here)*
 
 ---
 

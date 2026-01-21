@@ -1,15 +1,13 @@
 'use client'
 
-import { useRef, useEffect, useState, useCallback } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useGoogleMaps } from '@/components/providers/GoogleMapsProvider'
 
 export interface PlaceResult {
   name: string
   address: string
-  street: string | null
+  formattedAddress: string
   city: string | null
-  state: string | null
-  postalCode: string | null
   country: string | null
   lat: number
   lng: number
@@ -25,41 +23,23 @@ interface AddressAutocompleteProps {
 function parseAddressComponents(
   components: google.maps.GeocoderAddressComponent[]
 ): {
-  street: string | null
   city: string | null
-  state: string | null
-  postalCode: string | null
   country: string | null
 } {
-  let streetNumber = ''
-  let route = ''
   let city: string | null = null
-  let state: string | null = null
-  let postalCode: string | null = null
   let country: string | null = null
 
   for (const component of components) {
     const types = component.types
 
-    if (types.includes('street_number')) {
-      streetNumber = component.long_name
-    } else if (types.includes('route')) {
-      route = component.long_name
-    } else if (types.includes('locality') || types.includes('sublocality')) {
+    if (types.includes('locality') || types.includes('sublocality')) {
       city = component.long_name
-    } else if (types.includes('administrative_area_level_1')) {
-      state = component.short_name
-    } else if (types.includes('postal_code')) {
-      postalCode = component.long_name
     } else if (types.includes('country')) {
       country = component.long_name
     }
   }
 
-  // Combine street number and route
-  const street = streetNumber && route ? `${streetNumber} ${route}` : route || null
-
-  return { street, city, state, postalCode, country }
+  return { city, country }
 }
 
 export function AddressAutocomplete({
@@ -70,63 +50,25 @@ export function AddressAutocomplete({
 }: AddressAutocompleteProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
-  const [inputValue, setInputValue] = useState(defaultValue)
+  const listenerRef = useRef<google.maps.MapsEventListener | null>(null)
+  const [hasValue, setHasValue] = useState(!!defaultValue)
 
-  // Use shared Google Maps context instead of loading separately
+  // Use shared Google Maps context
   const { isLoaded, loadError } = useGoogleMaps()
 
-  const handlePlaceChanged = useCallback(() => {
-    const autocomplete = autocompleteRef.current
-    if (!autocomplete) return
-
-    const place = autocomplete.getPlace()
-
-    // Debug logging to see what Google returns
-    console.log('Google Places API Response:', {
-      name: place.name,
-      formatted_address: place.formatted_address,
-      address_components: place.address_components,
-      geometry: place.geometry?.location ? {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng()
-      } : null
-    })
-
-    if (!place.geometry?.location) {
-      console.warn('No geometry found for place')
-      return
-    }
-
-    const lat = place.geometry.location.lat()
-    const lng = place.geometry.location.lng()
-    const name = place.name || ''
-    const address = place.formatted_address || ''
-
-    const { street, city, state, postalCode, country } = parseAddressComponents(
-      place.address_components || []
-    )
-
-    // Debug logging for parsed address
-    console.log('Parsed address components:', { street, city, state, postalCode, country })
-
-    onPlaceSelected({
-      name,
-      address,
-      street,
-      city,
-      state,
-      postalCode,
-      country,
-      lat,
-      lng,
-    })
-
-    // Update input to show the venue name
-    setInputValue(name || address)
-  }, [onPlaceSelected])
-
+  // Initialize autocomplete when Google Maps loads
   useEffect(() => {
-    if (!isLoaded || !inputRef.current || autocompleteRef.current) return
+    if (!isLoaded || !inputRef.current) return
+
+    // Clean up previous instance if it exists
+    if (listenerRef.current) {
+      google.maps.event.removeListener(listenerRef.current)
+      listenerRef.current = null
+    }
+    if (autocompleteRef.current) {
+      google.maps.event.clearInstanceListeners(autocompleteRef.current)
+      autocompleteRef.current = null
+    }
 
     // Initialize autocomplete
     const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
@@ -134,19 +76,67 @@ export function AddressAutocomplete({
       fields: ['name', 'formatted_address', 'geometry', 'address_components'],
     })
 
-    autocomplete.addListener('place_changed', handlePlaceChanged)
+    // Define handler inline to capture current onPlaceSelected
+    const handlePlaceChanged = () => {
+      const place = autocomplete.getPlace()
+
+      console.log('place_changed fired:', {
+        name: place.name,
+        formatted_address: place.formatted_address,
+        geometry: place.geometry?.location
+          ? { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
+          : null,
+      })
+
+      if (!place.geometry?.location) {
+        console.warn('No geometry found for place')
+        return
+      }
+
+      const lat = place.geometry.location.lat()
+      const lng = place.geometry.location.lng()
+      const name = place.name || ''
+      const address = place.formatted_address || ''
+
+      const { city, country } = parseAddressComponents(place.address_components || [])
+
+      onPlaceSelected({
+        name,
+        address,
+        formattedAddress: address,
+        city,
+        country,
+        lat,
+        lng,
+      })
+
+      // Update input display
+      if (inputRef.current) {
+        inputRef.current.value = name || address
+        setHasValue(true)
+      }
+    }
+
+    // Add listener and store reference
+    listenerRef.current = autocomplete.addListener('place_changed', handlePlaceChanged)
     autocompleteRef.current = autocomplete
 
     return () => {
+      if (listenerRef.current) {
+        google.maps.event.removeListener(listenerRef.current)
+      }
       if (autocompleteRef.current) {
         google.maps.event.clearInstanceListeners(autocompleteRef.current)
       }
     }
-  }, [isLoaded, handlePlaceChanged])
+  }, [isLoaded, onPlaceSelected])
 
-  // Update input value when defaultValue changes
+  // Set initial value on mount
   useEffect(() => {
-    setInputValue(defaultValue)
+    if (inputRef.current && defaultValue) {
+      inputRef.current.value = defaultValue
+      setHasValue(!!defaultValue)
+    }
   }, [defaultValue])
 
   if (loadError) {
@@ -158,11 +148,17 @@ export function AddressAutocomplete({
   }
 
   const handleClear = () => {
-    setInputValue('')
-    // Reset the autocomplete to allow new searches
     if (inputRef.current) {
       inputRef.current.value = ''
       inputRef.current.focus()
+    }
+    setHasValue(false)
+  }
+
+  // Track input changes to show/hide clear button
+  const handleInputChange = () => {
+    if (inputRef.current) {
+      setHasValue(!!inputRef.current.value)
     }
   }
 
@@ -187,8 +183,8 @@ export function AddressAutocomplete({
         <input
           ref={inputRef}
           type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          defaultValue={defaultValue}
+          onChange={handleInputChange}
           placeholder={isLoaded ? placeholder : 'Loading...'}
           disabled={disabled || !isLoaded}
           className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm
@@ -196,7 +192,7 @@ export function AddressAutocomplete({
                      disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
         />
         {/* Clear button */}
-        {inputValue && !disabled && (
+        {hasValue && !disabled && (
           <button
             type="button"
             onClick={handleClear}
