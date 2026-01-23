@@ -7,6 +7,7 @@ import { FormField, Input, Textarea, Select, Checkbox } from './FormField'
 import { ImageUploader } from './ImageUploader'
 import { RichTextEditor } from './RichTextEditor'
 import { ArtworkPicker } from './ArtworkPicker'
+import { AIGenerationPanel } from './AIGenerationPanel'
 
 interface ArtworkFormData {
   title: string
@@ -14,6 +15,9 @@ interface ArtworkFormData {
   medium?: string | null
   dimensions?: string | null
   description?: string | null
+  short_description?: string | null
+  seo_title?: string | null
+  alt_text?: string | null
   image_url: string
   image_thumbnail_url?: string | null
   category?: 'photography' | 'print' | 'historical' | null
@@ -24,6 +28,19 @@ interface ArtworkFormData {
   status: 'draft' | 'published' | 'archived'
   meta_title?: string | null
   meta_description?: string | null
+}
+
+interface GeneratedContent {
+  description: string
+  short_description: string
+  seo_title: string
+  alt_text: string
+  suggested_tags: string[]
+  confidence_score: number
+  translations: {
+    fr: { description: string; short_description: string; seo_title: string; alt_text: string }
+    ja: { description: string; short_description: string; seo_title: string; alt_text: string }
+  }
 }
 
 interface ArtworkFormProps {
@@ -50,6 +67,9 @@ export function ArtworkForm({ artwork, isEdit = false }: ArtworkFormProps) {
       medium: null,
       dimensions: null,
       description: null,
+      short_description: null,
+      seo_title: null,
+      alt_text: null,
       image_url: '',
       image_thumbnail_url: null,
       category: null,
@@ -64,6 +84,23 @@ export function ArtworkForm({ artwork, isEdit = false }: ArtworkFormProps) {
   })
 
   const imageUrl = watch('image_url')
+  const watchedTitle = watch('title')
+  const watchedYear = watch('year')
+  const watchedMedium = watch('medium')
+  const watchedDimensions = watch('dimensions')
+  const watchedSeries = watch('series')
+
+  // Handle AI-generated content application
+  const handleAIGenerated = (content: GeneratedContent) => {
+    setValue('description', content.description)
+    setValue('short_description', content.short_description)
+    setValue('seo_title', content.seo_title)
+    setValue('alt_text', content.alt_text)
+    // Also set meta_title as a fallback if not already set
+    if (!watch('meta_title')) {
+      setValue('meta_title', content.seo_title)
+    }
+  }
 
   const onSubmit = async (data: ArtworkFormData) => {
     setSaving(true)
@@ -173,6 +210,22 @@ export function ArtworkForm({ artwork, isEdit = false }: ArtworkFormProps) {
             </div>
           </div>
 
+          {/* AI Generation Panel - Only show for existing artworks with images */}
+          {isEdit && artwork?.id && imageUrl && (
+            <AIGenerationPanel
+              artworkId={artwork.id}
+              imageUrl={imageUrl}
+              currentMetadata={{
+                title: watchedTitle,
+                year: watchedYear,
+                medium: watchedMedium,
+                dimensions: watchedDimensions,
+                series: watchedSeries,
+              }}
+              onGenerated={handleAIGenerated}
+            />
+          )}
+
           {/* Description Card */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Description</h3>
@@ -187,16 +240,58 @@ export function ArtworkForm({ artwork, isEdit = false }: ArtworkFormProps) {
                 />
               )}
             />
+
+            {/* Short Description field */}
+            <div className="mt-4">
+              <FormField
+                label="Short Description"
+                htmlFor="short_description"
+                hint="50-word summary for gallery cards"
+              >
+                <Textarea
+                  id="short_description"
+                  {...register('short_description')}
+                  rows={2}
+                  placeholder="Brief description for preview cards..."
+                />
+              </FormField>
+            </div>
           </div>
 
-          {/* SEO Card */}
+          {/* SEO & Accessibility Card */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">SEO</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">SEO & Accessibility</h3>
             <div className="space-y-4">
+              <FormField
+                label="SEO Title"
+                htmlFor="seo_title"
+                hint="Keyword-rich title for search (max 60 characters)"
+              >
+                <Input
+                  id="seo_title"
+                  {...register('seo_title')}
+                  placeholder="e.g., Jazz Musicians AJASS Studio 1966"
+                  maxLength={60}
+                />
+              </FormField>
+
+              <FormField
+                label="Alt Text"
+                htmlFor="alt_text"
+                hint="Image description for screen readers (max 125 characters)"
+              >
+                <Input
+                  id="alt_text"
+                  {...register('alt_text')}
+                  placeholder="e.g., Black and white photograph showing..."
+                  maxLength={125}
+                />
+              </FormField>
+
               <FormField
                 label="Meta Title"
                 htmlFor="meta_title"
-                hint="Leave blank to use artwork title"
+                hint="Leave blank to use SEO title or artwork title"
               >
                 <Input
                   id="meta_title"

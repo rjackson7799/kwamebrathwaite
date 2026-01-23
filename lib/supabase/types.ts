@@ -18,6 +18,9 @@ export type Database = {
           dimensions: string | null
           dimensions_cm: string | null
           description: string | null
+          short_description: string | null
+          seo_title: string | null
+          alt_text: string | null
           image_url: string
           image_thumbnail_url: string | null
           category: string | null
@@ -32,6 +35,10 @@ export type Database = {
           meta_title: string | null
           meta_description: string | null
           metadata: Json | null
+          ai_generated: boolean
+          ai_confidence_score: number | null
+          ai_generated_at: string | null
+          ai_prompt_version: string | null
           created_at: string
           updated_at: string
         }
@@ -43,6 +50,9 @@ export type Database = {
           dimensions?: string | null
           dimensions_cm?: string | null
           description?: string | null
+          short_description?: string | null
+          seo_title?: string | null
+          alt_text?: string | null
           image_url: string
           image_thumbnail_url?: string | null
           category?: string | null
@@ -57,6 +67,10 @@ export type Database = {
           meta_title?: string | null
           meta_description?: string | null
           metadata?: Json | null
+          ai_generated?: boolean
+          ai_confidence_score?: number | null
+          ai_generated_at?: string | null
+          ai_prompt_version?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -68,6 +82,9 @@ export type Database = {
           dimensions?: string | null
           dimensions_cm?: string | null
           description?: string | null
+          short_description?: string | null
+          seo_title?: string | null
+          alt_text?: string | null
           image_url?: string
           image_thumbnail_url?: string | null
           category?: string | null
@@ -82,6 +99,10 @@ export type Database = {
           meta_title?: string | null
           meta_description?: string | null
           metadata?: Json | null
+          ai_generated?: boolean
+          ai_confidence_score?: number | null
+          ai_generated_at?: string | null
+          ai_prompt_version?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -89,6 +110,7 @@ export type Database = {
       exhibitions: {
         Row: {
           id: string
+          slug: string
           title: string
           venue: string | null
           street_address: string | null
@@ -113,6 +135,7 @@ export type Database = {
         }
         Insert: {
           id?: string
+          slug: string
           title: string
           venue?: string | null
           street_address?: string | null
@@ -137,6 +160,7 @@ export type Database = {
         }
         Update: {
           id?: string
+          slug?: string
           title?: string
           venue?: string | null
           street_address?: string | null
@@ -513,6 +537,70 @@ export type Database = {
           created_at?: string
         }
       }
+      artwork_tags: {
+        Row: {
+          artwork_id: string
+          tag: string
+          ai_suggested: boolean
+          created_at: string
+        }
+        Insert: {
+          artwork_id: string
+          tag: string
+          ai_suggested?: boolean
+          created_at?: string
+        }
+        Update: {
+          artwork_id?: string
+          tag?: string
+          ai_suggested?: boolean
+          created_at?: string
+        }
+      }
+      ai_generation_log: {
+        Row: {
+          id: string
+          artwork_id: string
+          generation_type: string
+          prompt_version: string
+          tokens_used: number | null
+          cost_usd: number | null
+          processing_time_ms: number | null
+          success: boolean
+          error_message: string | null
+          generated_description: string | null
+          confidence_score: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          artwork_id: string
+          generation_type: string
+          prompt_version?: string
+          tokens_used?: number | null
+          cost_usd?: number | null
+          processing_time_ms?: number | null
+          success?: boolean
+          error_message?: string | null
+          generated_description?: string | null
+          confidence_score?: number | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          artwork_id?: string
+          generation_type?: string
+          prompt_version?: string
+          tokens_used?: number | null
+          cost_usd?: number | null
+          processing_time_ms?: number | null
+          success?: boolean
+          error_message?: string | null
+          generated_description?: string | null
+          confidence_score?: number | null
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -568,3 +656,11 @@ export type ArtworkLiteratureUpdate = Database['public']['Tables']['artwork_lite
 export type ExhibitionReminder = Database['public']['Tables']['exhibition_reminders']['Row']
 export type ExhibitionReminderInsert = Database['public']['Tables']['exhibition_reminders']['Insert']
 export type ExhibitionReminderUpdate = Database['public']['Tables']['exhibition_reminders']['Update']
+
+export type ArtworkTag = Database['public']['Tables']['artwork_tags']['Row']
+export type ArtworkTagInsert = Database['public']['Tables']['artwork_tags']['Insert']
+export type ArtworkTagUpdate = Database['public']['Tables']['artwork_tags']['Update']
+
+export type AIGenerationLog = Database['public']['Tables']['ai_generation_log']['Row']
+export type AIGenerationLogInsert = Database['public']['Tables']['ai_generation_log']['Insert']
+export type AIGenerationLogUpdate = Database['public']['Tables']['ai_generation_log']['Update']

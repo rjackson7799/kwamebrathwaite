@@ -89,6 +89,9 @@ export const adminArtworkSchema = z.object({
   medium: z.string().max(255).optional().nullable(),
   dimensions: z.string().max(100).optional().nullable(),
   description: z.string().optional().nullable(),
+  short_description: z.string().max(500).optional().nullable(),
+  seo_title: z.string().max(255).optional().nullable(),
+  alt_text: z.string().max(255).optional().nullable(),
   image_url: z.string().url('Invalid image URL'),
   image_thumbnail_url: z.string().url().optional().nullable(),
   category: z.enum(['photography', 'print', 'historical']).optional().nullable(),
@@ -106,6 +109,8 @@ export type AdminArtworkInput = z.infer<typeof adminArtworkSchema>
 
 // Admin artwork filters (extends public filters to include drafts)
 export const adminArtworkFiltersSchema = paginationSchema.extend({
+  // Override limit to allow up to 500 for admin operations like reordering
+  limit: z.coerce.number().int().min(1).max(500).default(20),
   category: z.string().optional(),
   series: z.string().optional(),
   availability: z
@@ -130,6 +135,7 @@ export const adminReorderSchema = z.object({
 // Admin exhibition create/update schema
 export const adminExhibitionSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255),
+  slug: z.string().min(1, 'Slug is required').max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be lowercase letters, numbers, and hyphens only'),
   venue: z.string().max(255).optional().nullable(),
   street_address: z.string().optional().nullable(),
   city: z.string().max(100).optional().nullable(),
@@ -324,3 +330,54 @@ export const adminReminderFiltersSchema = paginationSchema.extend({
   sort: z.enum(['created_at', 'email', 'exhibition_title']).optional(),
   order: orderSchema,
 })
+
+// ============================================
+// AI Description Generator Schemas
+// ============================================
+
+// AI artwork metadata for generation
+const aiArtworkMetadataSchema = z.object({
+  title: z.string().optional(),
+  year: z.coerce.number().int().optional().nullable(),
+  medium: z.string().optional().nullable(),
+  dimensions: z.string().optional().nullable(),
+  series: z.string().optional().nullable(),
+})
+
+// AI description generation request
+export const aiGenerateDescriptionSchema = z.object({
+  image_url: z.string().url('Invalid image URL'),
+  metadata: aiArtworkMetadataSchema,
+  options: z
+    .object({
+      regenerate: z.boolean().optional().default(false),
+      include_translations: z.boolean().optional().default(true),
+    })
+    .optional(),
+})
+
+export type AIGenerateDescriptionInput = z.infer<typeof aiGenerateDescriptionSchema>
+
+// Translated content schema
+const translatedContentSchema = z.object({
+  description: z.string(),
+  short_description: z.string(),
+  seo_title: z.string(),
+  alt_text: z.string(),
+})
+
+// AI description apply request
+export const aiApplyDescriptionSchema = z.object({
+  description: z.string().min(1, 'Description is required'),
+  short_description: z.string().min(1).max(500),
+  seo_title: z.string().min(1).max(255),
+  alt_text: z.string().min(1).max(255),
+  tags: z.array(z.string().max(100)).max(10),
+  confidence_score: z.number().min(0).max(1),
+  translations: z.object({
+    fr: translatedContentSchema,
+    ja: translatedContentSchema,
+  }),
+})
+
+export type AIApplyDescriptionInput = z.infer<typeof aiApplyDescriptionSchema>
