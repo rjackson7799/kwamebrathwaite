@@ -24,7 +24,7 @@ export function ImagePlaceholder({
     <div
       className={`
         ${aspectRatioClasses[aspectRatio]}
-        bg-gray-light
+        bg-gray-light dark:bg-[#2A2A2A]
         animate-pulse
         rounded-sm
         flex

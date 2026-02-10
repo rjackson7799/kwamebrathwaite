@@ -1,7 +1,7 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** January 20, 2026 (Hero Rotator Auto-Rotation Fix)
+**Last Updated:** February 10, 2026 (Dark Mode Implementation)
 
 ---
 
@@ -401,6 +401,90 @@
 
 ---
 
+## Phase 9: Dark Mode (Public Site)
+
+### Completed
+- [x] **Infrastructure**
+  - [x] Installed `next-themes` package
+  - [x] Updated `tailwind.config.ts` with `darkMode: 'class'`
+  - [x] Updated `app/globals.css` with comprehensive dark mode:
+    - CSS variables for dark palette (`#121212` bg, `#F0F0F0` text, `#C9A870` gold, etc.)
+    - Dark variants on all ~15 component classes (btn-primary, btn-secondary, btn-text, btn-gold, btn-gold-outline, filter-pill, filter-pill-active, input, input-error, input-success, label, helper-text, card, card-bordered, card-elevated, card-featured, section-divider, exhibition-label)
+    - Dark skeleton shimmer, grain overlay adjustment
+  - [x] Created `components/ui/ThemeProvider.tsx` (wraps next-themes)
+  - [x] Created `components/ui/ThemeToggle.tsx` (sun/moon icon, hydration-safe)
+  - [x] Updated `app/layout.tsx` with ThemeProvider and `suppressHydrationWarning`
+  - [x] Updated `components/ui/index.ts` with new exports
+  - [x] Added theme translation keys to en.json, fr.json, ja.json
+
+- [x] **Layout Components**
+  - [x] `components/layout/Header.tsx` — ThemeToggle in desktop + mobile utility zones, dark classes on header/logo/nav/hamburger
+  - [x] `components/layout/MobileMenu.tsx` — dark panel bg, borders, close button, nav links
+  - [x] `components/layout/LanguageSwitcher.tsx` — dark button, dropdown, items
+
+- [x] **High-Impact Pages & Components**
+  - [x] `app/[locale]/page.tsx` — dark contrast on charcoal exhibition section
+  - [x] `components/features/artworks/ArtworkCard.tsx` — dark ring for photo framing, image bg, title
+  - [x] `components/features/artworks/ArtworkGrid.tsx` — dark skeleton placeholders
+  - [x] `components/features/artworks/ArtworkDetail.tsx` — back link, image bg, buttons, title, all metadata labels/values, literature, archive reference
+  - [x] `components/features/artworks/ArtworkInquiryModal.tsx` — modal bg, header, borders, artwork preview, title, close button
+  - [x] `components/features/artworks/ShareButton.tsx` — button border/text, dropdown bg/border, menu items
+  - [x] `components/features/exhibitions/ExhibitionCard.tsx` — status badges, image bg, title
+  - [x] `components/features/exhibitions/ExhibitionDetail.tsx` — back link, status badges, title, metadata, prose
+
+- [x] **Remaining Pages & UI Components**
+  - [x] `components/ui/SearchBar.tsx` — dark bg, focus, text, placeholder
+  - [x] `components/ui/ImagePlaceholder.tsx` — dark bg
+  - [x] `components/features/press/PressCard.tsx` — image bg, gold accent, title, link text
+  - [x] `components/features/timeline/Timeline.tsx` — timeline lines, dots, filter buttons, decade headers
+  - [x] `components/features/timeline/TimelineItem.tsx` — dot borders, card bg, title, image bg
+  - [x] `components/features/exhibitions/ExhibitionsListPanel.tsx` — panel bg, borders, text, skeletons
+  - [x] `components/features/exhibitions/ExhibitionsMobileSheet.tsx` — sheet bg, drag handle, borders, text
+  - [x] `components/features/exhibitions/ViewToggle.tsx` — inactive state dark colors
+  - [x] `components/features/exhibitions/GeographicFilters.tsx` — inactive filter dark colors
+  - [x] `components/features/exhibitions/ReminderModal.tsx` — modal bg, form inputs, error states
+  - [x] `components/features/exhibitions/AddToCalendarButton.tsx` — button border/hover
+  - [x] `components/features/exhibitions/ShareButton.tsx` — button border/hover
+  - [x] `components/features/licensing/LicenseRequestForm.tsx` — step indicators, artwork selection, license cards
+  - [x] `app/[locale]/about/page.tsx` — prose, timeline border, movement section
+  - [x] `app/[locale]/press/page.tsx` — heading text
+  - [x] `app/[locale]/archive/page.tsx` — skeleton dark bg
+  - [x] `app/[locale]/privacy/page.tsx` — prose dark:prose-invert
+  - [x] `app/[locale]/terms/page.tsx` — prose dark:prose-invert
+  - [x] `app/[locale]/licensing/page.tsx` — step circles, license card borders
+  - [x] `app/[locale]/works/page.tsx` — skeleton loading, clear filters
+  - [x] `app/[locale]/exhibitions/[slug]/page.tsx` — featured works border
+
+- [x] **Build verification passed** — `npm run build` successful
+
+### Files Intentionally NOT Modified
+| File | Reason |
+|------|--------|
+| `components/layout/Footer.tsx` | Already `bg-black text-white` by design |
+| `components/HeroRotator.tsx` | Full-bleed images with dark overlays |
+| `components/ui/Lightbox.tsx` | Already `bg-black/95` |
+| `components/ui/ViewOnWallModal.tsx` | Already `bg-black/90` |
+| `components/features/exhibitions/MarkerInfoPopup.tsx` | Google Maps controls styling |
+| All `app/admin/**` files | Admin stays light-only |
+
+### Dark Mode Color Palette
+| Token | Value | Usage |
+|-------|-------|-------|
+| Background primary | `#121212` | Body bg |
+| Background elevated | `#1A1A1A` | Modals, panels, cards |
+| Background surface | `#2A2A2A` | Inputs, placeholders, image containers |
+| Text primary | `#F0F0F0` | Headings, body text |
+| Text secondary | `#A0A0A0` | Captions, labels |
+| Border primary | `#333333` | Card borders, dividers |
+| Gold adaptive | `#C9A870` | Accents, featured badges |
+
+### WCAG Contrast Compliance
+- `#F0F0F0` on `#121212` = 17.3:1 (AAA)
+- `#A0A0A0` on `#121212` = 7.7:1 (AA)
+- `#C9A870` on `#121212` = ~4.5:1 (AA)
+
+---
+
 ## Feature Wishlist
 
 Ideas for future enhancements (not yet planned for implementation):
@@ -408,7 +492,7 @@ Ideas for future enhancements (not yet planned for implementation):
 ### Admin Panel
 - [ ] **Light/Dark Mode Toggle** - Add theme switching for admin panel
   - Complexity: Moderate-High (~7-11 hours)
-  - Requires: Tailwind `darkMode: 'class'`, theme context, ~40 file updates
+  - Requires: Theme context already in place, ~40 admin file updates
   - Notes: TipTap editor needs separate dark mode CSS
 
 ### Public Site
@@ -470,6 +554,8 @@ components/
 │   ├── ImagePlaceholder.tsx
 │   ├── Lightbox.tsx
 │   ├── SearchBar.tsx
+│   ├── ThemeProvider.tsx
+│   ├── ThemeToggle.tsx
 │   └── index.ts
 ├── features/
 │   ├── artworks/

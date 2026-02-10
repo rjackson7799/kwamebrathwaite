@@ -21,7 +21,7 @@ export function ViewToggle({ viewMode, onViewChange }: ViewToggleProps) {
           ${
             viewMode === 'list'
               ? 'bg-black text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              : 'bg-gray-100 dark:bg-[#2A2A2A] text-gray-700 dark:text-[#C0C0C0] hover:bg-gray-200 dark:hover:bg-[#333333]'
           }
         `}
         role="tab"
@@ -40,7 +40,7 @@ export function ViewToggle({ viewMode, onViewChange }: ViewToggleProps) {
           ${
             viewMode === 'map'
               ? 'bg-black text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              : 'bg-gray-100 dark:bg-[#2A2A2A] text-gray-700 dark:text-[#C0C0C0] hover:bg-gray-200 dark:hover:bg-[#333333]'
           }
         `}
         role="tab"

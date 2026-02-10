@@ -68,16 +68,16 @@ export function Timeline({
     return (
       <div className={`relative ${className}`}>
         {/* Timeline line skeleton */}
-        <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-light" />
+        <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-light dark:bg-[#333333]" />
 
         {/* Skeleton items */}
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="relative pl-8 md:pl-12 pb-8">
-            <div className="absolute left-0 top-1 w-3 h-3 rounded-full bg-gray-light" style={{ transform: 'translateX(-50%)' }} />
+            <div className="absolute left-0 top-1 w-3 h-3 rounded-full bg-gray-light dark:bg-[#333333]" style={{ transform: 'translateX(-50%)' }} />
             <div className="card-bordered rounded-sm p-4 md:p-6">
-              <div className="w-16 h-6 bg-gray-light animate-pulse rounded-sm mb-3" />
-              <div className="w-3/4 h-5 bg-gray-light animate-pulse rounded mb-2" />
-              <div className="w-full h-4 bg-gray-light animate-pulse rounded" />
+              <div className="w-16 h-6 bg-gray-light dark:bg-[#2A2A2A] animate-pulse rounded-sm mb-3" />
+              <div className="w-3/4 h-5 bg-gray-light dark:bg-[#2A2A2A] animate-pulse rounded mb-2" />
+              <div className="w-full h-4 bg-gray-light dark:bg-[#2A2A2A] animate-pulse rounded" />
             </div>
           </div>
         ))}
@@ -113,7 +113,7 @@ export function Timeline({
                 ${
                   activeFilter === key
                     ? 'bg-charcoal text-white'
-                    : 'bg-gray-light text-gray-warm hover:bg-gray-light/80'
+                    : 'bg-gray-light text-gray-warm hover:bg-gray-light/80 dark:bg-[#2A2A2A] dark:text-[#A0A0A0]'
                 }
               `}
             >
@@ -127,7 +127,7 @@ export function Timeline({
       <div className="relative">
         {/* Vertical timeline line */}
         <div
-          className="absolute left-0 top-0 bottom-0 w-px bg-gray-light"
+          className="absolute left-0 top-0 bottom-0 w-px bg-gray-light dark:bg-[#333333]"
           aria-hidden="true"
         />
 
@@ -144,13 +144,13 @@ export function Timeline({
                       absolute left-0 top-1
                       w-4 h-4
                       rounded-full
-                      bg-gold border-2 border-white
+                      bg-gold dark:bg-[#C9A870] border-2 border-white dark:border-[#121212]
                       shadow-sm
                     "
                     style={{ transform: 'translateX(-50%)' }}
                     aria-hidden="true"
                   />
-                  <h3 className="text-h3 font-medium text-black">
+                  <h3 className="text-h3 font-medium text-black dark:text-[#F0F0F0]">
                     {decade}
                   </h3>
                 </div>

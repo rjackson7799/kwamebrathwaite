@@ -75,9 +75,9 @@ export function ArtworkCard({
       onClick={handleClick}
       className={`group block ${className}`}
     >
-      <article className="card rounded-sm overflow-hidden">
+      <article className="card rounded-sm overflow-hidden dark:ring-1 dark:ring-white/10">
         {/* Image Container */}
-        <div className="relative aspect-[4/5] overflow-hidden bg-gray-light">
+        <div className="relative aspect-[4/5] overflow-hidden bg-gray-light dark:bg-[#2A2A2A]">
           {hasError ? (
             <ImagePlaceholder aspectRatio="4:5" showIcon />
           ) : (
@@ -150,7 +150,7 @@ export function ArtworkCard({
 
         {/* Content */}
         <div className="p-4">
-          <h3 className="text-body font-medium text-black truncate">
+          <h3 className="text-body font-medium text-black dark:text-[#F0F0F0] truncate">
             {artwork.title}
           </h3>
           {showMetadata && (

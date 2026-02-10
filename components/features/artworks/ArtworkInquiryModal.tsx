@@ -179,16 +179,16 @@ export function ArtworkInquiryModal({
           relative
           w-full max-w-lg
           max-h-[90vh] overflow-y-auto
-          bg-white
+          bg-white dark:bg-[#1A1A1A]
           rounded-sm
           shadow-xl
         "
       >
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-white dark:bg-[#1A1A1A] border-b border-gray-200 dark:border-[#333333] px-6 py-4 flex items-center justify-between">
           <h2
             id="inquiry-modal-title"
-            className="text-[11px] font-medium uppercase tracking-[0.08em] text-black"
+            className="text-[11px] font-medium uppercase tracking-[0.08em] text-black dark:text-[#F0F0F0]"
           >
             {t('title')}
           </h2>
@@ -197,7 +197,7 @@ export function ArtworkInquiryModal({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="p-1 text-gray-500 hover:text-black transition-colors"
+            className="p-1 text-gray-500 dark:text-[#A0A0A0] hover:text-black dark:hover:text-[#F0F0F0] transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -206,8 +206,8 @@ export function ArtworkInquiryModal({
         </div>
 
         {/* Artwork Preview */}
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center gap-4">
-          <div className="relative w-16 h-20 flex-shrink-0 bg-gray-100">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-[#333333] flex items-center gap-4">
+          <div className="relative w-16 h-20 flex-shrink-0 bg-gray-100 dark:bg-[#2A2A2A]">
             <Image
               src={artwork.image_thumbnail_url || artwork.image_url}
               alt={artwork.title}
@@ -217,8 +217,8 @@ export function ArtworkInquiryModal({
             />
           </div>
           <div>
-            <h3 className="text-sm font-normal text-gray-900">{artwork.title}</h3>
-            <p className="text-xs text-gray-500 mt-1">
+            <h3 className="text-sm font-normal text-gray-900 dark:text-[#F0F0F0]">{artwork.title}</h3>
+            <p className="text-xs text-gray-500 dark:text-[#A0A0A0] mt-1">
               {artwork.year && `${artwork.year}`}
               {artwork.year && artwork.medium && ', '}
               {artwork.medium}
@@ -243,7 +243,7 @@ export function ArtworkInquiryModal({
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <p className="text-body text-gray-700">{t('success')}</p>
+              <p className="text-body text-gray-700 dark:text-[#C0C0C0]">{t('success')}</p>
               <button
                 type="button"
                 onClick={onClose}

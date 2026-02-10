@@ -6,7 +6,8 @@
     "press": "Presse",
     "about": "À propos",
     "archive": "Les Archives",
-    "contact": "Contact"
+    "contact": "Contact",
+    "licensing": "Licences"
   },
   "home": {
     "featuredWorks": "Œuvres en vedette",
@@ -43,6 +44,7 @@
       "inquiry_only": "Sur demande"
     },
     "inquire": "Renseignements sur cette œuvre",
+    "requestLicense": "Demander une licence",
     "detail": {
       "backToGallery": "Retour à la galerie",
       "year": "Année",
@@ -198,6 +200,74 @@
     "success": "Merci pour votre demande. Nous vous répondrons dans les 24 heures.",
     "error": "Une erreur s'est produite. Veuillez réessayer."
   },
+  "licensing": {
+    "title": "Licences d'images",
+    "meta": {
+      "title": "Licences d'images | Archives Kwame Brathwaite",
+      "description": "Licenciez des photographies emblématiques de Kwame Brathwaite pour un usage éditorial, commercial, cinématographique, éducatif ou d'exposition."
+    },
+    "subtitle": "Licenciez des photographies emblématiques de Kwame Brathwaite pour votre projet.",
+    "howItWorks": "Comment ça marche",
+    "steps": {
+      "select": "Sélectionner les œuvres",
+      "selectDesc": "Choisissez les images que vous souhaitez licencier dans nos archives.",
+      "choose": "Choisir le type de licence",
+      "chooseDesc": "Sélectionnez le type de licence adapté à votre projet.",
+      "details": "Fournir les détails",
+      "detailsDesc": "Décrivez votre projet, le territoire et l'utilisation prévue.",
+      "review": "Recevoir un devis",
+      "reviewDesc": "Notre équipe examinera votre demande et vous fournira un devis personnalisé."
+    },
+    "types": {
+      "editorial": "Éditorial",
+      "editorialDesc": "Livres, magazines, journaux et publications éditoriales",
+      "commercial": "Commercial",
+      "commercialDesc": "Publicité, branding, marketing et campagnes commerciales",
+      "film": "Film / Documentaire",
+      "filmDesc": "Films, documentaires, productions vidéo et contenu en streaming",
+      "educational": "Éducatif",
+      "educationalDesc": "Manuels, programmes, matériel pédagogique et institutions éducatives",
+      "exhibition": "Exposition / Musée",
+      "exhibitionDesc": "Expositions muséales, galeries et présentations institutionnelles"
+    },
+    "cta": "Demander une licence",
+    "request": {
+      "title": "Demander une licence",
+      "meta": {
+        "title": "Demande de licence | Archives Kwame Brathwaite",
+        "description": "Soumettez une demande de licence pour des photographies de Kwame Brathwaite."
+      },
+      "stepArtworks": "Sélectionner les œuvres",
+      "stepLicenseType": "Type de licence",
+      "stepDetails": "Détails d'utilisation",
+      "stepContact": "Coordonnées",
+      "stepReview": "Vérifier et soumettre",
+      "artworkSearch": "Rechercher des œuvres...",
+      "selectedArtworks": "Œuvres sélectionnées",
+      "noArtworksSelected": "Aucune œuvre sélectionnée. Recherchez et sélectionnez jusqu'à 10 œuvres.",
+      "maxArtworks": "Maximum 10 œuvres par demande",
+      "territory": "Territoire",
+      "territoryPlaceholder": "ex. Amérique du Nord, Mondial",
+      "duration": "Durée",
+      "durationPlaceholder": "ex. 1 an, 5 ans, perpétuel",
+      "printRun": "Tirage / Portée",
+      "printRunPlaceholder": "ex. 5 000 exemplaires, 1M d'impressions",
+      "usageDescription": "Décrivez l'utilisation prévue",
+      "usageDescriptionPlaceholder": "Veuillez décrire comment vous prévoyez d'utiliser les images.",
+      "name": "Nom complet",
+      "email": "Adresse e-mail",
+      "company": "Entreprise / Organisation (Facultatif)",
+      "phone": "Téléphone (Facultatif)",
+      "reviewIntro": "Veuillez vérifier votre demande de licence avant de la soumettre.",
+      "artworksCount": "{count} œuvre(s) sélectionnée(s)",
+      "submit": "Soumettre la demande",
+      "submitting": "Envoi en cours...",
+      "next": "Suivant",
+      "back": "Retour",
+      "success": "Votre demande de licence a été soumise avec succès ! Votre numéro de demande est {requestNumber}. Nous examinerons votre demande et vous répondrons dans un délai de 3 à 5 jours ouvrables.",
+      "error": "Une erreur s'est produite lors de la soumission. Veuillez réessayer."
+    }
+  },
   "common": {
     "skipToContent": "Aller au contenu principal",
     "loading": "Chargement...",
@@ -224,7 +294,8 @@
     "copyright": "© {year} Archives Kwame Brathwaite. Tous droits réservés.",
     "links": {
       "privacy": "Politique de confidentialité",
-      "terms": "Conditions d'utilisation"
+      "terms": "Conditions d'utilisation",
+      "licensing": "Licences d'images"
     }
   },
   "languageSwitcher": {
@@ -232,5 +303,9 @@
     "en": "English",
     "fr": "Français",
     "ja": "日本語"
+  },
+  "theme": {
+    "switchToLight": "Passer en mode clair",
+    "switchToDark": "Passer en mode sombre"
   }
 }

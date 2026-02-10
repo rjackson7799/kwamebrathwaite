@@ -103,16 +103,16 @@ export function SearchBar({
         aria-label={ariaLabel}
         className="
           w-full
-          bg-[#F5F5F5]
+          bg-[#F5F5F5] dark:bg-[#2A2A2A]
           border border-transparent
           rounded-full
           py-3 pl-12 pr-10
           text-body
-          text-black
-          placeholder:text-gray-warm
+          text-black dark:text-[#F0F0F0]
+          placeholder:text-gray-warm dark:placeholder:text-[#666666]
           focus:outline-none
-          focus:bg-white
-          focus:border-black
+          focus:bg-white dark:focus:bg-[#1A1A1A]
+          focus:border-black dark:focus:border-[#F0F0F0]
           disabled:opacity-50
           disabled:cursor-not-allowed
           transition-colors duration-normal
@@ -128,9 +128,9 @@ export function SearchBar({
             absolute right-3 top-1/2 -translate-y-1/2
             p-1
             text-gray-warm
-            hover:text-black
+            hover:text-black dark:hover:text-[#F0F0F0]
             focus:outline-none
-            focus:text-black
+            focus:text-black dark:focus:text-[#F0F0F0]
             transition-colors duration-normal
           "
           aria-label="Clear search"

@@ -77,7 +77,7 @@ export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
         className={`flex items-center gap-2 px-3 py-2 text-[11px] font-normal tracking-[0.08em] uppercase rounded-md transition-colors duration-200 ${
           isDark
             ? 'text-white/80 hover:text-white hover:bg-white/10'
-            : 'text-black hover:bg-gray-100'
+            : 'text-black dark:text-[#F0F0F0] hover:bg-gray-100 dark:hover:bg-white/10'
         }`}
       >
         <Globe className="w-5 h-5" strokeWidth={1.5} aria-hidden="true" />
@@ -93,7 +93,7 @@ export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
           role="listbox"
           aria-label={t('label')}
           className={`absolute right-0 top-full mt-2 py-1 w-40 rounded-md shadow-lg z-dropdown ${
-            isDark ? 'bg-charcoal' : 'bg-white border border-gray-200'
+            isDark ? 'bg-charcoal' : 'bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#333333]'
           }`}
         >
           {localeOptions.map((locale) => (
@@ -106,10 +106,10 @@ export function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
                   locale === currentLocale
                     ? isDark
                       ? 'text-white font-medium bg-white/5'
-                      : 'text-black font-medium bg-gray-50'
+                      : 'text-black dark:text-[#F0F0F0] font-medium bg-gray-50 dark:bg-white/5'
                     : isDark
                     ? 'text-white/70 hover:text-white hover:bg-white/10'
-                    : 'text-black hover:bg-gray-50'
+                    : 'text-black dark:text-[#F0F0F0] hover:bg-gray-50 dark:hover:bg-white/10'
                 }`}
               >
                 <span className="text-xs text-gray-500 uppercase w-6">{localeCodes[locale]}</span>

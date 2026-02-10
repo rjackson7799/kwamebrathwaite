@@ -131,7 +131,7 @@ export default async function AboutPage({ params }: Props) {
               priority
             />
           </div>
-          <div className="prose prose-lg max-w-none">
+          <div className="prose prose-lg dark:prose-invert max-w-none">
             {biography?.content ? (
               <div dangerouslySetInnerHTML={{ __html: biography.content }} />
             ) : (
@@ -142,7 +142,7 @@ export default async function AboutPage({ params }: Props) {
       </section>
 
       {/* Timeline section */}
-      <section className="mb-16 pt-8 border-t border-gray-light">
+      <section className="mb-16 pt-8 border-t border-gray-light dark:border-[#333333]">
         <h2 className="text-h2 mb-8">{t('timeline.title')}</h2>
         <Timeline
           events={sampleTimelineEvents}
@@ -152,7 +152,7 @@ export default async function AboutPage({ params }: Props) {
       </section>
 
       {/* Movement section */}
-      <section className="bg-charcoal text-white -mx-6 md:-mx-12 lg:-mx-16 px-6 md:px-12 lg:px-16 py-16">
+      <section className="bg-charcoal dark:bg-[#0A0A0A] text-white -mx-6 md:-mx-12 lg:-mx-16 px-6 md:px-12 lg:px-16 py-16">
         <h2 className="text-h2 mb-6">{t('movement')}</h2>
         <div className="prose prose-lg prose-invert max-w-3xl">
           {movement?.content ? (

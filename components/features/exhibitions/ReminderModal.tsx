@@ -101,7 +101,7 @@ export function ReminderModal({
     >
       <div
         ref={modalRef}
-        className="bg-white w-full max-w-md p-6 rounded-lg shadow-xl"
+        className="bg-white dark:bg-[#1A1A1A] w-full max-w-md p-6 rounded-lg shadow-xl"
         onClick={(e) => e.stopPropagation()}
         tabIndex={-1}
       >
@@ -109,20 +109,20 @@ export function ReminderModal({
           // Success State
           <div className="text-center py-8">
             <div className="text-4xl mb-4">✅</div>
-            <p className="text-lg font-medium text-gray-900">{t('success')}</p>
+            <p className="text-lg font-medium text-gray-900 dark:text-[#F0F0F0]">{t('success')}</p>
           </div>
         ) : (
           // Form State
           <>
             <h3
               id="reminder-modal-title"
-              className="text-lg font-medium mb-4 text-gray-900"
+              className="text-lg font-medium mb-4 text-gray-900 dark:text-[#F0F0F0]"
             >
               {t('title')}
             </h3>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded">
+              <div className="mb-4 p-3 bg-red-50 dark:bg-[#EF5350]/10 border border-red-200 dark:border-[#EF5350]/30 text-red-700 dark:text-[#EF5350] text-sm rounded">
                 {error}
               </div>
             )}
@@ -146,7 +146,7 @@ export function ReminderModal({
               <div>
                 <label
                   htmlFor="reminder-name"
-                  className="block mb-2 text-xs font-medium uppercase tracking-wider text-gray-700"
+                  className="block mb-2 text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-[#C0C0C0]"
                 >
                   {t('name')} *
                 </label>
@@ -158,7 +158,7 @@ export function ReminderModal({
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-[#333333] rounded bg-white dark:bg-[#2A2A2A] text-gray-900 dark:text-[#F0F0F0] focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent"
                   placeholder="Your name"
                   disabled={isSubmitting}
                 />
@@ -168,7 +168,7 @@ export function ReminderModal({
               <div>
                 <label
                   htmlFor="reminder-email"
-                  className="block mb-2 text-xs font-medium uppercase tracking-wider text-gray-700"
+                  className="block mb-2 text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-[#C0C0C0]"
                 >
                   {t('email')} *
                 </label>
@@ -180,7 +180,7 @@ export function ReminderModal({
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-[#333333] rounded bg-white dark:bg-[#2A2A2A] text-gray-900 dark:text-[#F0F0F0] focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent"
                   placeholder="you@example.com"
                   disabled={isSubmitting}
                 />
@@ -190,7 +190,7 @@ export function ReminderModal({
               <div>
                 <label
                   htmlFor="reminder-type"
-                  className="block mb-2 text-xs font-medium uppercase tracking-wider text-gray-700"
+                  className="block mb-2 text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-[#C0C0C0]"
                 >
                   {t('type')}
                 </label>
@@ -203,7 +203,7 @@ export function ReminderModal({
                       reminder_type: e.target.value as ReminderFormData['reminder_type'],
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-[#333333] rounded bg-white dark:bg-[#2A2A2A] text-gray-900 dark:text-[#F0F0F0] focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent"
                   disabled={isSubmitting}
                 >
                   <option value="opening">{t('typeOpening')}</option>
@@ -217,7 +217,7 @@ export function ReminderModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors text-sm"
+                  className="flex-1 py-2 px-4 border border-gray-300 dark:border-[#333333] text-gray-700 dark:text-[#C0C0C0] hover:bg-gray-50 dark:hover:bg-[#2A2A2A] transition-colors text-sm"
                   disabled={isSubmitting}
                 >
                   {t('cancel')}

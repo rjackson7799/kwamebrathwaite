@@ -52,16 +52,16 @@ export function ExhibitionsListPanel({
 
   if (isLoading) {
     return (
-      <div className="h-full bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="p-4 border-b border-gray-200">
-          <div className="h-6 bg-gray-200 rounded animate-pulse w-32" />
+      <div className="h-full bg-white dark:bg-[#1A1A1A] rounded-lg shadow-lg overflow-hidden">
+        <div className="p-4 border-b border-gray-200 dark:border-[#333333]">
+          <div className="h-6 bg-gray-200 dark:bg-[#333333] rounded animate-pulse w-32" />
         </div>
         <div className="p-4 space-y-4">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="animate-pulse">
-              <div className="aspect-[3/2] bg-gray-200 rounded mb-3" />
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
-              <div className="h-3 bg-gray-200 rounded w-1/2" />
+              <div className="aspect-[3/2] bg-gray-200 dark:bg-[#333333] rounded mb-3" />
+              <div className="h-4 bg-gray-200 dark:bg-[#333333] rounded w-3/4 mb-2" />
+              <div className="h-3 bg-gray-200 dark:bg-[#333333] rounded w-1/2" />
             </div>
           ))}
         </div>
@@ -70,10 +70,10 @@ export function ExhibitionsListPanel({
   }
 
   return (
-    <div className="h-full bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+    <div className="h-full bg-white dark:bg-[#1A1A1A] rounded-lg shadow-lg overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 flex-shrink-0">
-        <h3 className="font-medium text-gray-900">
+      <div className="p-4 border-b border-gray-200 dark:border-[#333333] flex-shrink-0">
+        <h3 className="font-medium text-gray-900 dark:text-[#F0F0F0]">
           {exhibitions.length} {exhibitions.length === 1 ? 'Exhibition' : 'Exhibitions'}
         </h3>
       </div>
@@ -86,11 +86,11 @@ export function ExhibitionsListPanel({
         aria-label="Exhibitions list"
       >
         {exhibitions.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
+          <div className="p-8 text-center text-gray-500 dark:text-[#A0A0A0]">
             <p>{t('map.noExhibitions')}</p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-gray-100 dark:divide-[#333333]">
             {exhibitions.map((exhibition) => {
               const isSelected = selectedExhibition?.id === exhibition.id
               const status = STATUS_CONFIG[exhibition.exhibition_type]
@@ -102,7 +102,7 @@ export function ExhibitionsListPanel({
                   onClick={() => onExhibitionSelect(exhibition)}
                   className={`
                     p-4 cursor-pointer transition-colors
-                    ${isSelected ? 'bg-gray-100' : 'hover:bg-gray-50'}
+                    ${isSelected ? 'bg-gray-100 dark:bg-[#2A2A2A]' : 'hover:bg-gray-50 dark:hover:bg-[#2A2A2A]'}
                   `}
                   role="listitem"
                   aria-selected={isSelected}
@@ -137,25 +137,25 @@ export function ExhibitionsListPanel({
                   )}
 
                   {/* Title */}
-                  <h4 className="font-medium text-gray-900 mb-1 line-clamp-2">
+                  <h4 className="font-medium text-gray-900 dark:text-[#F0F0F0] mb-1 line-clamp-2">
                     {exhibition.title}
                   </h4>
 
                   {/* Venue */}
                   {exhibition.venue && (
-                    <p className="text-sm text-gray-600 mb-1">{exhibition.venue}</p>
+                    <p className="text-sm text-gray-600 dark:text-[#A0A0A0] mb-1">{exhibition.venue}</p>
                   )}
 
                   {/* Location */}
                   {(exhibition.city || exhibition.country) && (
-                    <p className="text-sm text-gray-500 mb-2">
+                    <p className="text-sm text-gray-500 dark:text-[#A0A0A0] mb-2">
                       {[exhibition.city, exhibition.country].filter(Boolean).join(', ')}
                     </p>
                   )}
 
                   {/* Dates */}
                   {formatDateRange(exhibition.start_date, exhibition.end_date) && (
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-400 dark:text-[#666666]">
                       {formatDateRange(exhibition.start_date, exhibition.end_date)}
                     </p>
                   )}

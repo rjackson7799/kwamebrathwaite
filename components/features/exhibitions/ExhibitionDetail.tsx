@@ -9,6 +9,7 @@ import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder'
 
 export interface DetailedExhibition {
   id: string
+  slug: string
   title: string
   venue: string | null
   street_address: string | null
@@ -42,9 +43,9 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
 
   // Status badge styles per DESIGN_SYSTEM.md
   const statusStyles: Record<string, string> = {
-    current: 'bg-gold text-white',
+    current: 'bg-gold dark:bg-[#C9A870] text-white dark:text-[#121212]',
     upcoming: 'bg-charcoal text-white',
-    past: 'bg-gray-light text-gray-warm',
+    past: 'bg-gray-light dark:bg-[#2A2A2A] text-gray-warm dark:text-[#A0A0A0]',
   }
 
   // Format date range with locale-aware formatting
@@ -104,7 +105,7 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
         {/* Back to Exhibitions Link */}
         <Link
           href={exhibitionsHref}
-          className="inline-flex items-center gap-2 text-body text-gray-warm hover:text-black transition-colors duration-fast mb-8"
+          className="inline-flex items-center gap-2 text-body text-gray-warm dark:text-[#A0A0A0] hover:text-black dark:hover:text-[#F0F0F0] transition-colors duration-fast mb-8"
         >
           <svg
             className="w-5 h-5"
@@ -130,7 +131,7 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
               <button
                 type="button"
                 onClick={() => setIsLightboxOpen(true)}
-                className="relative w-full aspect-[4/3] overflow-hidden bg-gray-light cursor-zoom-in group"
+                className="relative w-full aspect-[4/3] overflow-hidden bg-gray-light dark:bg-[#2A2A2A] cursor-zoom-in group"
                 aria-label={t('detail.viewFullSize')}
               >
                 {isLoading && (
@@ -208,7 +209,7 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
             </span>
 
             {/* Title */}
-            <h1 className="text-display-2 font-semibold text-black mb-6">
+            <h1 className="text-display-2 font-semibold text-black dark:text-[#F0F0F0] mb-6">
               {exhibition.title}
             </h1>
 
@@ -234,7 +235,7 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
                     </svg>
                     {t('detail.dates')}
                   </dt>
-                  <dd className="text-body-sm text-black">{formatDateRange()}</dd>
+                  <dd className="text-body-sm text-black dark:text-[#F0F0F0]">{formatDateRange()}</dd>
                 </div>
               )}
 
@@ -258,7 +259,7 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
                     </svg>
                     {t('detail.venue')}
                   </dt>
-                  <dd className="text-body-sm text-black">{exhibition.venue}</dd>
+                  <dd className="text-body-sm text-black dark:text-[#F0F0F0]">{exhibition.venue}</dd>
                 </div>
               )}
 
@@ -288,7 +289,7 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
                     </svg>
                     {t('detail.location')}
                   </dt>
-                  <dd className="text-body-sm text-black">{formatLocation()}</dd>
+                  <dd className="text-body-sm text-black dark:text-[#F0F0F0]">{formatLocation()}</dd>
                 </div>
               )}
             </dl>
@@ -322,11 +323,11 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
             {/* Description */}
             {exhibition.description && (
               <div className="mb-8">
-                <h2 className="text-h3 font-medium text-black mb-4">
+                <h2 className="text-h3 font-medium text-black dark:text-[#F0F0F0] mb-4">
                   {t('detail.aboutExhibition')}
                 </h2>
                 <div
-                  className="prose prose-lg max-w-none text-black"
+                  className="prose prose-lg dark:prose-invert max-w-none text-black dark:text-[#C0C0C0]"
                   dangerouslySetInnerHTML={{ __html: exhibition.description }}
                 />
               </div>

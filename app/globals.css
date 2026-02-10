@@ -16,6 +16,29 @@
   --color-error: #8B0000;
   --color-warning: #8B6914;
   --color-info: #1A4D7A;
+
+  /* Dark mode semantic tokens - Light values */
+  --bg-primary: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-surface: #E5E5E5;
+  --text-primary: #000000;
+  --text-secondary: #6B6B6B;
+  --border-primary: #E5E5E5;
+  --gold-adaptive: #B8945F;
+}
+
+.dark {
+  --bg-primary: #121212;
+  --bg-elevated: #1A1A1A;
+  --bg-surface: #2A2A2A;
+  --text-primary: #F0F0F0;
+  --text-secondary: #A0A0A0;
+  --border-primary: #333333;
+  --gold-adaptive: #C9A870;
+  --color-success: #4CAF50;
+  --color-error: #EF5350;
+  --color-warning: #FFB74D;
+  --color-info: #42A5F5;
 }
 
 @layer base {
@@ -25,8 +48,8 @@
   }
 
   .skip-link:focus {
-    @apply not-sr-only fixed z-[9999] top-4 left-4 px-4 py-2 bg-black text-white font-medium;
-    outline: 2px solid var(--color-gold);
+    @apply not-sr-only fixed z-[9999] top-4 left-4 px-4 py-2 bg-black text-white dark:bg-white dark:text-black font-medium;
+    outline: 2px solid var(--gold-adaptive);
     outline-offset: 2px;
   }
 
@@ -34,10 +57,13 @@
     font-family: 'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition-property: color, background-color, border-color;
+    transition-duration: 200ms;
+    transition-timing-function: ease;
   }
 
   body {
-    @apply bg-white text-black;
+    @apply bg-white text-black dark:bg-[#121212] dark:text-[#F0F0F0];
   }
 
   /* Typography base styles */
@@ -63,7 +89,7 @@
 
   /* Focus styles for accessibility */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-black;
+    @apply outline-2 outline-offset-2 outline-black dark:outline-white;
   }
 }
 
@@ -74,7 +100,10 @@
            transition-all duration-normal
            hover:bg-charcoal hover:-translate-y-px hover:shadow-md
            active:translate-y-0
-           disabled:bg-gray-light disabled:text-gray-warm disabled:cursor-not-allowed;
+           disabled:bg-gray-light disabled:text-gray-warm disabled:cursor-not-allowed
+           dark:bg-[#F0F0F0] dark:text-[#121212]
+           dark:hover:bg-white
+           dark:disabled:bg-[#333333] dark:disabled:text-[#666666];
   }
 
   .btn-secondary {
@@ -82,13 +111,16 @@
            border border-black
            transition-all duration-normal
            hover:bg-black hover:text-white
-           active:bg-charcoal;
+           active:bg-charcoal
+           dark:text-[#F0F0F0] dark:border-[#F0F0F0]
+           dark:hover:bg-[#F0F0F0] dark:hover:text-[#121212];
   }
 
   .btn-text {
     @apply bg-transparent text-black font-medium py-2
            transition-all duration-normal
-           hover:text-gray-warm hover:underline;
+           hover:text-gray-warm hover:underline
+           dark:text-[#F0F0F0] dark:hover:text-[#A0A0A0];
   }
 
   /* Gold accent button variants */
@@ -97,7 +129,9 @@
            transition-all duration-normal
            hover:bg-gold/90 hover:-translate-y-px hover:shadow-md
            active:translate-y-0
-           disabled:bg-gray-light disabled:text-gray-warm disabled:cursor-not-allowed;
+           disabled:bg-gray-light disabled:text-gray-warm disabled:cursor-not-allowed
+           dark:bg-[#C9A870] dark:text-[#121212]
+           dark:hover:bg-[#C9A870]/90;
   }
 
   .btn-gold-outline {
@@ -105,7 +139,9 @@
            border border-gold
            transition-all duration-normal
            hover:bg-gold hover:text-white
-           active:bg-gold/90;
+           active:bg-gold/90
+           dark:text-[#C9A870] dark:border-[#C9A870]
+           dark:hover:bg-[#C9A870] dark:hover:text-[#121212];
   }
 
   /* Filter pill buttons - per DESIGN_SYSTEM.md */
@@ -113,11 +149,14 @@
     @apply bg-transparent text-black px-4 py-2 text-body-sm font-normal
            border border-gray-light rounded-full
            transition-all duration-normal
-           hover:border-gray-warm;
+           hover:border-gray-warm
+           dark:text-[#F0F0F0] dark:border-[#333333]
+           dark:hover:border-[#A0A0A0];
   }
 
   .filter-pill-active {
-    @apply bg-black text-white border-black;
+    @apply bg-black text-white border-black
+           dark:bg-[#F0F0F0] dark:text-[#121212] dark:border-[#F0F0F0];
   }
 
   /* Form input styles */
@@ -126,49 +165,61 @@
            bg-white text-black text-body
            transition-all duration-normal
            focus:border-black focus:outline-none
-           placeholder:text-gray-warm;
+           placeholder:text-gray-warm
+           dark:bg-[#1A1A1A] dark:text-[#F0F0F0] dark:border-[#333333]
+           dark:focus:border-[#F0F0F0]
+           dark:placeholder:text-[#666666];
   }
 
   .input-error {
-    @apply border-error bg-red-50;
+    @apply border-error bg-red-50
+           dark:border-[#EF5350] dark:bg-[#EF5350]/10;
   }
 
   .input-success {
-    @apply border-success;
+    @apply border-success
+           dark:border-[#4CAF50];
   }
 
   .label {
-    @apply block text-body-sm font-medium text-black mb-2;
+    @apply block text-body-sm font-medium text-black mb-2
+           dark:text-[#F0F0F0];
   }
 
   .helper-text {
-    @apply text-caption text-gray-warm mt-1;
+    @apply text-caption text-gray-warm mt-1
+           dark:text-[#A0A0A0];
   }
 
   /* Card styles */
   .card {
     @apply bg-white border border-gray-light
            transition-all duration-slow
-           hover:shadow-lg hover:-translate-y-0.5;
+           hover:shadow-lg hover:-translate-y-0.5
+           dark:bg-[#1A1A1A] dark:border-[#333333];
   }
 
   .card-bordered {
     @apply bg-white border border-gray-light
            transition-all duration-slow
            hover:shadow-lg hover:-translate-y-0.5
-           hover:border-gray-warm/30;
+           hover:border-gray-warm/30
+           dark:bg-[#1A1A1A] dark:border-[#333333]
+           dark:hover:border-[#555555];
   }
 
   .card-elevated {
     @apply bg-white shadow-sm
            transition-all duration-slow
-           hover:shadow-lg hover:-translate-y-1;
+           hover:shadow-lg hover:-translate-y-1
+           dark:bg-[#1A1A1A];
   }
 
   .card-featured {
     @apply bg-white border-l-2 border-l-gold
            transition-all duration-slow
-           hover:shadow-lg;
+           hover:shadow-lg
+           dark:bg-[#1A1A1A] dark:border-l-[#C9A870];
   }
 
   /* Gold accent section divider */
@@ -178,16 +229,18 @@
 
   .section-divider::before {
     content: '';
-    @apply w-16 h-px bg-gold;
+    @apply w-16 h-px bg-gold dark:bg-[#C9A870];
   }
 
   .section-divider-full {
-    @apply w-full h-px bg-gold/30 my-12 md:my-16;
+    @apply w-full h-px bg-gold/30 my-12 md:my-16
+           dark:bg-[#C9A870]/30;
   }
 
   /* Exhibition label styling - museum-like metadata display */
   .exhibition-label {
-    @apply border-l-2 border-gold pl-4 py-1;
+    @apply border-l-2 border-gold pl-4 py-1
+           dark:border-[#C9A870];
   }
 
   /* Container */
@@ -271,6 +324,17 @@
   }
 }
 
+/* Dark mode skeleton shimmer */
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    #2A2A2A 25%,
+    #333333 50%,
+    #2A2A2A 75%
+  );
+  background-size: 200% 100%;
+}
+
 /* Subtle grain texture for hero sections */
 .grain-overlay {
   position: relative;
@@ -290,6 +354,11 @@
 .grain-overlay > * {
   position: relative;
   z-index: 2;
+}
+
+/* Slightly increase grain visibility on dark backgrounds */
+.dark .grain-overlay::after {
+  opacity: 0.05;
 }
 
 /* Hero Slide Opacity Slider Styling */
@@ -346,6 +415,37 @@
     0 4px 8px rgba(0, 0, 0, 0.1),
     0 8px 16px rgba(0, 0, 0, 0.15),
     0 16px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* View on Wall - Drag interaction */
+.artwork-draggable {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.artwork-draggable.is-dragging {
+  cursor: grabbing;
+}
+
+/* View on Wall - Centering guides */
+.drag-guide-line {
+  pointer-events: none;
+  position: absolute;
+  z-index: 5;
+}
+
+.drag-guide-vertical {
+  left: 50%;
+  top: 0;
+  bottom: 30%;
+  border-left: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+.drag-guide-horizontal {
+  left: 0;
+  right: 0;
+  border-top: 1px dashed rgba(255, 255, 255, 0.3);
 }
 
 /* Respect reduced motion preferences */

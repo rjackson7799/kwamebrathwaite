@@ -54,7 +54,7 @@ export function PressCard({
   const CardContent = () => (
     <article className="card-bordered rounded-sm overflow-hidden h-full">
       {/* Image Container */}
-      <div className="relative aspect-video overflow-hidden bg-gray-light">
+      <div className="relative aspect-video overflow-hidden bg-gray-light dark:bg-[#2A2A2A]">
         {!pressItem.image_url || hasError ? (
           <ImagePlaceholder aspectRatio="16:9" showIcon />
         ) : (
@@ -92,7 +92,7 @@ export function PressCard({
         {/* Publication name with gold accent */}
         {pressItem.publication && (
           <div className="flex items-center gap-2 mb-3">
-            <span className="w-4 h-px bg-gold flex-shrink-0" aria-hidden="true" />
+            <span className="w-4 h-px bg-gold dark:bg-[#C9A870] flex-shrink-0" aria-hidden="true" />
             <p className="text-overline uppercase tracking-widest text-gray-warm">
               {pressItem.publication}
             </p>
@@ -100,7 +100,7 @@ export function PressCard({
         )}
 
         {/* Title */}
-        <h3 className="text-h4 font-medium text-black line-clamp-2">
+        <h3 className="text-h4 font-medium text-black dark:text-[#F0F0F0] line-clamp-2">
           {pressItem.title}
         </h3>
 
@@ -124,7 +124,7 @@ export function PressCard({
 
         {/* External link indicator */}
         {pressItem.url && (
-          <div className="mt-3 flex items-center gap-1 text-body-sm text-black group-hover:text-gray-warm transition-colors duration-fast">
+          <div className="mt-3 flex items-center gap-1 text-body-sm text-black dark:text-[#F0F0F0] group-hover:text-gray-warm dark:group-hover:text-[#A0A0A0] transition-colors duration-fast">
             <span>Read article</span>
             <svg
               className="w-4 h-4"

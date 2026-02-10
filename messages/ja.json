@@ -6,7 +6,8 @@
     "press": "プレス",
     "about": "について",
     "archive": "アーカイブ",
-    "contact": "お問い合わせ"
+    "contact": "お問い合わせ",
+    "licensing": "ライセンス"
   },
   "home": {
     "featuredWorks": "注目の作品",
@@ -43,6 +44,7 @@
       "inquiry_only": "要問い合わせ"
     },
     "inquire": "この作品についてお問い合わせ",
+    "requestLicense": "ライセンスを申請",
     "detail": {
       "backToGallery": "ギャラリーに戻る",
       "year": "年",
@@ -198,6 +200,74 @@
     "success": "お問い合わせありがとうございます。24時間以内にご返信いたします。",
     "error": "エラーが発生しました。もう一度お試しください。"
   },
+  "licensing": {
+    "title": "画像ライセンス",
+    "meta": {
+      "title": "画像ライセンス | クワメ・ブラスウェイト・アーカイブ",
+      "description": "クワメ・ブラスウェイトの象徴的な写真を、編集、商業、映画、教育、展示用途にライセンスしてください。"
+    },
+    "subtitle": "クワメ・ブラスウェイトの象徴的な写真をプロジェクトにライセンスしてください。",
+    "howItWorks": "ご利用方法",
+    "steps": {
+      "select": "作品を選択",
+      "selectDesc": "アーカイブからライセンスしたい画像を選んでください。",
+      "choose": "ライセンスタイプを選択",
+      "chooseDesc": "プロジェクトに合ったライセンスタイプを選択してください。",
+      "details": "詳細を記入",
+      "detailsDesc": "プロジェクト、地域、使用目的についてお知らせください。",
+      "review": "見積もりを受け取る",
+      "reviewDesc": "チームがリクエストを確認し、カスタム見積もりを提供します。"
+    },
+    "types": {
+      "editorial": "編集",
+      "editorialDesc": "書籍、雑誌、新聞、編集出版物",
+      "commercial": "商業",
+      "commercialDesc": "広告、ブランディング、マーケティング、商業キャンペーン",
+      "film": "映画 / ドキュメンタリー",
+      "filmDesc": "映画、ドキュメンタリー、映像制作、ストリーミングコンテンツ",
+      "educational": "教育",
+      "educationalDesc": "教科書、カリキュラム、教材、教育機関",
+      "exhibition": "展覧会 / 美術館",
+      "exhibitionDesc": "美術館展示、ギャラリー展覧会、機関プレゼンテーション"
+    },
+    "cta": "ライセンスをリクエスト",
+    "request": {
+      "title": "ライセンスリクエスト",
+      "meta": {
+        "title": "ライセンスリクエスト | クワメ・ブラスウェイト・アーカイブ",
+        "description": "クワメ・ブラスウェイトの写真のライセンスリクエストを送信してください。"
+      },
+      "stepArtworks": "作品を選択",
+      "stepLicenseType": "ライセンスタイプ",
+      "stepDetails": "使用詳細",
+      "stepContact": "連絡先情報",
+      "stepReview": "確認して送信",
+      "artworkSearch": "作品を検索...",
+      "selectedArtworks": "選択した作品",
+      "noArtworksSelected": "まだ作品が選択されていません。最大10作品を検索して選択してください。",
+      "maxArtworks": "リクエストごとに最大10作品",
+      "territory": "地域",
+      "territoryPlaceholder": "例：北米、世界全域",
+      "duration": "期間",
+      "durationPlaceholder": "例：1年、5年、永久",
+      "printRun": "発行部数 / リーチ",
+      "printRunPlaceholder": "例：5,000部、100万インプレッション",
+      "usageDescription": "使用目的を説明してください",
+      "usageDescriptionPlaceholder": "画像の使用方法を説明してください。",
+      "name": "氏名",
+      "email": "メールアドレス",
+      "company": "会社名 / 組織名（任意）",
+      "phone": "電話番号（任意）",
+      "reviewIntro": "送信前にライセンスリクエストの内容をご確認ください。",
+      "artworksCount": "{count}点の作品を選択",
+      "submit": "ライセンスリクエストを送信",
+      "submitting": "送信中...",
+      "next": "次へ",
+      "back": "戻る",
+      "success": "ライセンスリクエストが正常に送信されました！リクエスト番号は{requestNumber}です。3〜5営業日以内にご連絡いたします。",
+      "error": "送信中にエラーが発生しました。もう一度お試しください。"
+    }
+  },
   "common": {
     "skipToContent": "メインコンテンツへスキップ",
     "loading": "読み込み中...",
@@ -224,7 +294,8 @@
     "copyright": "© {year} クワメ・ブラスウェイト・アーカイブ 無断複写・転載を禁じます。",
     "links": {
       "privacy": "プライバシーポリシー",
-      "terms": "利用規約"
+      "terms": "利用規約",
+      "licensing": "画像ライセンス"
     }
   },
   "languageSwitcher": {
@@ -232,5 +303,9 @@
     "en": "English",
     "fr": "Français",
     "ja": "日本語"
+  },
+  "theme": {
+    "switchToLight": "ライトモードに切替",
+    "switchToDark": "ダークモードに切替"
   }
 }

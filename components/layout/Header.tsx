@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { MobileMenu } from './MobileMenu'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
 const navLinks = [
   { href: '/', key: 'home' },
@@ -50,12 +51,12 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-sticky bg-white border-b border-gray-light">
+    <header className="sticky top-0 z-sticky bg-white dark:bg-[#121212] border-b border-gray-light dark:border-[#333333]">
       <div className="flex items-center justify-between h-20 px-6 md:px-12 max-w-container mx-auto">
         {/* Logo */}
         <Link
           href={getLocalizedHref('/')}
-          className="font-serif text-2xl md:text-[1.75rem] text-black hover:text-gray-warm transition-colors duration-fast"
+          className="font-serif text-2xl md:text-[1.75rem] text-black dark:text-[#F0F0F0] hover:text-gray-warm dark:hover:text-[#A0A0A0] transition-colors duration-fast"
         >
           Kwame Brathwaite
         </Link>
@@ -68,30 +69,32 @@ export function Header() {
               href={getLocalizedHref(href)}
               className={`text-[11px] font-normal tracking-[0.08em] uppercase transition-colors duration-200 pb-1 ${
                 isActive(href)
-                  ? 'font-medium text-black border-b-2 border-black'
-                  : 'text-black hover:text-gray-600'
+                  ? 'font-medium text-black dark:text-[#F0F0F0] border-b-2 border-black dark:border-[#F0F0F0]'
+                  : 'text-black dark:text-[#F0F0F0] hover:text-gray-600 dark:hover:text-[#A0A0A0]'
               }`}
             >
               {t(key)}
             </Link>
           ))}
 
-          {/* Language Switcher */}
-          <div className="ml-4 pl-4 border-l border-gray-light">
+          {/* Language Switcher + Theme Toggle */}
+          <div className="ml-4 pl-4 border-l border-gray-light dark:border-[#333333] flex items-center gap-2">
             <LanguageSwitcher variant="light" />
+            <ThemeToggle />
           </div>
         </nav>
 
-        {/* Mobile: Language Switcher + Menu Button */}
+        {/* Mobile: Language Switcher + Theme Toggle + Menu Button */}
         <div className="flex items-center gap-1 md:hidden">
           <LanguageSwitcher variant="light" />
+          <ThemeToggle />
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(true)}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-menu"
             aria-label="Open menu"
-            className="p-2 -mr-2 text-black hover:text-gray-warm transition-colors duration-fast"
+            className="p-2 -mr-2 text-black dark:text-[#F0F0F0] hover:text-gray-warm dark:hover:text-[#A0A0A0] transition-colors duration-fast"
           >
             <svg
               className="w-6 h-6"

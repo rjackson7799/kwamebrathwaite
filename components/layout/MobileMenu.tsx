@@ -120,17 +120,17 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         role="dialog"
         aria-modal="true"
         aria-label="Mobile navigation"
-        className={`fixed top-0 right-0 h-full w-full max-w-sm bg-white z-modal transform transition-transform duration-slow ${
+        className={`fixed top-0 right-0 h-full w-full max-w-sm bg-white dark:bg-[#1A1A1A] z-modal transform transition-transform duration-slow ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* Header with close button */}
-        <div className="flex items-center justify-end h-20 px-6 border-b border-gray-light">
+        <div className="flex items-center justify-end h-20 px-6 border-b border-gray-light dark:border-[#333333]">
           <button
             type="button"
             onClick={onClose}
             aria-label={tCommon('close')}
-            className="p-2 -mr-2 text-black hover:text-gray-warm transition-colors duration-fast"
+            className="p-2 -mr-2 text-black dark:text-[#F0F0F0] hover:text-gray-warm dark:hover:text-[#A0A0A0] transition-colors duration-fast"
           >
             <svg
               className="w-6 h-6"
@@ -151,10 +151,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               key={href}
               href={getLocalizedHref(href)}
               onClick={onClose}
-              className={`flex items-center px-6 min-h-[44px] text-sm tracking-[0.08em] uppercase border-b border-gray-light transition-colors duration-200 ${
+              className={`flex items-center px-6 min-h-[44px] text-sm tracking-[0.08em] uppercase border-b border-gray-light dark:border-[#333333] transition-colors duration-200 ${
                 isActive(href)
-                  ? 'text-black font-medium'
-                  : 'text-black hover:text-gray-600'
+                  ? 'text-black dark:text-[#F0F0F0] font-medium'
+                  : 'text-black dark:text-[#F0F0F0] hover:text-gray-600 dark:hover:text-[#A0A0A0]'
               }`}
             >
               {t(key)}

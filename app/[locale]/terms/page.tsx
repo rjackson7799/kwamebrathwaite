@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default function TermsPage() {
   return (
     <div className="container-page section-spacing">
-      <div className="max-w-3xl mx-auto prose prose-lg">
+      <div className="max-w-3xl mx-auto prose prose-lg dark:prose-invert">
         <h1>Terms of Use</h1>
 
         <p className="text-body-lg text-gray-warm">

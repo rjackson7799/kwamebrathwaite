@@ -51,7 +51,7 @@ export function AddToCalendarButton({ exhibition }: AddToCalendarButtonProps) {
       <button
         onClick={handleAddToCalendar}
         disabled={!exhibition.start_date || !exhibition.end_date}
-        className="w-full p-2 border border-gray-300 hover:bg-gray-50 transition-colors flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full p-2 border border-gray-300 dark:border-[#333333] hover:bg-gray-50 dark:hover:bg-[#2A2A2A] transition-colors flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         title={t('addToCalendar')}
       >
         <span aria-hidden="true">📅</span>

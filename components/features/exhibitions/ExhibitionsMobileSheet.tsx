@@ -88,7 +88,7 @@ export function ExhibitionsMobileSheet({
     <div
       ref={sheetRef}
       className={`
-        absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.15)]
+        absolute bottom-0 left-0 right-0 bg-white dark:bg-[#1A1A1A] rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.15)]
         transition-all duration-300 ease-out
       `}
       style={{
@@ -104,12 +104,12 @@ export function ExhibitionsMobileSheet({
         onTouchEnd={handleTouchEnd}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="w-10 h-1 bg-gray-300 rounded-full" />
+        <div className="w-10 h-1 bg-gray-300 dark:bg-[#555555] rounded-full" />
       </div>
 
       {/* Header */}
-      <div className="px-4 pb-3 border-b border-gray-100">
-        <p className="text-sm font-medium text-gray-900">
+      <div className="px-4 pb-3 border-b border-gray-100 dark:border-[#2A2A2A]">
+        <p className="text-sm font-medium text-gray-900 dark:text-[#F0F0F0]">
           {isLoading ? (
             <span className="animate-pulse">Loading...</span>
           ) : (
@@ -127,23 +127,23 @@ export function ExhibitionsMobileSheet({
           <div className="p-4 space-y-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex gap-3 animate-pulse">
-                <div className="w-20 h-20 bg-gray-200 rounded flex-shrink-0" />
+                <div className="w-20 h-20 bg-gray-200 dark:bg-[#333333] rounded flex-shrink-0" />
                 <div className="flex-1">
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
-                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-1" />
-                  <div className="h-3 bg-gray-200 rounded w-1/3" />
+                  <div className="h-4 bg-gray-200 dark:bg-[#333333] rounded w-3/4 mb-2" />
+                  <div className="h-3 bg-gray-200 dark:bg-[#333333] rounded w-1/2 mb-1" />
+                  <div className="h-3 bg-gray-200 dark:bg-[#333333] rounded w-1/3" />
                 </div>
               </div>
             ))}
           </div>
         ) : exhibitions.length === 0 ? (
           // Empty state
-          <div className="p-8 text-center text-gray-500">
+          <div className="p-8 text-center text-gray-500 dark:text-[#A0A0A0]">
             <p>{t('map.noExhibitions')}</p>
           </div>
         ) : (
           // Exhibition list
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-gray-100 dark:divide-[#333333]">
             {exhibitions.map((exhibition) => {
               const isSelected = selectedExhibition?.id === exhibition.id
               const status = STATUS_CONFIG[exhibition.exhibition_type]
@@ -154,7 +154,7 @@ export function ExhibitionsMobileSheet({
                   onClick={() => onExhibitionSelect(exhibition)}
                   className={`
                     flex gap-3 p-4 cursor-pointer transition-colors
-                    ${isSelected ? 'bg-gray-100' : 'active:bg-gray-50'}
+                    ${isSelected ? 'bg-gray-100 dark:bg-[#2A2A2A]' : 'active:bg-gray-50 dark:active:bg-[#2A2A2A]'}
                   `}
                 >
                   {/* Thumbnail */}
@@ -183,19 +183,19 @@ export function ExhibitionsMobileSheet({
                     </span>
 
                     {/* Title */}
-                    <h4 className="font-medium text-gray-900 text-sm line-clamp-1">
+                    <h4 className="font-medium text-gray-900 dark:text-[#F0F0F0] text-sm line-clamp-1">
                       {exhibition.title}
                     </h4>
 
                     {/* Venue */}
                     {exhibition.venue && (
-                      <p className="text-xs text-gray-600 line-clamp-1">
+                      <p className="text-xs text-gray-600 dark:text-[#A0A0A0] line-clamp-1">
                         {exhibition.venue}
                       </p>
                     )}
 
                     {/* Location + Dates */}
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-gray-400 dark:text-[#666666] mt-1">
                       {[exhibition.city, exhibition.country].filter(Boolean).join(', ')}
                       {formatDateRange(exhibition.start_date, exhibition.end_date) && (
                         <> · {formatDateRange(exhibition.start_date, exhibition.end_date)}</>
@@ -206,7 +206,7 @@ export function ExhibitionsMobileSheet({
                   {/* Selected indicator */}
                   {isSelected && (
                     <div className="flex items-center">
-                      <div className="w-2 h-2 bg-black rounded-full" />
+                      <div className="w-2 h-2 bg-black dark:bg-white rounded-full" />
                     </div>
                   )}
                 </div>

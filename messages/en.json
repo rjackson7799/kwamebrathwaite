@@ -6,7 +6,8 @@
     "press": "Press",
     "about": "About",
     "archive": "The Archive",
-    "contact": "Contact"
+    "contact": "Contact",
+    "licensing": "Licensing"
   },
   "home": {
     "featuredWorks": "Featured Works",
@@ -43,6 +44,7 @@
       "inquiry_only": "Inquiry Only"
     },
     "inquire": "Inquire About This Work",
+    "requestLicense": "Request License",
     "detail": {
       "backToGallery": "Back to Gallery",
       "year": "Year",
@@ -61,6 +63,43 @@
         "white": "White Wall",
         "gray": "Gray Wall",
         "dark": "Dark Wall"
+      },
+      "rooms": {
+        "galleryWhiteCube": "Gallery White Cube",
+        "modernLivingRoom": "Modern Living Room",
+        "museumSpace": "Museum Space",
+        "industrialLoft": "Industrial Loft",
+        "brownstoneParlor": "Brownstone Parlor",
+        "minimalistOffice": "Minimalist Office",
+        "collectorsStudy": "Collector's Study",
+        "contemporaryGallery": "Contemporary Gallery",
+        "customRoom": "+ Custom Room",
+        "customRoomLabel": "AI Generated"
+      },
+      "aiRoom": {
+        "unlockTitle": "Unlock Custom Room Creation",
+        "unlockDescription": "Enter your email to create AI-generated room scenes for visualizing artwork.",
+        "emailPlaceholder": "your@email.com",
+        "invalidEmail": "Please enter a valid email address.",
+        "submit": "Unlock",
+        "privacyNote": "We respect your privacy. Your email will only be used for archive updates.",
+        "promptTitle": "Describe Your Room",
+        "promptPlaceholder": "Describe the room you'd like to see this artwork in...",
+        "generate": "Generate",
+        "generating": "Creating...",
+        "remaining": "{count} of {total} generations remaining",
+        "limitReached": "Generation limit reached for this session.",
+        "error": "Failed to generate room. Please try again.",
+        "contentPolicy": "The prompt couldn't be processed. Try a different description.",
+        "dragHint": "Drag artwork to reposition on wall. Double-click to reset.",
+        "chips": {
+          "modernLoft": "Modern loft with brick walls",
+          "minimalistGallery": "Minimalist gallery",
+          "cozyLivingRoom": "Cozy living room",
+          "museumLighting": "Museum with track lighting",
+          "midCentury": "Mid-century modern apartment",
+          "scandinavian": "Scandinavian studio"
+        }
       },
       "shareLink": "Copy Link",
       "shareLinkCopied": "Link copied!",
@@ -198,6 +237,74 @@
     "success": "Thank you for your inquiry. We will respond within 24 hours.",
     "error": "There was an error submitting your inquiry. Please try again."
   },
+  "licensing": {
+    "title": "Image Licensing",
+    "meta": {
+      "title": "Image Licensing | Kwame Brathwaite Archive",
+      "description": "License iconic photographs by Kwame Brathwaite for editorial, commercial, film, educational, and exhibition use."
+    },
+    "subtitle": "License iconic photographs by Kwame Brathwaite for your project.",
+    "howItWorks": "How It Works",
+    "steps": {
+      "select": "Select Artworks",
+      "selectDesc": "Choose the images you'd like to license from our archive.",
+      "choose": "Choose License Type",
+      "chooseDesc": "Select the type of license that fits your project.",
+      "details": "Provide Details",
+      "detailsDesc": "Tell us about your project, territory, and intended use.",
+      "review": "Receive a Quote",
+      "reviewDesc": "Our team will review your request and provide a custom quote."
+    },
+    "types": {
+      "editorial": "Editorial",
+      "editorialDesc": "Books, magazines, newspapers, and editorial publications",
+      "commercial": "Commercial",
+      "commercialDesc": "Advertising, branding, marketing, and commercial campaigns",
+      "film": "Film / Documentary",
+      "filmDesc": "Films, documentaries, video productions, and streaming content",
+      "educational": "Educational",
+      "educationalDesc": "Textbooks, curricula, classroom materials, and educational institutions",
+      "exhibition": "Exhibition / Museum",
+      "exhibitionDesc": "Museum displays, gallery exhibitions, and institutional presentations"
+    },
+    "cta": "Request a License",
+    "request": {
+      "title": "Request a License",
+      "meta": {
+        "title": "License Request | Kwame Brathwaite Archive",
+        "description": "Submit a request to license photographs by Kwame Brathwaite for your project."
+      },
+      "stepArtworks": "Select Artworks",
+      "stepLicenseType": "License Type",
+      "stepDetails": "Usage Details",
+      "stepContact": "Contact Info",
+      "stepReview": "Review & Submit",
+      "artworkSearch": "Search artworks...",
+      "selectedArtworks": "Selected Artworks",
+      "noArtworksSelected": "No artworks selected yet. Search and select up to 10 artworks.",
+      "maxArtworks": "Maximum 10 artworks per request",
+      "territory": "Territory",
+      "territoryPlaceholder": "e.g., North America, Worldwide",
+      "duration": "Duration",
+      "durationPlaceholder": "e.g., 1 year, 5 years, perpetual",
+      "printRun": "Print Run / Reach",
+      "printRunPlaceholder": "e.g., 5,000 copies, 1M impressions",
+      "usageDescription": "Describe Your Intended Use",
+      "usageDescriptionPlaceholder": "Please describe how you plan to use the images, including the project name, publication, or platform.",
+      "name": "Full Name",
+      "email": "Email Address",
+      "company": "Company / Organization (Optional)",
+      "phone": "Phone (Optional)",
+      "reviewIntro": "Please review your license request before submitting.",
+      "artworksCount": "{count} artwork(s) selected",
+      "submit": "Submit License Request",
+      "submitting": "Submitting...",
+      "next": "Next",
+      "back": "Back",
+      "success": "Your license request has been submitted successfully! Your request number is {requestNumber}. We will review your request and respond within 3-5 business days.",
+      "error": "There was an error submitting your request. Please try again."
+    }
+  },
   "common": {
     "skipToContent": "Skip to main content",
     "loading": "Loading...",
@@ -224,7 +331,8 @@
     "copyright": "© {year} Kwame Brathwaite Archive. All rights reserved.",
     "links": {
       "privacy": "Privacy Policy",
-      "terms": "Terms of Use"
+      "terms": "Terms of Use",
+      "licensing": "Image Licensing"
     }
   },
   "languageSwitcher": {
@@ -232,5 +340,9 @@
     "en": "English",
     "fr": "Français",
     "ja": "日本語"
+  },
+  "theme": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
   }
 }

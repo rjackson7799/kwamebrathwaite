@@ -37,7 +37,7 @@ export function ShareButton({ exhibition }: ShareButtonProps) {
     <div className="relative flex-1">
       <button
         onClick={handleShare}
-        className="w-full p-2 border border-gray-300 hover:bg-gray-50 transition-colors flex items-center justify-center text-sm"
+        className="w-full p-2 border border-gray-300 dark:border-[#333333] hover:bg-gray-50 dark:hover:bg-[#2A2A2A] transition-colors flex items-center justify-center text-sm"
         title={t('share')}
       >
         <span aria-hidden="true">📤</span>

@@ -72,10 +72,10 @@ export function TimelineItem({
           absolute left-0 top-1
           w-3 h-3
           rounded-full
-          border-2 border-white
+          border-2 border-white dark:border-[#121212]
           shadow-sm
           transition-transform duration-normal
-          ${isMilestone ? 'bg-gold' : 'bg-charcoal'}
+          ${isMilestone ? 'bg-gold dark:bg-[#C9A870]' : 'bg-charcoal'}
         `}
         style={{ transform: 'translateX(-50%)' }}
       />
@@ -84,7 +84,7 @@ export function TimelineItem({
       <article
         className={`
           card-bordered rounded-sm
-          bg-white
+          bg-white dark:bg-[#1A1A1A]
           p-4 md:p-6
           transition-all duration-slow
           hover:shadow-lg hover:-translate-y-0.5
@@ -110,7 +110,7 @@ export function TimelineItem({
         {/* Title */}
         <h3
           id={`event-title-${event.id}`}
-          className="text-h4 font-medium text-black mb-1"
+          className="text-h4 font-medium text-black dark:text-[#F0F0F0] mb-1"
         >
           {event.title}
         </h3>
@@ -124,7 +124,7 @@ export function TimelineItem({
 
         {/* Optional image */}
         {event.image_url && !hasError && (
-          <div className="relative mt-4 aspect-video overflow-hidden rounded-sm bg-gray-light">
+          <div className="relative mt-4 aspect-video overflow-hidden rounded-sm bg-gray-light dark:bg-[#2A2A2A]">
             {isLoading && (
               <div className="absolute inset-0">
                 <ImagePlaceholder aspectRatio="16:9" />

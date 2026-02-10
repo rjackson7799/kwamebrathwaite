@@ -179,7 +179,7 @@ function WorksContent() {
                 setSearchInput('')
                 updateFilters({ q: null, category: null })
               }}
-              className="text-body-sm text-gray-warm hover:text-black underline transition-colors"
+              className="text-body-sm text-gray-warm hover:text-black dark:hover:text-[#F0F0F0] underline transition-colors"
             >
               {t('search.clearFilters')}
             </button>
@@ -245,17 +245,17 @@ function WorksPageSkeleton() {
   return (
     <div className="container-page section-spacing">
       {/* Title skeleton */}
-      <div className="h-12 w-32 bg-gray-light rounded animate-pulse mb-8" />
+      <div className="h-12 w-32 bg-gray-light dark:bg-[#2A2A2A] rounded animate-pulse mb-8" />
 
       {/* Search bar skeleton */}
-      <div className="h-12 w-full md:max-w-[400px] bg-gray-light rounded-full animate-pulse mb-4" />
+      <div className="h-12 w-full md:max-w-[400px] bg-gray-light dark:bg-[#2A2A2A] rounded-full animate-pulse mb-4" />
 
       {/* Filter pills skeleton */}
       <div className="flex gap-2 mb-8">
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="h-10 w-24 bg-gray-light rounded-full animate-pulse"
+            className="h-10 w-24 bg-gray-light dark:bg-[#2A2A2A] rounded-full animate-pulse"
           />
         ))}
       </div>
@@ -263,7 +263,7 @@ function WorksPageSkeleton() {
       {/* Grid skeleton */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
         {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-          <div key={i} className="aspect-[4/5] bg-gray-light rounded animate-pulse" />
+          <div key={i} className="aspect-[4/5] bg-gray-light dark:bg-[#2A2A2A] rounded animate-pulse" />
         ))}
       </div>
     </div>

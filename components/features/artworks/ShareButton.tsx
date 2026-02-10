@@ -115,9 +115,9 @@ export function ShareButton({ url, title, description }: ShareButtonProps) {
           inline-flex items-center gap-2
           px-4 py-2
           text-[11px] font-medium uppercase tracking-[0.08em]
-          text-black
-          border border-gray-300
-          hover:border-black
+          text-black dark:text-[#F0F0F0]
+          border border-gray-300 dark:border-[#333333]
+          hover:border-black dark:hover:border-[#F0F0F0]
           transition-colors duration-fast
           rounded-sm
         "
@@ -136,8 +136,8 @@ export function ShareButton({ url, title, description }: ShareButtonProps) {
           className="
             absolute right-0 mt-2
             w-48
-            bg-white
-            border border-gray-200
+            bg-white dark:bg-[#1A1A1A]
+            border border-gray-200 dark:border-[#333333]
             rounded-sm
             shadow-lg
             z-dropdown
@@ -157,8 +157,8 @@ export function ShareButton({ url, title, description }: ShareButtonProps) {
                   className="
                     flex items-center gap-3
                     w-full px-4 py-2
-                    text-sm text-gray-700
-                    hover:bg-gray-50
+                    text-sm text-gray-700 dark:text-[#C0C0C0]
+                    hover:bg-gray-50 dark:hover:bg-white/5
                     transition-colors
                   "
                   role="menuitem"

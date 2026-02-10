@@ -8,6 +8,7 @@ import { useState } from 'react'
 
 export interface Exhibition {
   id: string
+  slug: string
   title: string
   venue?: string | null
   city?: string | null
@@ -44,8 +45,8 @@ export function ExhibitionCard({
   const [hasError, setHasError] = useState(false)
 
   const href = locale === 'en'
-    ? `/exhibitions/${exhibition.id}`
-    : `/${locale}/exhibitions/${exhibition.id}`
+    ? `/exhibitions/${exhibition.slug}`
+    : `/${locale}/exhibitions/${exhibition.slug}`
 
   // Format date range
   const formatDateRange = () => {
@@ -71,9 +72,9 @@ export function ExhibitionCard({
   }
 
   const statusStyles: Record<string, string> = {
-    current: 'bg-gold text-white shadow-sm',
+    current: 'bg-gold dark:bg-[#C9A870] text-white dark:text-[#121212] shadow-sm',
     upcoming: 'bg-charcoal text-white',
-    past: 'bg-gray-light text-gray-warm',
+    past: 'bg-gray-light dark:bg-[#2A2A2A] text-gray-warm dark:text-[#A0A0A0]',
   }
 
   const statusLabels: Record<string, string> = {
@@ -99,7 +100,7 @@ export function ExhibitionCard({
         {/* Image Container */}
         <div
           className={`
-            relative overflow-hidden bg-gray-light
+            relative overflow-hidden bg-gray-light dark:bg-[#2A2A2A]
             ${isHorizontal ? 'w-1/3 flex-shrink-0 aspect-[4/3]' : 'aspect-video'}
           `}
         >
@@ -153,7 +154,7 @@ export function ExhibitionCard({
 
         {/* Content */}
         <div className={`p-4 ${isHorizontal ? 'flex flex-col justify-center' : ''}`}>
-          <h3 className="text-h4 font-medium text-black">
+          <h3 className="text-h4 font-medium text-black dark:text-[#F0F0F0]">
             {exhibition.title}
           </h3>
 

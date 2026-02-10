@@ -39,9 +39,9 @@ export default function ArchivePage() {
       <section className="max-w-3xl mb-16">
         <h2 className="text-h2 mb-6">{t('mission')}</h2>
         <div className="space-y-4">
-          <div className="h-4 bg-gray-light animate-pulse rounded" />
-          <div className="h-4 bg-gray-light animate-pulse rounded" />
-          <div className="h-4 bg-gray-light animate-pulse rounded w-3/4" />
+          <div className="h-4 bg-gray-light dark:bg-[#2A2A2A] animate-pulse rounded" />
+          <div className="h-4 bg-gray-light dark:bg-[#2A2A2A] animate-pulse rounded" />
+          <div className="h-4 bg-gray-light dark:bg-[#2A2A2A] animate-pulse rounded w-3/4" />
         </div>
       </section>
 
