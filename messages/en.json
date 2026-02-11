@@ -91,7 +91,7 @@
         "limitReached": "Generation limit reached for this session.",
         "error": "Failed to generate room. Please try again.",
         "contentPolicy": "The prompt couldn't be processed. Try a different description.",
-        "dragHint": "Drag artwork to reposition on wall. Double-click to reset.",
+        "dragHint": "Drag to reposition · Use slider to resize · Double-click to reset",
         "chips": {
           "modernLoft": "Modern loft with brick walls",
           "minimalistGallery": "Minimalist gallery",
@@ -356,7 +356,7 @@
     "comingSoon": "Coming Soon",
     "products": {
       "blackIsBeautifulBook": {
-        "name": "Black is Beautiful",
+        "name": "Kwame Brathwaite: Black Is Beautiful (Hardcover)",
         "description": "A comprehensive collection of Kwame Brathwaite's iconic photography documenting the Black is Beautiful movement."
       }
     }

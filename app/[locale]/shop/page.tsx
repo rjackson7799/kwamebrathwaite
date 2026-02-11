@@ -36,10 +36,11 @@ export default function ShopPage() {
     id: 'sample-book-1',
     name: t('products.blackIsBeautifulBook.name'),
     description: t('products.blackIsBeautifulBook.description'),
-    price: 29.99,
+    price: 49.99,
     currency: 'USD',
     category: 'books' as const,
     slug: 'black-is-beautiful-book',
+    image: '/images/bisb_book.jpg',
   }
 
   return (

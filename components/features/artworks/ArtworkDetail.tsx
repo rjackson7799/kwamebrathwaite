@@ -127,7 +127,7 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
             <button
               type="button"
               onClick={() => setIsLightboxOpen(true)}
-              className="relative w-full aspect-[4/5] overflow-hidden bg-gray-light dark:bg-[#2A2A2A] cursor-zoom-in group"
+              className="relative w-full aspect-[4/5] overflow-hidden cursor-zoom-in group"
               aria-label={t('detail.viewFullSize')}
             >
               {hasError ? (

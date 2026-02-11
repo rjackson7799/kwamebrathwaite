@@ -45,6 +45,12 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
   const [capturedEmail, setCapturedEmail] = useState<string | null>(null)
   const [generationsUsed, setGenerationsUsed] = useState(0)
 
+  // Artwork zoom (1.0 = calculated scale, range 0.5–1.5)
+  const [artworkZoom, setArtworkZoom] = useState(1.0)
+
+  // Hint overlay (auto-fades after 3s)
+  const [showHint, setShowHint] = useState(true)
+
   // Calculate artwork scale
   const artworkScale = calculateArtworkScale(artwork.dimensions, ROOM_HEIGHT_PX)
   const chairHeight = getChairScale(ROOM_HEIGHT_PX)
@@ -92,6 +98,14 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
       document.body.style.overflow = ''
     }
   }, [isOpen])
+
+  // Hint auto-fade: show for 3s, then fade out
+  useEffect(() => {
+    if (!isOpen) return
+    setShowHint(true)
+    const timer = setTimeout(() => setShowHint(false), 3000)
+    return () => clearTimeout(timer)
+  }, [isOpen, activeScene.id])
 
   // Keyboard navigation
   useEffect(() => {
@@ -281,31 +295,29 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
           <div
             className={`absolute artwork-draggable ${isDragging ? 'is-dragging' : ''}`}
             style={{
-              width: `${Math.min(artworkScale.width, 960 * 0.8)}px`,
-              height: `${Math.min(artworkScale.height, ROOM_HEIGHT_PX * 0.6)}px`,
+              width: `${Math.min(artworkScale.width * artworkZoom, 960 * 0.9)}px`,
+              height: `${Math.min(artworkScale.height * artworkZoom, ROOM_HEIGHT_PX * 0.7)}px`,
               top: `${position.y}%`,
               left: `${position.x}%`,
               transform: 'translate(-50%, -50%)',
-              maxWidth: '80%',
-              maxHeight: '55%',
+              maxWidth: `${Math.min(80 * artworkZoom, 95)}%`,
+              maxHeight: `${Math.min(55 * artworkZoom, 75)}%`,
               boxShadow: `0 ${shadowOffset}px ${shadowBlur}px rgba(0,0,0,0.15), 0 ${shadowOffset * 2}px ${shadowBlur * 2}px rgba(0,0,0,0.1)`,
               willChange: isDragging ? 'transform' : undefined,
             }}
-            onDoubleClick={resetPosition}
+            onDoubleClick={() => { resetPosition(); setArtworkZoom(1.0) }}
             {...dragHandlers}
             aria-label={t('detail.aiRoom.dragHint')}
           >
-            <div className="relative w-full h-full bg-white p-1 sm:p-2">
-              <div className="relative w-full h-full">
-                <Image
-                  src={artwork.image_url}
-                  alt={artwork.title}
-                  fill
-                  className="object-contain pointer-events-none"
-                  sizes="(max-width: 768px) 80vw, 50vw"
-                  draggable={false}
-                />
-              </div>
+            <div className="relative w-full h-full">
+              <Image
+                src={artwork.image_url}
+                alt={artwork.title}
+                fill
+                className="object-contain pointer-events-none"
+                sizes="(max-width: 768px) 80vw, 50vw"
+                draggable={false}
+              />
             </div>
           </div>
         )}
@@ -333,6 +345,46 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
             <span className="text-caption text-white">
               {artwork.dimensions}
             </span>
+          </div>
+        )}
+
+        {/* Hint overlay — auto-fades after 3s */}
+        <div
+          className={`
+            absolute top-4 left-1/2 -translate-x-1/2 z-20
+            bg-black/60 backdrop-blur-sm px-4 py-2 rounded-full
+            transition-opacity duration-1000 pointer-events-none
+            ${showHint ? 'opacity-100' : 'opacity-0'}
+          `}
+          aria-hidden="true"
+        >
+          <span className="text-caption text-white/90 whitespace-nowrap">
+            {t('detail.aiRoom.dragHint')}
+          </span>
+        </div>
+
+        {/* Resize slider */}
+        {artworkScale && (
+          <div className="absolute bottom-[120px] left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
+            {/* Small icon */}
+            <svg className="w-4 h-4 text-white/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="6" y="6" width="12" height="12" strokeWidth={1.5} rx="1" />
+            </svg>
+            <input
+              type="range"
+              min="0.5"
+              max="1.5"
+              step="0.05"
+              value={artworkZoom}
+              onChange={(e) => setArtworkZoom(parseFloat(e.target.value))}
+              onPointerDown={(e) => e.stopPropagation()}
+              className="wall-view-slider w-32 sm:w-48"
+              aria-label="Resize artwork"
+            />
+            {/* Large icon */}
+            <svg className="w-5 h-5 text-white/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" strokeWidth={1.5} rx="1" />
+            </svg>
           </div>
         )}
 

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { BookPlaceholder } from '@/components/ui/BookPlaceholder'
 
@@ -11,6 +12,7 @@ interface Product {
   currency: string
   category: 'books' | 'apparel' | 'posters' | 'accessories'
   slug: string
+  image?: string
 }
 
 interface ProductCardProps {
@@ -29,7 +31,16 @@ export function ProductCard({ product }: ProductCardProps) {
     <article className="group">
       {/* Image Container */}
       <div className="relative aspect-[4/5] overflow-hidden bg-gray-light dark:bg-[#2A2A2A] rounded-sm">
-        <BookPlaceholder title="Black is Beautiful" author="Kwame Brathwaite" />
+        {product.image ? (
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <BookPlaceholder title="Black is Beautiful" author="Kwame Brathwaite" />
+        )}
       </div>
 
       {/* Content */}

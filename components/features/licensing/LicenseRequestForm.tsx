@@ -14,7 +14,7 @@ const formSchema = z.object({
   email: z.string().email('Invalid email address').max(255),
   company: z.string().max(255).optional(),
   phone: z.string().max(50).optional(),
-  license_type_id: z.string().uuid('Please select a license type'),
+  license_type_id: z.string().min(1, 'Please select a license type'),
   territory: z.string().max(255).optional(),
   duration: z.string().max(100).optional(),
   print_run: z.string().max(100).optional(),
@@ -44,6 +44,14 @@ interface LicenseRequestFormProps {
 const STEPS = ['artworks', 'licenseType', 'details', 'contact', 'review'] as const
 type Step = typeof STEPS[number]
 
+const DEFAULT_LICENSE_TYPES: LicenseType[] = [
+  { id: 'editorial', name: 'Editorial', description: 'For use in books, magazines, newspapers, and editorial publications' },
+  { id: 'commercial', name: 'Commercial', description: 'For advertising, branding, marketing, and commercial campaigns' },
+  { id: 'film-documentary', name: 'Film / Documentary', description: 'For use in films, documentaries, video productions, and streaming content' },
+  { id: 'educational', name: 'Educational', description: 'For textbooks, curricula, classroom materials, and educational institutions' },
+  { id: 'exhibition-museum', name: 'Exhibition / Museum', description: 'For museum displays, gallery exhibitions, and institutional presentations' },
+]
+
 export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormProps) {
   const t = useTranslations('licensing.request')
   const locale = useLocale()
@@ -51,6 +59,7 @@ export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormP
   const [currentStep, setCurrentStep] = useState<number>(0)
   const [selectedArtworks, setSelectedArtworks] = useState<Artwork[]>([])
   const [licenseTypes, setLicenseTypes] = useState<LicenseType[]>([])
+  const [licenseTypesLoading, setLicenseTypesLoading] = useState(true)
   const [artworkSearchQuery, setArtworkSearchQuery] = useState('')
   const [artworkSearchResults, setArtworkSearchResults] = useState<Artwork[]>([])
   const [isSearching, setIsSearching] = useState(false)
@@ -80,16 +89,21 @@ export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormP
 
   const watchedLicenseTypeId = watch('license_type_id')
 
-  // Fetch license types on mount
+  // Fetch license types on mount, fall back to defaults if empty or failed
   useEffect(() => {
     fetch('/api/licensing/types')
       .then((res) => res.json())
       .then((res) => {
-        if (res.success) {
+        if (res.success && res.data?.length > 0) {
           setLicenseTypes(res.data)
+        } else {
+          setLicenseTypes(DEFAULT_LICENSE_TYPES)
         }
       })
-      .catch(console.error)
+      .catch(() => {
+        setLicenseTypes(DEFAULT_LICENSE_TYPES)
+      })
+      .finally(() => setLicenseTypesLoading(false))
   }, [])
 
   // Fetch preselected artwork
@@ -250,12 +264,12 @@ export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormP
       <h1 className="text-display-3 mb-8">{t('title')}</h1>
 
       {/* Step indicator */}
-      <div className="flex items-center mb-10 overflow-x-auto">
+      <div className="flex items-center justify-between mb-10">
         {stepLabels.map((label, index) => (
           <div key={label} className="flex items-center">
-            <div className="flex items-center gap-2 whitespace-nowrap">
+            <div className="flex items-center gap-1.5 md:gap-2 whitespace-nowrap">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-medium flex-shrink-0 ${
                   index === currentStep
                     ? 'bg-black text-white dark:bg-[#F0F0F0] dark:text-[#121212]'
                     : index < currentStep
@@ -264,19 +278,19 @@ export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormP
                 }`}
               >
                 {index < currentStep ? (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 ) : (
                   index + 1
                 )}
               </div>
-              <span className={`text-sm ${index === currentStep ? 'font-medium text-black dark:text-[#F0F0F0]' : 'text-gray-400 dark:text-[#666666]'}`}>
+              <span className={`text-sm hidden md:inline ${index === currentStep ? 'font-medium text-black dark:text-[#F0F0F0]' : 'text-gray-400 dark:text-[#666666]'}`}>
                 {label}
               </span>
             </div>
             {index < stepLabels.length - 1 && (
-              <div className={`w-8 h-px mx-2 ${index < currentStep ? 'bg-black dark:bg-[#F0F0F0]' : 'bg-gray-200 dark:bg-[#333333]'}`} />
+              <div className={`w-4 mx-1 md:w-8 md:mx-2 h-px ${index < currentStep ? 'bg-black dark:bg-[#F0F0F0]' : 'bg-gray-200 dark:bg-[#333333]'}`} />
             )}
           </div>
         ))}
@@ -397,7 +411,17 @@ export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormP
         {/* Step 2: License Type */}
         {STEPS[currentStep] === 'licenseType' && (
           <div className="space-y-4">
-            {licenseTypes.map((type) => (
+            {licenseTypesLoading && (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="border-2 border-gray-light dark:border-[#333333] p-5 animate-pulse">
+                    <div className="h-5 bg-gray-200 dark:bg-[#333333] rounded w-1/4 mb-2" />
+                    <div className="h-4 bg-gray-100 dark:bg-[#2A2A2A] rounded w-3/4" />
+                  </div>
+                ))}
+              </div>
+            )}
+            {!licenseTypesLoading && licenseTypes.map((type) => (
               <label
                 key={type.id}
                 className={`block border-2 p-5 cursor-pointer transition-colors ${
