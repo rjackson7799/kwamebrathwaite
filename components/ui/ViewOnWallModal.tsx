@@ -8,6 +8,7 @@ import { calculateArtworkScale, getChairScale } from '@/lib/utils'
 import { ROOM_SCENES, DEFAULT_ROOM_ID, getRoomScene } from '@/lib/constants/roomScenes'
 import type { RoomScene } from '@/lib/constants/roomScenes'
 import { useDragPosition } from '@/lib/hooks/useDragPosition'
+import { useViewportMode } from '@/lib/hooks/useViewportMode'
 import { RoomThumbnailStrip } from '@/components/ui/RoomThumbnailStrip'
 import { EmailCaptureModal } from '@/components/ui/EmailCaptureModal'
 import { CustomRoomPrompt } from '@/components/ui/CustomRoomPrompt'
@@ -25,8 +26,6 @@ interface ViewOnWallModalProps {
   onClose: () => void
 }
 
-// Room scene dimensions (aspect ratio 16:9)
-const ROOM_HEIGHT_PX = 540
 const MAX_GENERATIONS = 3
 
 export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalProps) {
@@ -34,6 +33,8 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const t = useTranslations('works')
   const tCommon = useTranslations('common')
+
+  const viewport = useViewportMode()
 
   const [activeScene, setActiveScene] = useState<RoomScene>(getRoomScene(DEFAULT_ROOM_ID))
   const [backgroundError, setBackgroundError] = useState<Set<string>>(new Set())
@@ -51,9 +52,9 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
   // Hint overlay (auto-fades after 3s)
   const [showHint, setShowHint] = useState(true)
 
-  // Calculate artwork scale
-  const artworkScale = calculateArtworkScale(artwork.dimensions, ROOM_HEIGHT_PX)
-  const chairHeight = getChairScale(ROOM_HEIGHT_PX)
+  // Calculate artwork scale using dynamic room height
+  const artworkScale = calculateArtworkScale(artwork.dimensions, viewport.roomHeightPx)
+  const chairHeight = getChairScale(viewport.roomHeightPx)
 
   // Default center position as percentages
   const defaultPosition = { x: 50, y: 28 }
@@ -75,6 +76,16 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
     },
     enabled: !showEmailCapture && !showCustomPrompt,
   })
+
+  // Reset position when viewport mode changes (e.g. orientation flip)
+  const prevMode = useRef(viewport.mode)
+  useEffect(() => {
+    if (prevMode.current !== viewport.mode) {
+      resetPosition()
+      setArtworkZoom(1.0)
+      prevMode.current = viewport.mode
+    }
+  }, [viewport.mode, resetPosition])
 
   // Load email from sessionStorage on mount
   useEffect(() => {
@@ -195,13 +206,55 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
   const shadowOffset = Math.round(4 + (position.y / 100) * 12)
   const shadowBlur = Math.round(8 + (position.y / 100) * 24)
 
+  const { externalControls } = viewport
+
+  // Shared slider JSX
+  const sliderElement = artworkScale && (
+    <div className={`flex items-center gap-3 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full ${
+      externalControls ? 'mx-auto w-fit' : 'absolute bottom-[120px] left-1/2 -translate-x-1/2 z-20'
+    }`}>
+      {/* Small icon */}
+      <svg className="w-4 h-4 text-white/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="6" y="6" width="12" height="12" strokeWidth={1.5} rx="1" />
+      </svg>
+      <input
+        type="range"
+        min="0.5"
+        max="1.5"
+        step="0.05"
+        value={artworkZoom}
+        onChange={(e) => setArtworkZoom(parseFloat(e.target.value))}
+        onPointerDown={(e) => e.stopPropagation()}
+        className="wall-view-slider w-32 sm:w-48"
+        aria-label="Resize artwork"
+      />
+      {/* Large icon */}
+      <svg className="w-5 h-5 text-white/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="4" y="4" width="16" height="16" strokeWidth={1.5} rx="1" />
+      </svg>
+    </div>
+  )
+
+  // Shared thumbnail strip props
+  const thumbnailStripProps = {
+    scenes: allScenes,
+    activeSceneId: activeScene.id,
+    onSelect: handleRoomSelect,
+    onCustomRoomClick: handleCustomRoomClick,
+    customRoomDisabled: generationsUsed >= MAX_GENERATIONS && !!capturedEmail,
+  }
+
   return createPortal(
     <div
       ref={modalRef}
       role="dialog"
       aria-modal="true"
       aria-label={t('detail.viewOnWallTitle')}
-      className="fixed inset-0 z-modal flex flex-col items-center justify-center bg-black/90 transition-opacity duration-slow"
+      className={`fixed inset-0 z-modal flex flex-col bg-black/90 transition-opacity duration-slow ${
+        externalControls
+          ? 'justify-start'
+          : 'items-center justify-center'
+      }`}
     >
       {/* Backdrop click to close */}
       <div
@@ -211,8 +264,14 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
       />
 
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 p-4 sm:p-6 flex justify-between items-center z-10">
-        <h2 className="text-overline text-white uppercase tracking-widest">
+      <div className={`${
+        externalControls
+          ? 'relative p-3 sm:p-4'
+          : 'absolute top-0 left-0 right-0 p-4 sm:p-6'
+      } flex justify-between items-center z-10 flex-shrink-0`}>
+        <h2 className={`text-overline text-white uppercase tracking-widest ${
+          externalControls ? 'text-[10px]' : ''
+        }`}>
           {t('detail.viewOnWallTitle')}
         </h2>
         <button
@@ -242,8 +301,15 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
       {/* Room Scene Container */}
       <div
         ref={containerRef}
-        className="relative w-full max-w-6xl mx-4 z-10"
-        style={{ aspectRatio: '16/9' }}
+        className={`relative w-full z-10 flex-shrink-0 ${
+          externalControls
+            ? 'mx-auto px-2 sm:px-4'
+            : 'max-w-6xl mx-4'
+        }`}
+        style={{
+          aspectRatio: viewport.aspectRatio,
+          ...(externalControls ? { maxWidth: '100%' } : {}),
+        }}
       >
         {/* Room Background */}
         <div
@@ -296,12 +362,12 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
             className={`absolute artwork-draggable ${isDragging ? 'is-dragging' : ''}`}
             style={{
               width: `${Math.min(artworkScale.width * artworkZoom, 960 * 0.9)}px`,
-              height: `${Math.min(artworkScale.height * artworkZoom, ROOM_HEIGHT_PX * 0.7)}px`,
+              height: `${Math.min(artworkScale.height * artworkZoom, viewport.roomHeightPx * 0.7)}px`,
               top: `${position.y}%`,
               left: `${position.x}%`,
               transform: 'translate(-50%, -50%)',
-              maxWidth: `${Math.min(80 * artworkZoom, 95)}%`,
-              maxHeight: `${Math.min(55 * artworkZoom, 75)}%`,
+              maxWidth: `${externalControls ? Math.min(85 * artworkZoom, 95) : Math.min(80 * artworkZoom, 95)}%`,
+              maxHeight: `${externalControls ? Math.min(65 * artworkZoom, 85) : Math.min(55 * artworkZoom, 75)}%`,
               boxShadow: `0 ${shadowOffset}px ${shadowBlur}px rgba(0,0,0,0.15), 0 ${shadowOffset * 2}px ${shadowBlur * 2}px rgba(0,0,0,0.1)`,
               willChange: isDragging ? 'transform' : undefined,
             }}
@@ -341,7 +407,9 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
 
         {/* Dimensions label */}
         {artwork.dimensions && (
-          <div className="absolute bottom-14 right-4 bg-black/60 px-3 py-1.5 rounded">
+          <div className={`absolute right-4 bg-black/60 px-3 py-1.5 rounded ${
+            externalControls ? 'bottom-2 text-[10px]' : 'bottom-14'
+          }`}>
             <span className="text-caption text-white">
               {artwork.dimensions}
             </span>
@@ -363,60 +431,50 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
           </span>
         </div>
 
-        {/* Resize slider */}
-        {artworkScale && (
-          <div className="absolute bottom-[120px] left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
-            {/* Small icon */}
-            <svg className="w-4 h-4 text-white/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="6" y="6" width="12" height="12" strokeWidth={1.5} rx="1" />
-            </svg>
-            <input
-              type="range"
-              min="0.5"
-              max="1.5"
-              step="0.05"
-              value={artworkZoom}
-              onChange={(e) => setArtworkZoom(parseFloat(e.target.value))}
-              onPointerDown={(e) => e.stopPropagation()}
-              className="wall-view-slider w-32 sm:w-48"
-              aria-label="Resize artwork"
-            />
-            {/* Large icon */}
-            <svg className="w-5 h-5 text-white/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="4" y="4" width="16" height="16" strokeWidth={1.5} rx="1" />
-            </svg>
-          </div>
-        )}
+        {/* Desktop: Resize slider inside room */}
+        {!externalControls && sliderElement}
 
-        {/* Room Thumbnail Strip */}
-        <RoomThumbnailStrip
-          scenes={allScenes}
-          activeSceneId={activeScene.id}
-          onSelect={handleRoomSelect}
-          onCustomRoomClick={handleCustomRoomClick}
-          customRoomDisabled={generationsUsed >= MAX_GENERATIONS && !!capturedEmail}
-        />
-
-        {/* Email Capture Modal */}
-        {showEmailCapture && (
-          <EmailCaptureModal
-            onEmailCaptured={handleEmailCaptured}
-            onClose={() => setShowEmailCapture(false)}
-            artworkId={artwork.id}
-          />
-        )}
-
-        {/* Custom Room Prompt */}
-        {showCustomPrompt && capturedEmail && (
-          <CustomRoomPrompt
-            email={capturedEmail}
-            onGenerated={handleRoomGenerated}
-            onClose={() => setShowCustomPrompt(false)}
-            remainingGenerations={MAX_GENERATIONS - generationsUsed}
-            maxGenerations={MAX_GENERATIONS}
-          />
+        {/* Desktop: Room Thumbnail Strip inside room */}
+        {!externalControls && (
+          <RoomThumbnailStrip {...thumbnailStripProps} />
         )}
       </div>
+
+      {/* Mobile: External controls below room */}
+      {externalControls && (
+        <div
+          className="flex-shrink-0 w-full px-2 sm:px-4 mt-2 z-10"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom, 8px)' }}
+        >
+          {/* Slider */}
+          <div className="mb-2">
+            {sliderElement}
+          </div>
+
+          {/* Thumbnail strip */}
+          <RoomThumbnailStrip {...thumbnailStripProps} variant="external" />
+        </div>
+      )}
+
+      {/* Email Capture Modal — fixed so it covers full viewport */}
+      {showEmailCapture && (
+        <EmailCaptureModal
+          onEmailCaptured={handleEmailCaptured}
+          onClose={() => setShowEmailCapture(false)}
+          artworkId={artwork.id}
+        />
+      )}
+
+      {/* Custom Room Prompt — fixed so it covers full viewport */}
+      {showCustomPrompt && capturedEmail && (
+        <CustomRoomPrompt
+          email={capturedEmail}
+          onGenerated={handleRoomGenerated}
+          onClose={() => setShowCustomPrompt(false)}
+          remainingGenerations={MAX_GENERATIONS - generationsUsed}
+          maxGenerations={MAX_GENERATIONS}
+        />
+      )}
     </div>,
     document.body
   )

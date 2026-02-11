@@ -70,7 +70,7 @@ export function EmailCaptureModal({
 
   return (
     <div
-      className="absolute inset-0 z-20 flex items-center justify-center bg-black/60"
+      className="fixed inset-0 z-20 flex items-center justify-center bg-black/60"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}

@@ -11,6 +11,8 @@ interface RoomThumbnailStripProps {
   onSelect: (scene: RoomScene) => void
   onCustomRoomClick: () => void
   customRoomDisabled?: boolean
+  /** 'overlay' renders absolutely inside room container; 'external' renders in flow below room */
+  variant?: 'overlay' | 'external'
 }
 
 export function RoomThumbnailStrip({
@@ -19,6 +21,7 @@ export function RoomThumbnailStrip({
   onSelect,
   onCustomRoomClick,
   customRoomDisabled = false,
+  variant = 'overlay',
 }: RoomThumbnailStripProps) {
   const t = useTranslations('works')
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -28,23 +31,33 @@ export function RoomThumbnailStrip({
     setImageErrors((prev) => new Set(prev).add(sceneId))
   }, [])
 
+  const isExternal = variant === 'external'
+
+  const thumbClass = isExternal
+    ? 'w-[72px] h-[40px] sm:w-[100px] sm:h-[56px]'
+    : 'w-[100px] h-[56px] sm:w-[120px] sm:h-[68px]'
+
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-10">
-      {/* Gradient backdrop */}
-      <div className="bg-gradient-to-t from-black/80 via-black/50 to-transparent pt-10 pb-4 px-4">
+    <div className={isExternal ? 'relative w-full' : 'absolute bottom-0 left-0 right-0 z-10'}>
+      {/* Gradient backdrop — only for overlay mode */}
+      <div className={
+        isExternal
+          ? 'pb-2 px-1'
+          : 'bg-gradient-to-t from-black/80 via-black/50 to-transparent pt-10 pb-4 px-4'
+      }>
         <div
           ref={scrollRef}
-          className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-1"
+          className={`flex gap-2 ${isExternal ? 'gap-2' : 'gap-3'} overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-1`}
           role="radiogroup"
           aria-label={t('detail.viewOnWallTitle')}
         >
-          {/* Custom Room button — first so users see AI option immediately */}
+          {/* Custom Room button */}
           <button
             type="button"
             onClick={onCustomRoomClick}
             disabled={customRoomDisabled}
             className={`
-              flex-shrink-0 snap-start flex flex-col items-center gap-1.5
+              flex-shrink-0 snap-start flex flex-col items-center gap-1
               transition-all duration-fast
               ${customRoomDisabled
                 ? 'opacity-40 cursor-not-allowed'
@@ -52,10 +65,10 @@ export function RoomThumbnailStrip({
               }
             `}
           >
-            <div className="relative w-[100px] h-[56px] sm:w-[120px] sm:h-[68px] rounded overflow-hidden border-2 border-dashed border-white/40 hover:border-white/70 flex items-center justify-center bg-white/5 transition-colors duration-fast">
+            <div className={`relative ${thumbClass} rounded overflow-hidden border-2 border-dashed border-white/40 hover:border-white/70 flex items-center justify-center bg-white/5 transition-colors duration-fast`}>
               {/* Sparkle/AI icon */}
               <svg
-                className="w-6 h-6 text-white/60"
+                className={`${isExternal ? 'w-4 h-4' : 'w-6 h-6'} text-white/60`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -69,9 +82,11 @@ export function RoomThumbnailStrip({
                 />
               </svg>
             </div>
-            <span className="text-[10px] sm:text-caption font-medium uppercase tracking-wider whitespace-nowrap text-white/60">
-              {t('detail.rooms.customRoom')}
-            </span>
+            {!isExternal && (
+              <span className="text-[10px] sm:text-caption font-medium uppercase tracking-wider whitespace-nowrap text-white/60">
+                {t('detail.rooms.customRoom')}
+              </span>
+            )}
           </button>
 
           {scenes.map((scene) => {
@@ -86,7 +101,7 @@ export function RoomThumbnailStrip({
                 aria-checked={isActive}
                 onClick={() => onSelect(scene)}
                 className={`
-                  flex-shrink-0 snap-start flex flex-col items-center gap-1.5
+                  flex-shrink-0 snap-start flex flex-col items-center gap-1
                   transition-all duration-fast group
                   ${isActive ? 'opacity-100' : 'opacity-70 hover:opacity-90'}
                 `}
@@ -94,7 +109,7 @@ export function RoomThumbnailStrip({
                 {/* Thumbnail */}
                 <div
                   className={`
-                    relative w-[100px] h-[56px] sm:w-[120px] sm:h-[68px] rounded overflow-hidden
+                    relative ${thumbClass} rounded overflow-hidden
                     transition-all duration-fast
                     ${isActive
                       ? 'ring-2 ring-white ring-offset-1 ring-offset-black/50 scale-105'
@@ -126,18 +141,20 @@ export function RoomThumbnailStrip({
                   )}
                 </div>
 
-                {/* Label */}
-                <span
-                  className={`
-                    text-[10px] sm:text-caption font-medium uppercase tracking-wider whitespace-nowrap
-                    transition-colors duration-fast
-                    ${isActive ? 'text-white' : 'text-white/70 group-hover:text-white/90'}
-                  `}
-                >
-                  {scene.isCustom
-                    ? t('detail.rooms.customRoomLabel')
-                    : t(`detail.rooms.${scene.name}`)}
-                </span>
+                {/* Label — hidden in external mode to save space */}
+                {!isExternal && (
+                  <span
+                    className={`
+                      text-[10px] sm:text-caption font-medium uppercase tracking-wider whitespace-nowrap
+                      transition-colors duration-fast
+                      ${isActive ? 'text-white' : 'text-white/70 group-hover:text-white/90'}
+                    `}
+                  >
+                    {scene.isCustom
+                      ? t('detail.rooms.customRoomLabel')
+                      : t(`detail.rooms.${scene.name}`)}
+                  </span>
+                )}
               </button>
             )
           })}

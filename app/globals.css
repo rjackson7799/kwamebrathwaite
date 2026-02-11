@@ -493,6 +493,25 @@
   border-radius: 2px;
 }
 
+/* View on Wall - Larger touch targets for mobile */
+@media (pointer: coarse) {
+  .wall-view-slider {
+    height: 6px;
+  }
+
+  .wall-view-slider::-webkit-slider-thumb {
+    width: 28px;
+    height: 28px;
+    border-width: 3px;
+  }
+
+  .wall-view-slider::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    border-width: 3px;
+  }
+}
+
 /* Respect reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *,
