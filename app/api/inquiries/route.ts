@@ -9,6 +9,8 @@ import {
   inquirySchema,
 } from '@/lib/api'
 import type { InquiryInsert } from '@/lib/supabase/types'
+import { sendUserEmail, sendAdminEmail } from '@/lib/email/send'
+import { InquiryUserEmail, InquiryAdminEmail } from '@/lib/email/templates'
 
 export async function POST(request: NextRequest) {
   try {
@@ -80,6 +82,33 @@ export async function POST(request: NextRequest) {
     }
 
     const result = data as { id: string } | null
+
+    // Send confirmation emails (non-blocking)
+    if (result) {
+      sendUserEmail(
+        inquiryData.email,
+        'Your inquiry has been received',
+        InquiryUserEmail({
+          name: inquiryData.name,
+          inquiryType: inquiryData.inquiry_type || null,
+          subject: inquiryData.subject || null,
+        })
+      )
+
+      sendAdminEmail(
+        `New ${inquiryData.inquiry_type || 'general'} inquiry from ${inquiryData.name}`,
+        InquiryAdminEmail({
+          name: inquiryData.name,
+          email: inquiryData.email,
+          phone: inquiryData.phone || null,
+          subject: inquiryData.subject || null,
+          message: inquiryData.message,
+          inquiryType: inquiryData.inquiry_type || null,
+          artworkId: inquiryData.artwork_id || null,
+          locale: inquiryData.locale,
+        })
+      )
+    }
 
     return successResponse(
       {

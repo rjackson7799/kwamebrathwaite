@@ -8,6 +8,8 @@ import {
   getClientIP,
   newsletterSchema,
 } from '@/lib/api'
+import { sendUserEmail } from '@/lib/email/send'
+import { NewsletterWelcomeEmail } from '@/lib/email/templates'
 
 interface NewsletterInsert {
   email: string
@@ -91,6 +93,13 @@ export async function POST(request: NextRequest) {
     }
 
     const result = data as { id: string } | null
+
+    // Send welcome email (non-blocking)
+    sendUserEmail(
+      email,
+      'Welcome to the Kwame Brathwaite Archive Newsletter',
+      NewsletterWelcomeEmail()
+    )
 
     return successResponse(
       {

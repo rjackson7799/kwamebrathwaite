@@ -8,6 +8,11 @@ import {
   getClientIP,
   licenseRequestSchema,
 } from '@/lib/api'
+import { sendUserEmail, sendAdminEmail } from '@/lib/email/send'
+import {
+  LicensingRequestUserEmail,
+  LicensingRequestAdminEmail,
+} from '@/lib/email/templates'
 
 /**
  * Generate a unique license request number: LIC-YYYY-NNN
@@ -124,6 +129,47 @@ export async function POST(request: NextRequest) {
         console.error('Database error inserting artwork associations:', artworkError)
         // Don't fail the whole request for this — the main request was saved
       }
+    }
+
+    // Send confirmation emails (non-blocking)
+    if (result) {
+      const { data: licenseTypeData } = await supabase
+        .from('license_types')
+        .select('name')
+        .eq('id', requestData.license_type_id)
+        .single()
+
+      const licenseTypeName =
+        (licenseTypeData as { name: string } | null)?.name || 'Standard'
+
+      sendUserEmail(
+        requestData.email,
+        `Licensing Request ${result.request_number} Received`,
+        LicensingRequestUserEmail({
+          name: requestData.name,
+          requestNumber: result.request_number,
+          licenseType: licenseTypeName,
+          artworkCount: artwork_ids.length,
+        })
+      )
+
+      sendAdminEmail(
+        `New Licensing Request: ${result.request_number}`,
+        LicensingRequestAdminEmail({
+          name: requestData.name,
+          email: requestData.email,
+          company: requestData.company || null,
+          phone: requestData.phone || null,
+          requestNumber: result.request_number,
+          licenseType: licenseTypeName,
+          territory: requestData.territory || null,
+          duration: requestData.duration || null,
+          printRun: requestData.print_run || null,
+          usageDescription: requestData.usage_description,
+          artworkCount: artwork_ids.length,
+          locale: requestData.locale,
+        })
+      )
     }
 
     return successResponse(

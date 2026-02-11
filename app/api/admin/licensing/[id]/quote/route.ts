@@ -3,6 +3,8 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { successResponse, errorResponse, ErrorCodes } from '@/lib/api/response'
 import { licenseQuoteSchema } from '@/lib/api/validation'
 import { requireAuth, logActivity, getCurrentUserEmail } from '@/lib/api/admin'
+import { sendUserEmail } from '@/lib/email/send'
+import { LicensingQuoteEmail } from '@/lib/email/templates'
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -59,8 +61,17 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return errorResponse(ErrorCodes.DB_ERROR, 'Failed to send quote', 500)
     }
 
-    // TODO: Send quote email via Resend
-    // The email template will include the quoted_price and the admin's message
+    // Send quote email to user (non-blocking)
+    sendUserEmail(
+      existing.email,
+      `Quote for License Request ${existing.request_number}`,
+      LicensingQuoteEmail({
+        name: existing.name,
+        requestNumber: existing.request_number,
+        quotedPrice: result.data.quoted_price,
+        message: result.data.message,
+      })
+    )
 
     // Log activity
     const userEmail = await getCurrentUserEmail()

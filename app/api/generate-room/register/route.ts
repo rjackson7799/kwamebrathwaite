@@ -8,6 +8,8 @@ import {
   getClientIP,
 } from '@/lib/api'
 import { wallViewEmailSchema } from '@/lib/api/validation'
+import { sendAdminEmail } from '@/lib/email/send'
+import { WallViewLeadEmail } from '@/lib/email/templates'
 
 export async function POST(request: NextRequest) {
   try {
@@ -80,6 +82,15 @@ export async function POST(request: NextRequest) {
       console.error('Database error:', error)
       return errorResponse(ErrorCodes.DB_ERROR, 'Failed to register email', 500)
     }
+
+    // Notify admin of new lead (non-blocking)
+    sendAdminEmail(
+      `New View on Wall lead: ${email}`,
+      WallViewLeadEmail({
+        email,
+        artworkId: artwork_id || null,
+      })
+    )
 
     return successResponse(
       {

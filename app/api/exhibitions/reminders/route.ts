@@ -3,6 +3,11 @@ import { createClient } from '@/lib/supabase/server'
 import { successResponse, errorResponse, ErrorCodes } from '@/lib/api/response'
 import { exhibitionReminderSchema } from '@/lib/api/validation'
 import type { ExhibitionReminderInsert, ExhibitionReminder } from '@/lib/supabase/types'
+import { sendUserEmail, sendAdminEmail } from '@/lib/email/send'
+import {
+  ExhibitionReminderUserEmail,
+  ExhibitionReminderAdminEmail,
+} from '@/lib/email/templates'
 
 export async function POST(request: NextRequest) {
   try {
@@ -87,6 +92,35 @@ export async function POST(request: NextRequest) {
     }
 
     const result = data as Pick<ExhibitionReminder, 'id'>
+
+    // Send confirmation emails (non-blocking)
+    sendUserEmail(
+      email,
+      `Exhibition reminder set: ${exhibition.title}`,
+      ExhibitionReminderUserEmail({
+        name,
+        exhibitionTitle: exhibition.title,
+        exhibitionVenue: exhibition.venue,
+        exhibitionCity: exhibition.city,
+        exhibitionCountry: exhibition.country,
+        exhibitionStartDate: exhibition.start_date,
+        exhibitionEndDate: exhibition.end_date,
+        reminderType: reminder_type,
+      })
+    )
+
+    sendAdminEmail(
+      `New exhibition reminder: ${name}`,
+      ExhibitionReminderAdminEmail({
+        name,
+        email,
+        exhibitionTitle: exhibition.title,
+        exhibitionVenue: exhibition.venue,
+        reminderType: reminder_type,
+        locale,
+        source,
+      })
+    )
 
     return successResponse(
       { id: result.id, message: 'Reminder request submitted successfully' },
