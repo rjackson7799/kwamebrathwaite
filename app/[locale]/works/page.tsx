@@ -142,7 +142,8 @@ function WorksContent() {
     <div className="container-page section-spacing">
       <h1 className="text-display-2 mb-8">{t('title')}</h1>
 
-      {/* Search and Filter Section */}
+      {/* Search and Filter Section - hidden for now, can re-enable by removing {false && (...)} */}
+      {false && (
       <div className="flex flex-col gap-4 mb-8">
         {/* Search Bar */}
         <SearchBar
@@ -166,9 +167,10 @@ function WorksContent() {
           ))}
         </div>
       </div>
+      )}
 
-      {/* Results Count */}
-      {!isLoading && !error && (
+      {/* Results Count - hidden for now */}
+      {false && !isLoading && !error && (
         <div className="flex items-center justify-between mb-6">
           <p className="text-body-sm text-gray-warm">
             {t('search.resultsCount', { count: total })}
@@ -189,7 +191,7 @@ function WorksContent() {
 
       {/* Loading State */}
       {isLoading && (
-        <ArtworkGrid artworks={[]} isLoading showMetadata showAvailability />
+        <ArtworkGrid artworks={[]} isLoading showMetadata />
       )}
 
       {/* Error State */}
@@ -232,7 +234,6 @@ function WorksContent() {
         <ArtworkGrid
           artworks={artworks}
           showMetadata
-          showAvailability
           onArtworkClick={handleArtworkClick}
         />
       )}
@@ -247,18 +248,7 @@ function WorksPageSkeleton() {
       {/* Title skeleton */}
       <div className="h-12 w-32 bg-gray-light dark:bg-[#2A2A2A] rounded animate-pulse mb-8" />
 
-      {/* Search bar skeleton */}
-      <div className="h-12 w-full md:max-w-[400px] bg-gray-light dark:bg-[#2A2A2A] rounded-full animate-pulse mb-4" />
-
-      {/* Filter pills skeleton */}
-      <div className="flex gap-2 mb-8">
-        {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="h-10 w-24 bg-gray-light dark:bg-[#2A2A2A] rounded-full animate-pulse"
-          />
-        ))}
-      </div>
+      {/* Search bar and filter pills skeletons - hidden to match hidden filters */}
 
       {/* Grid skeleton */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">

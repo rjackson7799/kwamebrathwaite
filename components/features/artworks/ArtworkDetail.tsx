@@ -299,9 +299,10 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
             {/* Description */}
             {artwork.description && (
               <div className="mb-8">
-                <p className="text-sm font-normal leading-relaxed text-gray-700 max-w-[500px]">
-                  {artwork.description}
-                </p>
+                <div
+                  className="prose prose-lg dark:prose-invert max-w-[500px] text-black dark:text-[#C0C0C0]"
+                  dangerouslySetInnerHTML={{ __html: artwork.description }}
+                />
               </div>
             )}
 

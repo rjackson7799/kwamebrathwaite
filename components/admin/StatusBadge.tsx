@@ -98,6 +98,82 @@ const statusConfig: Record<string, { label: string; className: string }> = {
     label: 'Japanese',
     className: 'bg-red-100 text-red-700',
   },
+  // License request status
+  quoted: {
+    label: 'Quoted',
+    className: 'bg-amber-100 text-amber-700',
+  },
+  approved: {
+    label: 'Approved',
+    className: 'bg-green-100 text-green-700',
+  },
+  rejected: {
+    label: 'Rejected',
+    className: 'bg-red-100 text-red-700',
+  },
+  active: {
+    label: 'Active',
+    className: 'bg-green-100 text-green-700',
+  },
+  expired: {
+    label: 'Expired',
+    className: 'bg-gray-100 text-gray-500',
+  },
+  // Order status
+  pending: {
+    label: 'Pending',
+    className: 'bg-amber-100 text-amber-700',
+  },
+  processing: {
+    label: 'Processing',
+    className: 'bg-blue-100 text-blue-700',
+  },
+  shipped: {
+    label: 'Shipped',
+    className: 'bg-indigo-100 text-indigo-700',
+  },
+  delivered: {
+    label: 'Delivered',
+    className: 'bg-green-100 text-green-700',
+  },
+  cancelled: {
+    label: 'Cancelled',
+    className: 'bg-red-100 text-red-700',
+  },
+  refunded: {
+    label: 'Refunded',
+    className: 'bg-red-100 text-red-700',
+  },
+  // Fulfillment status
+  unfulfilled: {
+    label: 'Unfulfilled',
+    className: 'bg-amber-100 text-amber-700',
+  },
+  partially_fulfilled: {
+    label: 'Partially Fulfilled',
+    className: 'bg-blue-100 text-blue-700',
+  },
+  fulfilled: {
+    label: 'Fulfilled',
+    className: 'bg-green-100 text-green-700',
+  },
+  // Product categories
+  books: {
+    label: 'Books',
+    className: 'bg-amber-100 text-amber-700',
+  },
+  apparel: {
+    label: 'Apparel',
+    className: 'bg-purple-100 text-purple-700',
+  },
+  posters: {
+    label: 'Posters',
+    className: 'bg-blue-100 text-blue-700',
+  },
+  accessories: {
+    label: 'Accessories',
+    className: 'bg-gray-100 text-gray-700',
+  },
   // Activity actions
   create: {
     label: 'Created',

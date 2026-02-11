@@ -19,8 +19,8 @@ interface ExhibitionWithArtworks extends DbExhibition {
   exhibition_artworks: ExhibitionArtworkJoin[] | null
 }
 
-// Fetch exhibition from database
-async function getExhibitionById(id: string): Promise<{ exhibition: DetailedExhibition; artworks: Artwork[] } | null> {
+// Fetch exhibition from database by slug
+async function getExhibitionBySlug(slug: string): Promise<{ exhibition: DetailedExhibition; artworks: Artwork[] } | null> {
   try {
     const supabase = await createClient()
 
@@ -33,7 +33,7 @@ async function getExhibitionById(id: string): Promise<{ exhibition: DetailedExhi
           artworks (*)
         )
       `)
-      .eq('id', id)
+      .eq('slug', slug)
       .eq('status', 'published')
       .single()
 
@@ -43,7 +43,7 @@ async function getExhibitionById(id: string): Promise<{ exhibition: DetailedExhi
     }
 
     if (!data) {
-      console.error('[Exhibition Detail] No data returned for ID:', id)
+      console.error('[Exhibition Detail] No data returned for slug:', slug)
       return null
     }
 
@@ -68,6 +68,7 @@ async function getExhibitionById(id: string): Promise<{ exhibition: DetailedExhi
     // Map database fields to DetailedExhibition type
     const exhibition: DetailedExhibition = {
       id: exhibitionData.id,
+      slug: exhibitionData.slug,
       title: exhibitionData.title,
       venue: exhibitionData.venue,
       street_address: exhibitionData.street_address,
@@ -93,13 +94,13 @@ async function getExhibitionById(id: string): Promise<{ exhibition: DetailedExhi
 }
 
 type Props = {
-  params: Promise<{ locale: string; id: string }>
+  params: Promise<{ locale: string; slug: string }>
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id, locale } = await params
-  const result = await getExhibitionById(id)
+  const { slug, locale } = await params
+  const result = await getExhibitionBySlug(slug)
 
   if (!result) {
     return {
@@ -136,11 +137,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: exhibition.image_url ? [exhibition.image_url] : [],
     },
     alternates: {
-      canonical: locale === 'en' ? `/exhibitions/${id}` : `/${locale}/exhibitions/${id}`,
+      canonical: locale === 'en' ? `/exhibitions/${slug}` : `/${locale}/exhibitions/${slug}`,
       languages: {
-        en: `/exhibitions/${id}`,
-        fr: `/fr/exhibitions/${id}`,
-        ja: `/ja/exhibitions/${id}`,
+        en: `/exhibitions/${slug}`,
+        fr: `/fr/exhibitions/${slug}`,
+        ja: `/ja/exhibitions/${slug}`,
       },
     },
   }
@@ -156,8 +157,8 @@ export async function generateStaticParams() {
 }
 
 export default async function ExhibitionDetailPage({ params }: Props) {
-  const { id } = await params
-  const result = await getExhibitionById(id)
+  const { slug } = await params
+  const result = await getExhibitionBySlug(slug)
 
   if (!result) {
     notFound()
@@ -216,7 +217,7 @@ export default async function ExhibitionDetailPage({ params }: Props) {
 
       {/* Featured Works Section */}
       {artworks.length > 0 && (
-        <section className="container-page section-spacing border-t border-gray-light pt-12">
+        <section className="container-page section-spacing border-t border-gray-light dark:border-[#333333] pt-12">
           <h2 className="text-h2 mb-8">{t('detail.featuredWorks')}</h2>
           <ArtworkGrid
             artworks={artworks}

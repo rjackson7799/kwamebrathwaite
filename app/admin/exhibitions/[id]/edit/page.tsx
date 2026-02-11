@@ -7,6 +7,7 @@ import { ExhibitionForm } from '@/components/admin/ExhibitionForm'
 
 interface Exhibition {
   id: string
+  slug: string
   title: string
   venue: string | null
   street_address: string | null

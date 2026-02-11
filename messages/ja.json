@@ -295,7 +295,8 @@
     "links": {
       "privacy": "プライバシーポリシー",
       "terms": "利用規約",
-      "licensing": "画像ライセンス"
+      "licensing": "画像ライセンス",
+      "shop": "ショップ"
     }
   },
   "languageSwitcher": {
@@ -307,5 +308,20 @@
   "theme": {
     "switchToLight": "ライトモードに切替",
     "switchToDark": "ダークモードに切替"
+  },
+  "shop": {
+    "title": "ショップ",
+    "subtitle": "クワメ・ブラスウェイトの遺産を祝う書籍、プリント、商品。",
+    "meta": {
+      "title": "ショップ | クワメ・ブラスウェイト・アーカイブ",
+      "description": "Black is Beautifulムーブメントを祝うクワメ・ブラスウェイト・アーカイブの公式商品と出版物。"
+    },
+    "comingSoon": "近日公開",
+    "products": {
+      "blackIsBeautifulBook": {
+        "name": "Black is Beautiful",
+        "description": "Black is Beautifulムーブメントを記録したクワメ・ブラスウェイトの象徴的な写真の包括的なコレクション。"
+      }
+    }
   }
 }

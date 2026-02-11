@@ -141,6 +141,20 @@ export function Footer() {
             >
               {t('links.terms')}
             </Link>
+            <span className="text-white/30 hidden sm:inline">·</span>
+            <Link
+              href={getLocalizedHref('/licensing')}
+              className="hover:text-white transition-colors"
+            >
+              {t('links.licensing')}
+            </Link>
+            <span className="text-white/30 hidden sm:inline">·</span>
+            <Link
+              href={getLocalizedHref('/shop')}
+              className="hover:text-white transition-colors"
+            >
+              {t('links.shop')}
+            </Link>
           </div>
 
           {/* Copyright */}

@@ -295,7 +295,8 @@
     "links": {
       "privacy": "Politique de confidentialité",
       "terms": "Conditions d'utilisation",
-      "licensing": "Licences d'images"
+      "licensing": "Licences d'images",
+      "shop": "Boutique"
     }
   },
   "languageSwitcher": {
@@ -307,5 +308,20 @@
   "theme": {
     "switchToLight": "Passer en mode clair",
     "switchToDark": "Passer en mode sombre"
+  },
+  "shop": {
+    "title": "Boutique",
+    "subtitle": "Livres, impressions et articles célébrant l'héritage de Kwame Brathwaite.",
+    "meta": {
+      "title": "Boutique | Archives Kwame Brathwaite",
+      "description": "Marchandises et publications officielles des Archives Kwame Brathwaite célébrant le mouvement Black is Beautiful."
+    },
+    "comingSoon": "Bientôt disponible",
+    "products": {
+      "blackIsBeautifulBook": {
+        "name": "Black is Beautiful",
+        "description": "Une collection complète de la photographie iconique de Kwame Brathwaite documentant le mouvement Black is Beautiful."
+      }
+    }
   }
 }

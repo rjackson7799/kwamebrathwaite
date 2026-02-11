@@ -3,7 +3,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { errorResponse } from './response'
 
 export type ActivityAction = 'create' | 'update' | 'delete' | 'status_change' | 'reorder'
-export type EntityType = 'artwork' | 'exhibition' | 'press' | 'inquiry' | 'content' | 'media' | 'newsletter_subscriber' | 'hero_slide'
+export type EntityType = 'artwork' | 'exhibition' | 'press' | 'inquiry' | 'content' | 'media' | 'newsletter_subscriber' | 'hero_slide' | 'product' | 'order' | 'license_request' | 'license_type'
 
 /**
  * Middleware to check if the request is authenticated

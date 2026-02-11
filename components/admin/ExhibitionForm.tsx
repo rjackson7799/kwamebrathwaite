@@ -9,9 +9,11 @@ import { RichTextEditor } from './RichTextEditor'
 import { ArtworkPicker } from './ArtworkPicker'
 import { AddressAutocomplete, type PlaceResult } from './AddressAutocomplete'
 import { LocationMapPreview } from './LocationMapPreview'
+import { generateSlug } from '@/lib/utils'
 
 interface ExhibitionFormData {
   title: string
+  slug: string
   venue?: string | null
   city?: string | null
   country?: string | null
@@ -30,7 +32,7 @@ interface ExhibitionFormData {
 }
 
 interface ExhibitionFormProps {
-  exhibition?: ExhibitionFormData & { id: string }
+  exhibition?: ExhibitionFormData & { id: string; slug: string }
   isEdit?: boolean
 }
 
@@ -50,6 +52,7 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
   } = useForm<ExhibitionFormData>({
     defaultValues: exhibition || {
       title: '',
+      slug: '',
       venue: null,
       city: null,
       country: null,
@@ -67,6 +70,17 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
       meta_description: null,
     },
   })
+
+  // Watch title to auto-generate slug for new exhibitions
+  const watchedTitle = watch('title')
+  const watchedSlug = watch('slug')
+
+  // Auto-generate slug from title for new exhibitions
+  useEffect(() => {
+    if (!isEdit && watchedTitle && !watchedSlug) {
+      setValue('slug', generateSlug(watchedTitle), { shouldDirty: true })
+    }
+  }, [watchedTitle, watchedSlug, isEdit, setValue])
 
   // Watch fields for display
   const watchedLat = watch('location_lat')
@@ -176,6 +190,27 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
                   {...register('title', { required: 'Title is required' })}
                   error={!!errors.title}
                   placeholder="Enter exhibition title"
+                />
+              </FormField>
+
+              <FormField
+                label="URL Slug"
+                htmlFor="slug"
+                required
+                error={errors.slug?.message}
+                hint="Auto-generated from title. Used in the URL: /exhibitions/your-slug"
+              >
+                <Input
+                  id="slug"
+                  {...register('slug', {
+                    required: 'Slug is required',
+                    pattern: {
+                      value: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+                      message: 'Slug must be lowercase letters, numbers, and hyphens only',
+                    },
+                  })}
+                  error={!!errors.slug}
+                  placeholder="exhibition-url-slug"
                 />
               </FormField>
 

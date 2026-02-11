@@ -5,3 +5,4 @@ export {
   getArtworkPosition,
   type ScaledDimensions,
 } from './calculateArtworkScale'
+export { generateSlug, generateUniqueSlug } from './slug'

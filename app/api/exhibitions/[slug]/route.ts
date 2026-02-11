@@ -4,7 +4,7 @@ import { successResponse, errorResponse, ErrorCodes } from '@/lib/api'
 import type { Artwork, Exhibition } from '@/lib/supabase/types'
 
 type RouteParams = {
-  params: Promise<{ id: string }>
+  params: Promise<{ slug: string }>
 }
 
 interface ExhibitionArtworkJoin {
@@ -18,10 +18,10 @@ interface ExhibitionWithArtworks extends Exhibition {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id } = await params
+    const { slug } = await params
     const supabase = await createClient()
 
-    // Fetch exhibition with linked artworks
+    // Fetch exhibition with linked artworks by slug
     const { data, error } = await supabase
       .from('exhibitions')
       .select(
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         )
       `
       )
-      .eq('id', id)
+      .eq('slug', slug)
       .eq('status', 'published')
       .single()
 

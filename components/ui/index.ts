@@ -1,3 +1,4 @@
+export { BookPlaceholder } from './BookPlaceholder'
 export { ImagePlaceholder } from './ImagePlaceholder'
 export { Lightbox } from './Lightbox'
 export type { LightboxImage } from './Lightbox'

@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 
 export interface PublicExhibition {
   id: string
+  slug: string
   title: string
   venue: string | null
   city: string | null
@@ -15,6 +16,7 @@ export interface PublicExhibition {
 // Type for the raw database response
 interface ExhibitionRow {
   id: string
+  slug: string
   title: string
   venue: string | null
   city: string | null
@@ -35,7 +37,7 @@ export async function getCurrentExhibitions(limit: number = 4): Promise<PublicEx
 
   const { data, error } = await supabase
     .from('exhibitions')
-    .select('id, title, venue, city, country, start_date, end_date, image_url')
+    .select('id, slug, title, venue, city, country, start_date, end_date, image_url')
     .eq('status', 'published')
     .lte('start_date', today)
     .gte('end_date', today)
@@ -50,6 +52,7 @@ export async function getCurrentExhibitions(limit: number = 4): Promise<PublicEx
   // Add exhibition_type to match the Exhibition interface
   return (data as ExhibitionRow[] || []).map((e): PublicExhibition => ({
     id: e.id,
+    slug: e.slug,
     title: e.title,
     venue: e.venue,
     city: e.city,
@@ -72,7 +75,7 @@ export async function getUpcomingExhibitions(limit: number = 4): Promise<PublicE
 
   const { data, error } = await supabase
     .from('exhibitions')
-    .select('id, title, venue, city, country, start_date, end_date, image_url')
+    .select('id, slug, title, venue, city, country, start_date, end_date, image_url')
     .eq('status', 'published')
     .gt('start_date', today)
     .order('start_date', { ascending: true })
@@ -85,6 +88,7 @@ export async function getUpcomingExhibitions(limit: number = 4): Promise<PublicE
 
   return (data as ExhibitionRow[] || []).map((e): PublicExhibition => ({
     id: e.id,
+    slug: e.slug,
     title: e.title,
     venue: e.venue,
     city: e.city,

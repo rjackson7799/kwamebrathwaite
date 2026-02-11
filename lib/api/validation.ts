@@ -257,7 +257,7 @@ export type AdminContentUpdate = z.infer<typeof adminContentUpdateSchema>
 // Admin activity log filters
 export const adminActivityFiltersSchema = paginationSchema.extend({
   action: z.enum(['create', 'update', 'delete', 'status_change', 'reorder']).optional(),
-  entity_type: z.enum(['artwork', 'exhibition', 'press', 'inquiry', 'content', 'media', 'hero_slide']).optional(),
+  entity_type: z.enum(['artwork', 'exhibition', 'press', 'inquiry', 'content', 'media', 'hero_slide', 'product', 'order', 'license_request', 'license_type']).optional(),
   user: z.string().optional(),
   q: z.string().optional(),
   sort: z.enum(['created_at']).optional(),
@@ -381,3 +381,86 @@ export const aiApplyDescriptionSchema = z.object({
 })
 
 export type AIApplyDescriptionInput = z.infer<typeof aiApplyDescriptionSchema>
+
+// ============================================
+// Licensing Schemas
+// ============================================
+
+// Public license request submission
+export const licenseRequestSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(255),
+  email: z.string().email('Invalid email address').max(255),
+  company: z.string().max(255).optional(),
+  phone: z.string().max(50).optional(),
+  license_type_id: z.string().uuid('Invalid license type'),
+  territory: z.string().max(255).optional(),
+  duration: z.string().max(100).optional(),
+  print_run: z.string().max(100).optional(),
+  usage_description: z.string().min(1, 'Usage description is required').max(5000),
+  artwork_ids: z.array(z.string().uuid()).min(1, 'At least one artwork is required').max(10),
+  locale: z.enum(['en', 'fr', 'ja']).default('en'),
+  // Honeypot field - should be empty
+  website: z.string().optional(),
+})
+
+export type LicenseRequestInput = z.infer<typeof licenseRequestSchema>
+
+// Admin license request update
+export const adminLicenseRequestUpdateSchema = z.object({
+  status: z.enum(['new', 'quoted', 'approved', 'rejected', 'active', 'expired']).optional(),
+  admin_notes: z.string().max(5000).optional().nullable(),
+  quoted_price: z.coerce.number().min(0).optional().nullable(),
+  quoted_at: z.string().optional().nullable(),
+  approved_at: z.string().optional().nullable(),
+  expires_at: z.string().optional().nullable(),
+})
+
+export type AdminLicenseRequestUpdate = z.infer<typeof adminLicenseRequestUpdateSchema>
+
+// Admin license request filters
+export const adminLicenseRequestFiltersSchema = paginationSchema.extend({
+  status: z.enum(['new', 'quoted', 'approved', 'rejected', 'active', 'expired']).optional(),
+  license_type_id: z.string().uuid().optional(),
+  q: z.string().optional(),
+  sort: z.string().optional(),
+  order: z
+    .string()
+    .optional()
+    .transform((val) => {
+      if (val === 'asc' || val === 'desc') return val
+      return undefined
+    }),
+})
+
+// Admin send quote
+export const licenseQuoteSchema = z.object({
+  quoted_price: z.coerce.number().min(0, 'Price must be a positive number'),
+  message: z.string().min(1, 'Quote message is required').max(2000),
+})
+
+export type LicenseQuoteInput = z.infer<typeof licenseQuoteSchema>
+
+// License type CRUD
+export const licenseTypeSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100),
+  description: z.string().max(500).optional().nullable(),
+  display_order: z.coerce.number().int().default(0),
+  is_active: z.boolean().default(true),
+})
+
+export type LicenseTypeInput = z.infer<typeof licenseTypeSchema>
+
+// ============================================
+// Wall View / AI Room Generation Schemas
+// ============================================
+
+export const wallViewEmailSchema = z.object({
+  email: z.string().email('Invalid email address').max(255),
+  artwork_id: z.string().uuid().optional(),
+})
+
+export const generateRoomSchema = z.object({
+  prompt: z.string().min(3, 'Prompt is required').max(500),
+  email: z.string().email('Invalid email address').max(255),
+  session_id: z.string().max(100),
+})

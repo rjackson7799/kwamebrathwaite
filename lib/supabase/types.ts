@@ -601,6 +601,352 @@ export type Database = {
           created_at?: string
         }
       }
+      license_types: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          display_order: number
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string | null
+          display_order?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string | null
+          display_order?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      license_requests: {
+        Row: {
+          id: string
+          request_number: string
+          name: string
+          email: string
+          company: string | null
+          phone: string | null
+          license_type_id: string | null
+          territory: string | null
+          duration: string | null
+          print_run: string | null
+          usage_description: string
+          status: LicenseRequestStatus
+          admin_notes: string | null
+          quoted_price: number | null
+          quoted_at: string | null
+          approved_at: string | null
+          expires_at: string | null
+          locale: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          request_number: string
+          name: string
+          email: string
+          company?: string | null
+          phone?: string | null
+          license_type_id?: string | null
+          territory?: string | null
+          duration?: string | null
+          print_run?: string | null
+          usage_description: string
+          status?: LicenseRequestStatus
+          admin_notes?: string | null
+          quoted_price?: number | null
+          quoted_at?: string | null
+          approved_at?: string | null
+          expires_at?: string | null
+          locale?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          request_number?: string
+          name?: string
+          email?: string
+          company?: string | null
+          phone?: string | null
+          license_type_id?: string | null
+          territory?: string | null
+          duration?: string | null
+          print_run?: string | null
+          usage_description?: string
+          status?: LicenseRequestStatus
+          admin_notes?: string | null
+          quoted_price?: number | null
+          quoted_at?: string | null
+          approved_at?: string | null
+          expires_at?: string | null
+          locale?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      license_request_artworks: {
+        Row: {
+          id: string
+          request_id: string
+          artwork_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          request_id: string
+          artwork_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          request_id?: string
+          artwork_id?: string
+          created_at?: string
+        }
+      }
+      products: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          description: string | null
+          category: ProductCategory | null
+          base_price: number
+          currency: string
+          image_url: string | null
+          images: Json
+          status: ContentStatus
+          is_featured: boolean
+          display_order: number | null
+          metadata: Json | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          description?: string | null
+          category?: ProductCategory | null
+          base_price: number
+          currency?: string
+          image_url?: string | null
+          images?: Json
+          status?: ContentStatus
+          is_featured?: boolean
+          display_order?: number | null
+          metadata?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          description?: string | null
+          category?: ProductCategory | null
+          base_price?: number
+          currency?: string
+          image_url?: string | null
+          images?: Json
+          status?: ContentStatus
+          is_featured?: boolean
+          display_order?: number | null
+          metadata?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      product_variants: {
+        Row: {
+          id: string
+          product_id: string
+          name: string
+          sku: string
+          price_override: number | null
+          inventory_count: number
+          status: ProductVariantStatus
+          display_order: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          name: string
+          sku: string
+          price_override?: number | null
+          inventory_count?: number
+          status?: ProductVariantStatus
+          display_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          name?: string
+          sku?: string
+          price_override?: number | null
+          inventory_count?: number
+          status?: ProductVariantStatus
+          display_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      product_images: {
+        Row: {
+          id: string
+          product_id: string
+          image_url: string
+          alt_text: string | null
+          display_order: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          image_url: string
+          alt_text?: string | null
+          display_order?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          image_url?: string
+          alt_text?: string | null
+          display_order?: number
+          created_at?: string
+        }
+      }
+      orders: {
+        Row: {
+          id: string
+          order_number: string
+          email: string
+          customer_name: string
+          shipping_address: Json
+          billing_address: Json | null
+          stripe_payment_intent_id: string | null
+          stripe_payment_status: string | null
+          subtotal: number
+          shipping_cost: number
+          tax: number
+          total: number
+          currency: string
+          status: OrderStatus
+          fulfillment_status: FulfillmentStatus
+          tracking_number: string | null
+          carrier: string | null
+          notes: string | null
+          locale: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          order_number: string
+          email: string
+          customer_name: string
+          shipping_address: Json
+          billing_address?: Json | null
+          stripe_payment_intent_id?: string | null
+          stripe_payment_status?: string | null
+          subtotal: number
+          shipping_cost?: number
+          tax?: number
+          total: number
+          currency?: string
+          status?: OrderStatus
+          fulfillment_status?: FulfillmentStatus
+          tracking_number?: string | null
+          carrier?: string | null
+          notes?: string | null
+          locale?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          order_number?: string
+          email?: string
+          customer_name?: string
+          shipping_address?: Json
+          billing_address?: Json | null
+          stripe_payment_intent_id?: string | null
+          stripe_payment_status?: string | null
+          subtotal?: number
+          shipping_cost?: number
+          tax?: number
+          total?: number
+          currency?: string
+          status?: OrderStatus
+          fulfillment_status?: FulfillmentStatus
+          tracking_number?: string | null
+          carrier?: string | null
+          notes?: string | null
+          locale?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      order_items: {
+        Row: {
+          id: string
+          order_id: string
+          product_id: string | null
+          variant_id: string | null
+          product_name: string
+          variant_name: string | null
+          sku: string | null
+          quantity: number
+          unit_price: number
+          total_price: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          product_id?: string | null
+          variant_id?: string | null
+          product_name: string
+          variant_name?: string | null
+          sku?: string | null
+          quantity: number
+          unit_price: number
+          total_price: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          product_id?: string | null
+          variant_id?: string | null
+          product_name?: string
+          variant_name?: string | null
+          sku?: string | null
+          quantity?: number
+          unit_price?: number
+          total_price?: number
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -621,8 +967,13 @@ export type ExhibitionType = 'past' | 'current' | 'upcoming'
 export type PressType = 'article' | 'review' | 'interview' | 'feature'
 export type InquiryType = 'general' | 'purchase' | 'exhibition' | 'press'
 export type InquiryStatus = 'new' | 'read' | 'responded' | 'archived'
+export type LicenseRequestStatus = 'new' | 'quoted' | 'approved' | 'rejected' | 'active' | 'expired'
+export type ProductCategory = 'books' | 'apparel' | 'posters' | 'accessories'
+export type ProductVariantStatus = 'active' | 'out_of_stock' | 'discontinued'
+export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded'
+export type FulfillmentStatus = 'unfulfilled' | 'partially_fulfilled' | 'fulfilled'
 export type ActivityAction = 'create' | 'update' | 'delete' | 'status_change' | 'reorder'
-export type EntityType = 'artwork' | 'exhibition' | 'press' | 'inquiry' | 'content' | 'media' | 'hero_slide'
+export type EntityType = 'artwork' | 'exhibition' | 'press' | 'inquiry' | 'content' | 'media' | 'hero_slide' | 'product' | 'order' | 'license_request' | 'license_type'
 
 // Convenience type aliases
 export type Artwork = Database['public']['Tables']['artworks']['Row']
@@ -664,3 +1015,32 @@ export type ArtworkTagUpdate = Database['public']['Tables']['artwork_tags']['Upd
 export type AIGenerationLog = Database['public']['Tables']['ai_generation_log']['Row']
 export type AIGenerationLogInsert = Database['public']['Tables']['ai_generation_log']['Insert']
 export type AIGenerationLogUpdate = Database['public']['Tables']['ai_generation_log']['Update']
+
+export type LicenseType = Database['public']['Tables']['license_types']['Row']
+export type LicenseTypeInsert = Database['public']['Tables']['license_types']['Insert']
+export type LicenseTypeUpdate = Database['public']['Tables']['license_types']['Update']
+
+export type LicenseRequest = Database['public']['Tables']['license_requests']['Row']
+export type LicenseRequestInsert = Database['public']['Tables']['license_requests']['Insert']
+export type LicenseRequestUpdate = Database['public']['Tables']['license_requests']['Update']
+
+export type LicenseRequestArtwork = Database['public']['Tables']['license_request_artworks']['Row']
+export type LicenseRequestArtworkInsert = Database['public']['Tables']['license_request_artworks']['Insert']
+
+export type Product = Database['public']['Tables']['products']['Row']
+export type ProductInsert = Database['public']['Tables']['products']['Insert']
+export type ProductUpdate = Database['public']['Tables']['products']['Update']
+
+export type ProductVariant = Database['public']['Tables']['product_variants']['Row']
+export type ProductVariantInsert = Database['public']['Tables']['product_variants']['Insert']
+export type ProductVariantUpdate = Database['public']['Tables']['product_variants']['Update']
+
+export type ProductImage = Database['public']['Tables']['product_images']['Row']
+export type ProductImageInsert = Database['public']['Tables']['product_images']['Insert']
+
+export type Order = Database['public']['Tables']['orders']['Row']
+export type OrderInsert = Database['public']['Tables']['orders']['Insert']
+export type OrderUpdate = Database['public']['Tables']['orders']['Update']
+
+export type OrderItem = Database['public']['Tables']['order_items']['Row']
+export type OrderItemInsert = Database['public']['Tables']['order_items']['Insert']
