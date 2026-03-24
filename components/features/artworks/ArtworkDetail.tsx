@@ -153,30 +153,6 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
                 </>
               )}
 
-              {/* Zoom Icon Overlay */}
-              <div
-                className="
-                  absolute inset-0
-                  flex items-center justify-center
-                  bg-black/0 group-hover:bg-black/20
-                  transition-all duration-slow
-                "
-                aria-hidden="true"
-              >
-                <svg
-                  className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-slow"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                  />
-                </svg>
-              </div>
             </button>
 
           </div>
