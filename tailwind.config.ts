@@ -33,6 +33,7 @@ const config: Config = {
       fontFamily: {
         sans: ['Inter', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
         serif: ['Playfair Display', 'Georgia', 'serif'],
+        heading: ['var(--font-heading)', 'Montserrat', 'Helvetica Neue', 'Arial', 'sans-serif'],
         mono: ['SF Mono', 'Monaco', 'Inconsolata', 'monospace'],
       },
       fontSize: {
@@ -48,8 +49,8 @@ const config: Config = {
         'caption': ['0.75rem', { lineHeight: '1.33', letterSpacing: '0.01em' }],
         'overline': ['0.688rem', { lineHeight: '1.45', letterSpacing: '0.08em', fontWeight: '600' }],
         // Museum gallery heading styles
-        'page-title': ['2rem', { lineHeight: '1.2', letterSpacing: '0.18em', fontWeight: '300' }],
-        'section-title': ['1.25rem', { lineHeight: '1.3', letterSpacing: '0.15em', fontWeight: '300' }],
+        'page-title': ['1.25rem', { lineHeight: '1.3', letterSpacing: '0.18em', fontWeight: '300' }],
+        'section-title': ['1rem', { lineHeight: '1.3', letterSpacing: '0.15em', fontWeight: '300' }],
       },
       spacing: {
         'xs': '0.25rem',   // 4px

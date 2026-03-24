@@ -146,12 +146,12 @@
 
   /* Museum gallery typography - per BRAND_BRIEF.md */
   .page-title-museum {
-    @apply text-page-title font-sans font-light uppercase text-gray-heading
+    @apply text-page-title font-heading font-light uppercase text-gray-heading
            dark:text-[#777777];
   }
 
   .section-title-museum {
-    @apply text-section-title font-sans font-light uppercase text-gray-heading
+    @apply text-section-title font-heading font-light uppercase text-gray-heading
            dark:text-[#777777];
   }
 
