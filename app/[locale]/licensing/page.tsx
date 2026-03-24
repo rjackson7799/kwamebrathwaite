@@ -2,6 +2,8 @@ import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { getShowTitle } from '@/lib/page-settings'
+import { PageTitle } from '@/components/ui/PageTitle'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -29,8 +31,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function LicensingPage() {
+export default async function LicensingPage() {
   const t = useTranslations('licensing')
+  const showTitle = await getShowTitle('licensing')
 
   const steps = [
     { title: t('steps.select'), description: t('steps.selectDesc'), number: '1' },
@@ -43,7 +46,7 @@ export default function LicensingPage() {
     <div className="container-page section-spacing">
       {/* Hero */}
       <div className="max-w-3xl mx-auto text-center mb-16">
-        <h1 className="text-display-2 mb-4">{t('title')}</h1>
+        <PageTitle title={t('title')} showTitle={showTitle} />
         <p className="text-body-lg text-gray-warm">{t('subtitle')}</p>
       </div>
 

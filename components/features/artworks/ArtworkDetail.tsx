@@ -59,14 +59,6 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kwamebrathwaite.com'
   const artworkUrl = `${baseUrl}${locale === 'en' ? '' : `/${locale}`}/works/${artwork.id}`
 
-  const availabilityColors: Record<string, string> = {
-    available: 'bg-success/10 text-success',
-    sold: 'bg-error/10 text-error',
-    on_loan: 'bg-info/10 text-info',
-    not_for_sale: 'bg-gray-light text-gray-warm',
-    inquiry_only: 'bg-gold/10 text-gold',
-  }
-
   const lightboxImages: LightboxImage[] = [
     {
       id: artwork.id,
@@ -187,24 +179,13 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
               </div>
             </button>
 
-            {/* Action Buttons under image */}
-            <div className="flex gap-3 mt-4">
-              {/* View on Wall Button - only show if dimensions available */}
-              {artwork.dimensions && (
+            {/* View on Wall — text-only CTA under image */}
+            {artwork.dimensions && (
+              <div className="mt-4">
                 <button
                   type="button"
                   onClick={() => setIsViewOnWallOpen(true)}
-                  className="
-                    flex-1
-                    inline-flex items-center justify-center gap-2
-                    px-4 py-3
-                    text-[11px] font-medium uppercase tracking-[0.08em]
-                    text-black dark:text-[#F0F0F0]
-                    border border-black dark:border-[#F0F0F0]
-                    rounded-sm
-                    transition-all duration-fast
-                    hover:bg-black hover:text-white dark:hover:bg-[#F0F0F0] dark:hover:text-[#121212]
-                  "
+                  className="cta-museum inline-flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -212,141 +193,78 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
                   </svg>
                   {t('detail.viewOnWall')}
                 </button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
-          {/* Right Column: Details */}
+          {/* Right Column: Details — Museum wall label style */}
           <div className="flex flex-col">
-            {/* Availability Badge */}
-            {artwork.availability_status && (
-              <span
-                className={`
-                  inline-block self-start
-                  px-3 py-1.5
-                  text-[11px]
-                  font-medium
-                  uppercase
-                  tracking-[0.05em]
-                  rounded-sm
-                  mb-4
-                  ${availabilityColors[artwork.availability_status]}
-                `}
-              >
-                {t(`availability.${artwork.availability_status}`)}
-              </span>
-            )}
-
-            {/* Title - Using TYPOGRAPHY_SYSTEM.md: 18px, regular, tracking-wide */}
-            <h1 className="text-lg font-normal tracking-wide text-gray-900 dark:text-[#F0F0F0] mb-6">
+            {/* Title — museum heading style */}
+            <h1 className="text-sm font-normal uppercase tracking-[0.08em] text-gray-body dark:text-[#E0E0E0] leading-relaxed mb-6">
               {artwork.title}
+              {artwork.year && <>, {artwork.year}</>}
             </h1>
 
-            {/* Metadata - Using TYPOGRAPHY_SYSTEM.md specs */}
-            <dl className="space-y-4 mb-8">
-              {artwork.year && (
-                <div>
-                  <dt className="text-[11px] font-normal uppercase tracking-[0.08em] text-gray-400 dark:text-[#666666] mb-1">
-                    {t('detail.year')}
-                  </dt>
-                  <dd className="text-sm font-normal text-gray-700 dark:text-[#C0C0C0]">{artwork.year}</dd>
-                </div>
-              )}
+            {/* Metadata — stacked without labels, like a museum wall label */}
+            <div className="space-y-2 mb-8 text-sm text-gray-meta dark:text-[#A0A0A0]">
               {artwork.medium && (
-                <div>
-                  <dt className="text-[11px] font-normal uppercase tracking-[0.08em] text-gray-400 dark:text-[#666666] mb-1">
-                    {t('detail.medium')}
-                  </dt>
-                  <dd className="text-sm font-normal text-gray-700 dark:text-[#C0C0C0]">{artwork.medium}</dd>
-                </div>
-              )}
-              {formatDimensions() && (
-                <div>
-                  <dt className="text-[11px] font-normal uppercase tracking-[0.08em] text-gray-400 dark:text-[#666666] mb-1">
-                    {t('detail.dimensions')}
-                  </dt>
-                  <dd className="text-sm font-normal text-gray-700 dark:text-[#C0C0C0]">{formatDimensions()}</dd>
-                </div>
-              )}
-              {artwork.series && (
-                <div>
-                  <dt className="text-[11px] font-normal uppercase tracking-[0.08em] text-gray-400 dark:text-[#666666] mb-1">
-                    {t('detail.series')}
-                  </dt>
-                  <dd className="text-sm font-normal text-gray-700 dark:text-[#C0C0C0]">{artwork.series}</dd>
-                </div>
-              )}
-              {'edition' in artwork && artwork.edition && (
-                <div>
-                  <dt className="text-[11px] font-normal uppercase tracking-[0.08em] text-gray-400 dark:text-[#666666] mb-1">
-                    {t('detail.edition')}
-                  </dt>
-                  <dd className="text-sm font-normal text-gray-700 dark:text-[#C0C0C0]">{artwork.edition}</dd>
-                </div>
+                <p>{artwork.medium}</p>
               )}
               {'archive_reference' in artwork && artwork.archive_reference && (
-                <div>
-                  <dt className="text-[11px] font-normal uppercase tracking-[0.08em] text-gray-400 dark:text-[#666666] mb-1">
-                    {t('detail.archiveReference')}
-                  </dt>
-                  <dd className="text-xs font-normal font-mono text-gray-500 dark:text-[#A0A0A0] tracking-wide">
-                    {artwork.archive_reference}
-                  </dd>
-                </div>
+                <p className="font-mono text-xs tracking-wide text-gray-meta-label dark:text-[#888888]">
+                  {artwork.archive_reference}
+                </p>
               )}
-            </dl>
+              {formatDimensions() && (
+                <p>{formatDimensions()}</p>
+              )}
+              {'edition' in artwork && artwork.edition && (
+                <p>{artwork.edition}</p>
+              )}
+            </div>
 
             {/* Description */}
             {artwork.description && (
               <div className="mb-8">
                 <div
-                  className="prose prose-lg dark:prose-invert max-w-[500px] text-black dark:text-[#C0C0C0]"
+                  className="prose prose-sm dark:prose-invert max-w-[500px] text-gray-meta dark:text-[#B0B0B0]"
                   dangerouslySetInnerHTML={{ __html: artwork.description }}
                 />
               </div>
             )}
 
+            {/* Action Links — text-only CTAs, museum style */}
+            <div className="space-y-4 mb-8">
+              <button
+                type="button"
+                onClick={() => setIsInquiryOpen(true)}
+                className="cta-museum block"
+              >
+                {t('inquire')}
+              </button>
+              <Link
+                href={`${locale === 'en' ? '' : `/${locale}`}/licensing/request?artwork=${artwork.id}`}
+                className="cta-museum block"
+              >
+                {t('requestLicense')}
+              </Link>
+            </div>
+
             {/* Literature Citations */}
             {literature.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-[11px] font-medium uppercase tracking-[0.08em] text-gray-400 dark:text-[#666666] mb-3">
+              <div className="mt-auto">
+                <h3 className="section-title-museum mb-3">
                   {t('detail.literature')}
                 </h3>
                 <ul className="space-y-2">
                   {literature.map((item) => (
-                    <li key={item.id} className="text-xs text-gray-600 dark:text-[#A0A0A0] italic">
+                    <li key={item.id} className="text-xs text-gray-meta dark:text-[#A0A0A0] italic leading-relaxed">
                       {item.citation}
                     </li>
                   ))}
                 </ul>
               </div>
             )}
-
-            {/* Action Buttons */}
-            <div className="mt-auto space-y-3">
-              <button
-                type="button"
-                onClick={() => setIsInquiryOpen(true)}
-                className="btn-primary w-full text-center"
-              >
-                {t('inquire')}
-              </button>
-              <Link
-                href={`${locale === 'en' ? '' : `/${locale}`}/licensing/request?artwork=${artwork.id}`}
-                className="
-                  block w-full text-center
-                  px-6 py-3
-                  text-[11px] font-medium uppercase tracking-[0.08em]
-                  text-black dark:text-[#F0F0F0]
-                  border border-black dark:border-[#F0F0F0]
-                  rounded-sm
-                  transition-all duration-fast
-                  hover:bg-black hover:text-white dark:hover:bg-[#F0F0F0] dark:hover:text-[#121212]
-                "
-              >
-                {t('requestLicense')}
-              </Link>
-            </div>
           </div>
         </div>
       </article>

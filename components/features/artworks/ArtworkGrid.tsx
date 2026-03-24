@@ -46,12 +46,6 @@ export function ArtworkGrid({
         {Array.from({ length: placeholderCount }).map((_, index) => (
           <div key={index} className="card rounded-sm overflow-hidden">
             <ImagePlaceholder aspectRatio="4:5" />
-            <div className="p-4">
-              <div className="h-4 bg-gray-light dark:bg-[#2A2A2A] rounded animate-pulse w-3/4" />
-              {showMetadata && (
-                <div className="h-3 bg-gray-light dark:bg-[#2A2A2A] rounded animate-pulse w-1/2 mt-2" />
-              )}
-            </div>
           </div>
         ))}
       </div>

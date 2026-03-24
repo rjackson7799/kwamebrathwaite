@@ -3,6 +3,8 @@ import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import { PressCard } from '@/components/features/press'
 import type { PressItem } from '@/components/features/press'
+import { getShowTitle } from '@/lib/page-settings'
+import { PageTitle } from '@/components/ui/PageTitle'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -103,26 +105,21 @@ const samplePressItems: PressItem[] = [
   },
 ]
 
-export default function PressPage() {
+export default async function PressPage() {
   const t = useTranslations('press')
+  const showTitle = await getShowTitle('press')
 
   return (
     <div className="container-page section-spacing">
-      <h1 className="text-display-2 mb-8">{t('title')}</h1>
+      <PageTitle title={t('title')} showTitle={showTitle} />
 
-      {/* Press kit download button */}
-      <div className="mb-12">
-        <button className="btn-primary">{t('downloadPressKit')}</button>
-      </div>
-
-      {/* Press articles grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Press articles grid — 4-col museum layout */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         {samplePressItems.map((item, index) => (
           <PressCard
             key={item.id}
             pressItem={item}
-            showExcerpt
-            priority={index < 3}
+            priority={index < 4}
           />
         ))}
       </div>

@@ -2,24 +2,12 @@ import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Timeline, type TimelineEvent } from '@/components/features/timeline'
+import { getShowTitle } from '@/lib/page-settings'
+import { PageTitle } from '@/components/ui/PageTitle'
+import { getPageContent } from '@/lib/supabase/queries/content'
 
 type Props = {
   params: Promise<{ locale: string }>
-}
-
-// Fetch content from CMS
-async function getContent(page: string, section: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-  try {
-    const res = await fetch(`${baseUrl}/api/content/${page}/${section}`, {
-      next: { revalidate: 60 }, // Cache for 60 seconds
-    })
-    if (!res.ok) return null
-    const data = await res.json()
-    return data.success ? data.data : null
-  } catch {
-    return null
-  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -107,19 +95,20 @@ export default async function AboutPage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'about' })
 
-  // Fetch content from CMS in parallel
-  const [biography, movement] = await Promise.all([
-    getContent('about', 'biography'),
-    getContent('about', 'movement'),
+  // Fetch content from CMS and page settings in parallel
+  const [biography, movement, showTitle] = await Promise.all([
+    getPageContent('about', 'biography'),
+    getPageContent('about', 'movement'),
+    getShowTitle('about'),
   ])
 
   return (
     <div className="container-page section-spacing">
-      <h1 className="text-display-2 mb-12">{t('title')}</h1>
+      <PageTitle title={t('title')} showTitle={showTitle} />
 
-      {/* Biography section */}
+      {/* Biography section — museum style: content flows with portrait */}
       <section className="mb-16">
-        <h2 className="text-h2 mb-6">{t('biography')}</h2>
+        <h2 className="section-title-museum mb-6">{t('biography')}</h2>
         <div className="grid md:grid-cols-2 gap-8">
           <div className="relative aspect-[3/4] rounded-sm overflow-hidden sticky top-24 self-start">
             <Image
@@ -131,11 +120,11 @@ export default async function AboutPage({ params }: Props) {
               priority
             />
           </div>
-          <div className="prose prose-lg dark:prose-invert max-w-none">
+          <div className="prose prose-lg dark:prose-invert max-w-none text-gray-body dark:text-[#C0C0C0] leading-[1.8]">
             {biography?.content ? (
               <div dangerouslySetInnerHTML={{ __html: biography.content }} />
             ) : (
-              <p className="text-gray-medium">Biography content coming soon.</p>
+              <p className="text-gray-meta">Biography content coming soon.</p>
             )}
           </div>
         </div>
@@ -143,7 +132,7 @@ export default async function AboutPage({ params }: Props) {
 
       {/* Timeline section */}
       <section className="mb-16 pt-8 border-t border-gray-light dark:border-[#333333]">
-        <h2 className="text-h2 mb-8">{t('timeline.title')}</h2>
+        <h2 className="section-title-museum mb-8">{t('timeline.title')}</h2>
         <Timeline
           events={sampleTimelineEvents}
           groupByDecade
@@ -153,12 +142,12 @@ export default async function AboutPage({ params }: Props) {
 
       {/* Movement section */}
       <section className="bg-charcoal dark:bg-[#0A0A0A] text-white -mx-6 md:-mx-12 lg:-mx-16 px-6 md:px-12 lg:px-16 py-16">
-        <h2 className="text-h2 mb-6">{t('movement')}</h2>
-        <div className="prose prose-lg prose-invert max-w-3xl">
+        <h2 className="section-title-museum text-white/60 mb-6">{t('movement')}</h2>
+        <div className="prose prose-lg prose-invert max-w-3xl leading-[1.8]">
           {movement?.content ? (
             <div dangerouslySetInnerHTML={{ __html: movement.content }} />
           ) : (
-            <p className="text-white/70">Movement history content coming soon.</p>
+            <p className="text-white/50">Movement history content coming soon.</p>
           )}
         </div>
       </section>

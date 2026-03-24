@@ -1,7 +1,29 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** February 10, 2026 (Dark Mode Implementation)
+**Last Updated:** March 23, 2026 (Museum Aesthetic Overhaul + Brand Brief)
+
+---
+
+## Museum Aesthetic Overhaul (March 2026)
+
+### Completed
+- [x] Created `docs/BRAND_BRIEF.md` — visual reference document for museum gallery aesthetic
+- [x] Added Tailwind tokens: `page-title`, `section-title`, `gray-heading`, `gray-body`, `gray-meta`, `gray-cta`
+- [x] Added CSS utility classes: `.page-title-museum`, `.section-title-museum`, `.cta-museum`
+- [x] Added `page_settings` database table with per-page `show_title` toggle
+- [x] Created `PageTitle` component with conditional visibility
+- [x] Created API routes: `/api/admin/page-settings` (admin CRUD), `/api/page-settings/[slug]` (public read)
+- [x] Created `lib/page-settings.ts` helper (`getShowTitle`, `getPageSettings`)
+- [x] Updated all 8 public page H1s to use museum heading style + PageTitle component
+- [x] Simplified Footer: lighter newsletter styling, minimal copyright line, muted links
+- [x] Redesigned PressCard: removed gold accent, borders, excerpts, "Read article" CTA; added uppercase titles, mixed image/text-only layout
+- [x] Changed Press page grid from 3-column to 4-column
+- [x] Simplified ArtworkDetail: stacked metadata without labels, text-only CTAs, removed availability badge
+- [x] Updated About page: section-title-museum for H2s, generous line-height, muted body text
+- [x] Created Admin Page Settings UI with toggle switches
+- [x] Added "Page Settings" to admin sidebar navigation
+- [x] Updated `DESIGN_SYSTEM.md` with museum heading typography specs
 
 ---
 

@@ -33,6 +33,20 @@ function WorksContent() {
   const urlQuery = searchParams.get('q') || ''
   const urlCategory = (searchParams.get('category') as FilterType) || 'all'
 
+  // Page title visibility
+  const [showTitle, setShowTitle] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/page-settings/works')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          setShowTitle(data.data.show_title ?? true)
+        }
+      })
+      .catch(() => {})
+  }, [])
+
   // Local state for search input (allows typing without immediate URL updates)
   const [searchInput, setSearchInput] = useState(urlQuery)
   const debouncedSearch = useDebounce(searchInput, 400)
@@ -140,7 +154,7 @@ function WorksContent() {
 
   return (
     <div className="container-page section-spacing">
-      <h1 className="text-display-2 mb-8">{t('title')}</h1>
+      {showTitle && <h1 className="page-title-museum mb-8">{t('title')}</h1>}
 
       {/* Search and Filter Section - hidden for now, can re-enable by removing {false && (...)} */}
       {false && (
@@ -191,7 +205,7 @@ function WorksContent() {
 
       {/* Loading State */}
       {isLoading && (
-        <ArtworkGrid artworks={[]} isLoading showMetadata />
+        <ArtworkGrid artworks={[]} isLoading />
       )}
 
       {/* Error State */}
@@ -233,7 +247,6 @@ function WorksContent() {
       {!isLoading && !error && artworks.length > 0 && (
         <ArtworkGrid
           artworks={artworks}
-          showMetadata
           onArtworkClick={handleArtworkClick}
         />
       )}

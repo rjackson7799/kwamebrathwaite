@@ -18,6 +18,12 @@ const config: Config = {
         'gray-warm': '#6B6B6B',
         'gray-light': '#E5E5E5',
         gold: '#B8945F',
+        // Museum heading colors
+        'gray-heading': '#999999',
+        'gray-body': '#333333',
+        'gray-meta': '#555555',
+        'gray-meta-label': '#AAAAAA',
+        'gray-cta': '#666666',
         // Semantic Colors
         success: '#2D5016',
         error: '#8B0000',
@@ -41,6 +47,9 @@ const config: Config = {
         'body-sm': ['0.8125rem', { lineHeight: '1.5' }],
         'caption': ['0.75rem', { lineHeight: '1.33', letterSpacing: '0.01em' }],
         'overline': ['0.688rem', { lineHeight: '1.45', letterSpacing: '0.08em', fontWeight: '600' }],
+        // Museum gallery heading styles
+        'page-title': ['2rem', { lineHeight: '1.2', letterSpacing: '0.18em', fontWeight: '300' }],
+        'section-title': ['1.25rem', { lineHeight: '1.3', letterSpacing: '0.15em', fontWeight: '300' }],
       },
       spacing: {
         'xs': '0.25rem',   // 4px

@@ -1,6 +1,8 @@
 import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
+import { getShowTitle } from '@/lib/page-settings'
+import { PageTitle } from '@/components/ui/PageTitle'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -28,15 +30,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
   const t = useTranslations('contact')
   const tForm = useTranslations('contact.form')
   const tTypes = useTranslations('contact.inquiryTypes')
+  const showTitle = await getShowTitle('contact')
 
   return (
     <div className="container-page section-spacing">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-display-2 mb-4">{t('title')}</h1>
+        <PageTitle title={t('title')} showTitle={showTitle} />
         <p className="text-body-lg text-gray-warm mb-12">{t('intro')}</p>
 
         {/* Contact form placeholder */}

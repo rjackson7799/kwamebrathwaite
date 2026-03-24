@@ -2,7 +2,6 @@
 
 import Image from 'next/image'
 import { useLocale } from 'next-intl'
-import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder'
 import { useState } from 'react'
 
 export interface PressItem {
@@ -18,19 +17,13 @@ export interface PressItem {
 }
 
 interface PressCardProps {
-  /** Press item data */
   pressItem: PressItem
-  /** Show excerpt text */
-  showExcerpt?: boolean
-  /** Priority loading */
   priority?: boolean
-  /** Custom class names */
   className?: string
 }
 
 export function PressCard({
   pressItem,
-  showExcerpt = false,
   priority = false,
   className = '',
 }: PressCardProps) {
@@ -38,7 +31,6 @@ export function PressCard({
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
 
-  // Format date
   const formatDate = () => {
     if (!pressItem.publish_date) return null
 
@@ -51,98 +43,61 @@ export function PressCard({
     return dateFormatter.format(new Date(pressItem.publish_date))
   }
 
+  // Build meta line: "AUTHOR, PUBLICATION, DATE"
+  const metaParts: string[] = []
+  if (pressItem.author) metaParts.push(pressItem.author)
+  if (pressItem.publication) metaParts.push(pressItem.publication)
+  const formattedDate = formatDate()
+  if (formattedDate) metaParts.push(formattedDate)
+  const metaLine = metaParts.join(', ')
+
+  const hasImage = pressItem.image_url && !hasError
+
   const CardContent = () => (
-    <article className="card-bordered rounded-sm overflow-hidden h-full">
-      {/* Image Container */}
-      <div className="relative aspect-video overflow-hidden bg-gray-light dark:bg-[#2A2A2A]">
-        {!pressItem.image_url || hasError ? (
-          <ImagePlaceholder aspectRatio="16:9" showIcon />
-        ) : (
-          <>
-            {isLoading && (
-              <div className="absolute inset-0">
-                <ImagePlaceholder aspectRatio="16:9" />
-              </div>
-            )}
-            <Image
-              src={pressItem.image_url}
-              alt={pressItem.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className={`
-                object-cover
-                transition-all
-                duration-slow
-                group-hover:scale-105
-                ${isLoading ? 'opacity-0' : 'opacity-100'}
-              `}
-              priority={priority}
-              onLoad={() => setIsLoading(false)}
-              onError={() => {
-                setIsLoading(false)
-                setHasError(true)
-              }}
-            />
-          </>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="p-4">
-        {/* Publication name with gold accent */}
-        {pressItem.publication && (
-          <div className="flex items-center gap-2 mb-3">
-            <span className="w-4 h-px bg-gold dark:bg-[#C9A870] flex-shrink-0" aria-hidden="true" />
-            <p className="text-overline uppercase tracking-widest text-gray-warm">
-              {pressItem.publication}
-            </p>
-          </div>
-        )}
-
-        {/* Title */}
-        <h3 className="text-h4 font-medium text-black dark:text-[#F0F0F0] line-clamp-2">
-          {pressItem.title}
-        </h3>
-
-        {/* Excerpt */}
-        {showExcerpt && pressItem.excerpt && (
-          <p className="mt-2 text-body-sm text-gray-warm line-clamp-2">
-            {pressItem.excerpt}
-          </p>
-        )}
-
-        {/* Meta: author and date */}
-        <div className="mt-3 flex items-center gap-2 text-caption text-gray-warm">
-          {pressItem.author && (
+    <article className="h-full">
+      {/* Image — only shown if image_url exists (mixed layout) */}
+      {pressItem.image_url && (
+        <div className="relative aspect-[4/3] overflow-hidden mb-4 bg-gray-light dark:bg-[#2A2A2A]">
+          {hasError ? null : (
             <>
-              <span>{pressItem.author}</span>
-              {formatDate() && <span>·</span>}
+              {isLoading && (
+                <div className="absolute inset-0 bg-gray-light dark:bg-[#2A2A2A]" />
+              )}
+              <Image
+                src={pressItem.image_url}
+                alt={pressItem.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                className={`
+                  object-cover
+                  transition-all
+                  duration-slow
+                  group-hover:scale-105
+                  ${isLoading ? 'opacity-0' : 'opacity-100'}
+                `}
+                priority={priority}
+                onLoad={() => setIsLoading(false)}
+                onError={() => {
+                  setIsLoading(false)
+                  setHasError(true)
+                }}
+              />
             </>
           )}
-          {formatDate() && <span>{formatDate()}</span>}
         </div>
+      )}
 
-        {/* External link indicator */}
-        {pressItem.url && (
-          <div className="mt-3 flex items-center gap-1 text-body-sm text-black dark:text-[#F0F0F0] group-hover:text-gray-warm dark:group-hover:text-[#A0A0A0] transition-colors duration-fast">
-            <span>Read article</span>
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-              />
-            </svg>
-          </div>
-        )}
-      </div>
+      {/* Title — uppercase, wide tracking, museum style */}
+      <h3 className="text-sm font-normal uppercase tracking-[0.08em] text-gray-body dark:text-[#E0E0E0] leading-snug">
+        {pressItem.title}
+      </h3>
+
+      {/* Meta line: author, publication, date */}
+      {metaLine && (
+        <p className="mt-2 text-[11px] uppercase tracking-[0.06em] text-gray-heading dark:text-[#777777] leading-relaxed">
+          {metaLine}
+        </p>
+      )}
     </article>
   )
 

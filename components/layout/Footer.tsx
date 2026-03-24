@@ -12,7 +12,6 @@ export function Footer() {
   const locale = useLocale()
   const t = useTranslations('footer')
 
-  // Generate locale-aware href
   const getLocalizedHref = (href: string) => {
     return locale === 'en' ? href : `/${locale}${href}`
   }
@@ -57,15 +56,15 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-black text-white py-12 md:py-16">
+    <footer className="bg-black text-white py-8">
       <div className="max-w-container mx-auto px-6 md:px-12">
-        {/* Newsletter Section */}
-        <div className="mb-8">
+        {/* Newsletter Section — simplified styling */}
+        <div className="mb-6">
           <label
             htmlFor="footer-email"
-            className="block mb-3 text-body-sm text-white/80"
+            className="block mb-3 text-[11px] uppercase tracking-[0.12em] text-white/50"
           >
-            Subscribe to updates:
+            Subscribe to updates
           </label>
           <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md">
             <input
@@ -76,91 +75,73 @@ export function Footer() {
               placeholder={t('newsletter.placeholder')}
               required
               disabled={isSubmitting}
-              className="flex-1 px-4 py-3 bg-white/10 border border-white/20
-                         text-white placeholder:text-white/40
-                         focus:outline-none focus:border-white/40
+              className="flex-1 px-4 py-2.5 bg-transparent border border-white/15
+                         text-white/80 text-sm placeholder:text-white/30
+                         focus:outline-none focus:border-white/30
                          transition-colors"
             />
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-3 bg-white text-black
-                         hover:bg-white/90 transition-colors
+              className="px-5 py-2.5 text-[11px] uppercase tracking-[0.1em]
+                         bg-white/10 text-white/70 border border-white/15
+                         hover:bg-white/15 hover:text-white/90 transition-colors
                          disabled:opacity-50 disabled:cursor-not-allowed
-                         text-body-sm font-medium sm:w-auto w-full"
+                         sm:w-auto w-full"
             >
               {t('newsletter.subscribe')}
             </button>
           </form>
           {submitStatus === 'success' && (
-            <p role="status" className="mt-3 text-body-sm text-green-400">
+            <p role="status" className="mt-2 text-[11px] tracking-[0.05em] text-green-400/70">
               {t('newsletter.success')}
             </p>
           )}
           {submitStatus === 'alreadySubscribed' && (
-            <p role="status" className="mt-3 text-body-sm text-white/60">
+            <p role="status" className="mt-2 text-[11px] tracking-[0.05em] text-white/40">
               {t('newsletter.alreadySubscribed')}
             </p>
           )}
           {submitStatus === 'error' && (
-            <p role="alert" className="mt-3 text-body-sm text-red-400">
+            <p role="alert" className="mt-2 text-[11px] tracking-[0.05em] text-red-400/70">
               {t('newsletter.error')}
             </p>
           )}
           {submitStatus === 'rateLimited' && (
-            <p role="alert" className="mt-3 text-body-sm text-red-400">
+            <p role="alert" className="mt-2 text-[11px] tracking-[0.05em] text-red-400/70">
               {t('newsletter.rateLimited')}
             </p>
           )}
         </div>
 
-        {/* Links & Copyright */}
-        <div className="border-t border-white/10 pt-8 space-y-4">
-          {/* Links Row */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4
-                          text-sm text-white/60">
+        {/* Minimal copyright + links */}
+        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <p className="text-[11px] uppercase tracking-[0.15em] text-white/40">
+            &copy; {currentYear} Kwame Brathwaite Archive
+          </p>
+
+          <div className="flex items-center gap-4 text-[11px] uppercase tracking-[0.1em] text-white/30">
+            <Link
+              href={getLocalizedHref('/privacy')}
+              className="hover:text-white/60 transition-colors"
+            >
+              {t('links.privacy')}
+            </Link>
+            <Link
+              href={getLocalizedHref('/terms')}
+              className="hover:text-white/60 transition-colors"
+            >
+              {t('links.terms')}
+            </Link>
             <a
               href="https://instagram.com/kwamebrathwaitearchive"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
+              className="hover:text-white/60 transition-colors"
             >
               Instagram
             </a>
-            <span className="text-white/30 hidden sm:inline">·</span>
-            <Link
-              href={getLocalizedHref('/privacy')}
-              className="hover:text-white transition-colors"
-            >
-              {t('links.privacy')}
-            </Link>
-            <span className="text-white/30 hidden sm:inline">·</span>
-            <Link
-              href={getLocalizedHref('/terms')}
-              className="hover:text-white transition-colors"
-            >
-              {t('links.terms')}
-            </Link>
-            <span className="text-white/30 hidden sm:inline">·</span>
-            <Link
-              href={getLocalizedHref('/licensing')}
-              className="hover:text-white transition-colors"
-            >
-              {t('links.licensing')}
-            </Link>
-            <span className="text-white/30 hidden sm:inline">·</span>
-            <Link
-              href={getLocalizedHref('/shop')}
-              className="hover:text-white transition-colors"
-            >
-              {t('links.shop')}
-            </Link>
           </div>
-
-          {/* Copyright */}
-          <p className="text-sm text-white/40">
-            © {currentYear} Kwame Brathwaite Archive
-          </p>
         </div>
       </div>
     </footer>

@@ -1,6 +1,8 @@
 import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
+import { getShowTitle } from '@/lib/page-settings'
+import { PageTitle } from '@/components/ui/PageTitle'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -28,12 +30,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function ArchivePage() {
+export default async function ArchivePage() {
   const t = useTranslations('archive')
+  const showTitle = await getShowTitle('archive')
 
   return (
     <div className="container-page section-spacing">
-      <h1 className="text-display-2 mb-12">{t('title')}</h1>
+      <PageTitle title={t('title')} showTitle={showTitle} />
 
       {/* Mission section */}
       <section className="max-w-3xl mb-16">

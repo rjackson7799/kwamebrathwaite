@@ -447,5 +447,48 @@ COMMENT ON COLUMN activity_log.action IS 'create, update, delete, status_change,
 COMMENT ON COLUMN activity_log.entity_type IS 'artwork, exhibition, press, inquiry, content';
 
 -- ============================================
+-- PAGE SETTINGS (per-page display configuration)
+-- ============================================
+CREATE TABLE page_settings (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    page_slug VARCHAR(50) UNIQUE NOT NULL,
+    show_title BOOLEAN DEFAULT true,
+    metadata JSONB,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Seed default page settings
+INSERT INTO page_settings (page_slug, show_title) VALUES
+    ('works', true),
+    ('about', false),
+    ('press', true),
+    ('exhibitions', true),
+    ('contact', true),
+    ('archive', true),
+    ('shop', true),
+    ('licensing', true);
+
+-- Trigger to auto-update updated_at
+CREATE TRIGGER update_page_settings_updated_at
+    BEFORE UPDATE ON page_settings
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- RLS Policies
+ALTER TABLE page_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can read page settings"
+    ON page_settings FOR SELECT
+    TO anon, authenticated
+    USING (true);
+
+CREATE POLICY "Admins can update page settings"
+    ON page_settings FOR UPDATE
+    TO authenticated
+    USING (true);
+
+COMMENT ON TABLE page_settings IS 'Per-page display settings (e.g., show/hide title)';
+
+-- ============================================
 -- END OF SCHEMA
 -- ============================================

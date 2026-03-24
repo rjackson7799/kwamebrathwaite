@@ -30,6 +30,20 @@ export default function ExhibitionsPage() {
       : 'current'
   })
 
+  // Page title visibility
+  const [showTitle, setShowTitle] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/page-settings/exhibitions')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          setShowTitle(data.data.show_title ?? true)
+        }
+      })
+      .catch(() => {})
+  }, [])
+
   // State for exhibitions data
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([])
   const [loading, setLoading] = useState(true)
@@ -87,7 +101,7 @@ export default function ExhibitionsPage() {
     <div className="container-page section-spacing">
       {/* Header with title and view toggle */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <h1 className="text-display-2">{t('title')}</h1>
+        {showTitle && <h1 className="page-title-museum">{t('title')}</h1>}
         <ViewToggle viewMode={viewMode} onViewChange={setViewMode} />
       </div>
 

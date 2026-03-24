@@ -137,7 +137,44 @@ Usage: Dates, dimensions, technical specifications
 Weight: 400 (Regular)
 ```
 
-### Type Scale
+### Museum Gallery Heading Styles (Public Pages)
+
+> **UPDATED March 2026**: Public-facing pages now use the museum gallery heading styles
+> defined in `BRAND_BRIEF.md`. The styles below (Display 1/2, H1-H4) are retained for
+> the admin panel and internal use only.
+
+```
+Page Title (Museum)
+Size: 32px / 2rem
+Line Height: 1.2
+Weight: 300 (Light)
+Letter Spacing: 0.18em
+Transform: Uppercase
+Color: #999999 (muted gray)
+CSS Class: .page-title-museum
+Usage: All public page H1 headings (controlled by per-page admin toggle)
+
+Section Title (Museum)
+Size: 20px / 1.25rem
+Line Height: 1.3
+Weight: 300 (Light)
+Letter Spacing: 0.15em
+Transform: Uppercase
+Color: #999999 (muted gray)
+CSS Class: .section-title-museum
+Usage: Section headings on public pages (Biography, Literature, etc.)
+
+CTA Text (Museum)
+Size: 11px
+Weight: 400 (Regular)
+Letter Spacing: 0.12em
+Transform: Uppercase
+Color: #666666 (muted)
+CSS Class: .cta-museum
+Usage: Action links on public pages (Enquire, View on Wall, etc.)
+```
+
+### Type Scale (Admin Panel / Legacy)
 
 ```
 Display 1 (Hero)
@@ -152,21 +189,21 @@ Size: 56px / 3.5rem
 Line Height: 64px / 1.14
 Weight: 600 (Semibold)
 Letter Spacing: -0.01em
-Usage: Page titles
+Usage: Admin page titles only (public pages use page-title-museum)
 
 H1 (Heading 1)
 Size: 48px / 3rem
 Line Height: 56px / 1.17
 Weight: 600 (Semibold)
 Letter Spacing: -0.01em
-Usage: Primary page headings
+Usage: Admin primary headings
 
 H2 (Heading 2)
 Size: 36px / 2.25rem
 Line Height: 44px / 1.22
 Weight: 600 (Semibold)
 Letter Spacing: -0.005em
-Usage: Section headings
+Usage: Admin section headings
 
 H3 (Heading 3)
 Size: 28px / 1.75rem

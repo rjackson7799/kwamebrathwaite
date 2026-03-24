@@ -144,6 +144,24 @@
            dark:hover:bg-[#C9A870] dark:hover:text-[#121212];
   }
 
+  /* Museum gallery typography - per BRAND_BRIEF.md */
+  .page-title-museum {
+    @apply text-page-title font-sans font-light uppercase text-gray-heading
+           dark:text-[#777777];
+  }
+
+  .section-title-museum {
+    @apply text-section-title font-sans font-light uppercase text-gray-heading
+           dark:text-[#777777];
+  }
+
+  .cta-museum {
+    @apply text-[11px] font-normal uppercase tracking-[0.12em] text-gray-cta
+           transition-colors duration-normal
+           hover:text-black
+           dark:text-[#888888] dark:hover:text-[#F0F0F0];
+  }
+
   /* Filter pill buttons - per DESIGN_SYSTEM.md */
   .filter-pill {
     @apply bg-transparent text-black px-4 py-2 text-body-sm font-normal

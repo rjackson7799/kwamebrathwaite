@@ -109,28 +109,6 @@ export function ArtworkCard({
             </>
           )}
 
-          {/* Hover Overlay */}
-          <div
-            className="
-              absolute inset-0
-              bg-black/0 group-hover:bg-black/50
-              transition-all duration-slow
-              flex flex-col justify-end
-              p-4
-              opacity-0 group-hover:opacity-100
-            "
-            aria-hidden="true"
-          >
-            <h4 className="text-white font-medium text-body truncate">
-              {artwork.title}
-            </h4>
-            {artwork.year && (
-              <p className="text-white/80 text-caption mt-1">
-                {artwork.year}
-              </p>
-            )}
-          </div>
-
           {/* Availability Badge */}
           {showAvailability && artwork.availability_status && (
             <div
@@ -148,19 +126,6 @@ export function ArtworkCard({
           )}
         </div>
 
-        {/* Content */}
-        <div className="p-4">
-          <h3 className="text-body font-medium text-black dark:text-[#F0F0F0] truncate">
-            {artwork.title}
-          </h3>
-          {showMetadata && (
-            <div className="mt-1 text-caption text-gray-warm">
-              {artwork.year && <span>{artwork.year}</span>}
-              {artwork.year && artwork.medium && <span className="mx-1">·</span>}
-              {artwork.medium && <span>{artwork.medium}</span>}
-            </div>
-          )}
-        </div>
       </article>
     </Link>
   )
