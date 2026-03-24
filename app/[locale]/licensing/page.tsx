@@ -1,4 +1,3 @@
-import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import type { Metadata } from 'next'
@@ -32,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function LicensingPage() {
-  const t = useTranslations('licensing')
+  const t = await getTranslations('licensing')
   const showTitle = await getShowTitle('licensing')
 
   const steps = [

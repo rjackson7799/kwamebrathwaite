@@ -1,4 +1,3 @@
-import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import { getShowTitle } from '@/lib/page-settings'
@@ -31,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ArchivePage() {
-  const t = useTranslations('archive')
+  const t = await getTranslations('archive')
   const showTitle = await getShowTitle('archive')
 
   return (

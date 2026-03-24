@@ -1,4 +1,3 @@
-import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import { ProductCard } from '@/components/features/shop/ProductCard'
@@ -32,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ShopPage() {
-  const t = useTranslations('shop')
+  const t = await getTranslations('shop')
   const showTitle = await getShowTitle('shop')
 
   const sampleProduct = {

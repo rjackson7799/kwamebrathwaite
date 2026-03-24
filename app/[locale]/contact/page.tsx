@@ -1,4 +1,3 @@
-import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import { getShowTitle } from '@/lib/page-settings'
@@ -31,9 +30,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ContactPage() {
-  const t = useTranslations('contact')
-  const tForm = useTranslations('contact.form')
-  const tTypes = useTranslations('contact.inquiryTypes')
+  const t = await getTranslations('contact')
+  const tForm = await getTranslations('contact.form')
+  const tTypes = await getTranslations('contact.inquiryTypes')
   const showTitle = await getShowTitle('contact')
 
   return (

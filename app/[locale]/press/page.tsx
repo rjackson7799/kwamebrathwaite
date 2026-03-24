@@ -1,4 +1,3 @@
-import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import { PressCard } from '@/components/features/press'
@@ -106,7 +105,7 @@ const samplePressItems: PressItem[] = [
 ]
 
 export default async function PressPage() {
-  const t = useTranslations('press')
+  const t = await getTranslations('press')
   const showTitle = await getShowTitle('press')
 
   return (
