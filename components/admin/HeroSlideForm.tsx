@@ -23,6 +23,9 @@ export function HeroSlideForm({ slide, nextDisplayOrder = 1 }: HeroSlideFormProp
     display_order: slide?.display_order ?? nextDisplayOrder,
     is_active: slide?.is_active ?? true,
     status: slide?.status || 'published',
+    title: slide?.title || '',
+    description: slide?.description || '',
+    link_url: slide?.link_url || '',
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -80,25 +83,27 @@ export function HeroSlideForm({ slide, nextDisplayOrder = 1 }: HeroSlideFormProp
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 800px"
               />
-              {/* Adjustable Overlay */}
+              {/* Bottom Gradient Overlay */}
               <div
-                className="absolute inset-0 bg-gradient-to-b from-black/20 via-black to-black/20 transition-opacity duration-300"
+                className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300"
                 style={{ opacity: formData.overlay_opacity / 100 }}
               />
-              {/* Preview Text */}
-              <div className="absolute inset-0 flex items-center justify-center z-10">
-                <div className="text-center text-white px-4">
-                  <p className="text-sm tracking-[0.08em] uppercase mb-2 opacity-90">
-                    The Photography Archive
-                  </p>
-                  <h1 className="text-4xl md:text-5xl font-serif font-semibold mb-2">
-                    Kwame Brathwaite
-                  </h1>
-                  <p className="text-lg md:text-xl font-light opacity-90">
-                    Founder of the Black is Beautiful movement
-                  </p>
+              {/* Per-slide Title Preview (lower-left) */}
+              {formData.title && (
+                <div className="absolute bottom-8 left-6 z-10 max-w-md">
+                  <h2 className="text-white text-xl font-light uppercase tracking-[0.18em]">
+                    {formData.title}
+                  </h2>
+                  {formData.description && (
+                    <p className="text-white/80 text-sm font-light mt-1 tracking-[0.05em]">
+                      {formData.description}
+                    </p>
+                  )}
+                  {formData.link_url && (
+                    <p className="text-white/50 text-xs mt-2 font-mono">{formData.link_url}</p>
+                  )}
                 </div>
-              </div>
+              )}
             </>
           ) : (
             <div className="flex items-center justify-center h-full bg-gray-100">
@@ -131,6 +136,60 @@ export function HeroSlideForm({ slide, nextDisplayOrder = 1 }: HeroSlideFormProp
         </p>
       </div>
 
+      {/* Slide Title */}
+      <FormField
+        label="Title"
+        htmlFor="title"
+        hint="Displayed in lower-left of slide. Leave empty for image-only slides."
+      >
+        <input
+          id="title"
+          type="text"
+          maxLength={255}
+          value={formData.title}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          className="input"
+          placeholder="e.g., Untitled: Independence Day"
+        />
+      </FormField>
+
+      {/* Slide Description */}
+      <FormField
+        label="Description"
+        htmlFor="description"
+        hint="Optional subtitle shown below the title."
+      >
+        <textarea
+          id="description"
+          maxLength={1000}
+          rows={2}
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          className="input"
+          placeholder="e.g., 1963c"
+        />
+      </FormField>
+
+      {/* Link URL */}
+      <FormField
+        label="Link URL"
+        htmlFor="link_url"
+        hint="Internal path like /exhibitions/black-is-beautiful. Must start with /."
+      >
+        <input
+          id="link_url"
+          type="text"
+          maxLength={500}
+          value={formData.link_url}
+          onChange={(e) => setFormData({ ...formData, link_url: e.target.value })}
+          className="input"
+          placeholder="/exhibitions/black-is-beautiful"
+        />
+        {formData.link_url && !formData.link_url.startsWith('/') && (
+          <p className="text-red-500 text-xs mt-1">Link must start with /</p>
+        )}
+      </FormField>
+
       {/* Opacity Slider */}
       <div className="mb-8">
         <label className="label">Dark Overlay Opacity</label>
@@ -152,10 +211,10 @@ export function HeroSlideForm({ slide, nextDisplayOrder = 1 }: HeroSlideFormProp
           </span>
         </div>
         <p className="helper-text mt-2">
-          Adjust for optimal text readability. 50% is recommended for most images.
+          Adjust bottom gradient intensity for text readability. 50% is recommended for most images.
         </p>
         <div className="mt-2 text-xs text-gray-500">
-          <strong>Guidelines:</strong> Dark images (30-40%), Medium (50-60%), Bright (60-70%)
+          <strong>Guidelines:</strong> Dark images (30-40%), Medium (50-60%), Bright images (60-70%)
         </div>
       </div>
 

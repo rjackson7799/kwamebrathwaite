@@ -2,12 +2,15 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 
 interface HeroSlide {
   id: string
   image_url: string
   overlay_opacity: number
+  title: string | null
+  description: string | null
+  link_url: string | null
 }
 
 interface HeroRotatorProps {
@@ -15,7 +18,6 @@ interface HeroRotatorProps {
 }
 
 export function HeroRotator({ slides }: HeroRotatorProps) {
-  const t = useTranslations('hero')
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
@@ -58,26 +60,10 @@ export function HeroRotator({ slides }: HeroRotatorProps) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goToPrevious, goToNext])
 
-  // Handle empty state - fallback to static hero
+  // Handle empty state
   if (slides.length === 0) {
     return (
-      <section className="relative h-screen bg-charcoal flex items-center justify-center grain-overlay">
-        <div className="text-center text-white px-4 max-w-4xl">
-          <p className="text-overline uppercase tracking-widest text-gold mb-6 animate-hidden animate-fade-up">
-            {t('overline')}
-          </p>
-          <h1 className="font-serif text-display-1 mb-6 tracking-tight animate-hidden animate-fade-up stagger-1">
-            {t('title')}
-          </h1>
-          <p className="text-body-lg text-gray-warm max-w-2xl mx-auto animate-hidden animate-fade-up stagger-2">
-            {t('subtitle')}
-          </p>
-          {/* Gold accent divider */}
-          <div className="mt-12 flex justify-center animate-hidden animate-fade-up stagger-3">
-            <span className="w-16 h-px bg-gold" aria-hidden="true" />
-          </div>
-        </div>
-      </section>
+      <section className="relative h-screen bg-charcoal" />
     )
   }
 
@@ -103,39 +89,41 @@ export function HeroRotator({ slides }: HeroRotatorProps) {
         >
           <Image
             src={slide.image_url}
-            alt=""
+            alt={slide.title || ''}
             fill
             className="object-cover"
             priority={index === 0}
             quality={90}
             sizes="100vw"
           />
-          {/* Dynamic Opacity Overlay */}
+          {/* Bottom gradient overlay */}
           <div
-            className="absolute inset-0 bg-gradient-to-b from-black/20 via-black to-black/20"
+            className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
             style={{ opacity: slide.overlay_opacity / 100 }}
           />
+          {/* Per-slide title (lower-left) */}
+          {slide.title && (
+            <div className="absolute bottom-20 left-8 md:left-12 lg:left-16 z-10 max-w-xl">
+              {slide.link_url ? (
+                <Link href={slide.link_url}>
+                  <h2 className="text-white text-lg md:text-xl lg:text-2xl font-light uppercase tracking-[0.18em] hover:opacity-80 transition-opacity">
+                    {slide.title}
+                  </h2>
+                </Link>
+              ) : (
+                <h2 className="text-white text-lg md:text-xl lg:text-2xl font-light uppercase tracking-[0.18em]">
+                  {slide.title}
+                </h2>
+              )}
+              {slide.description && (
+                <p className="text-white/80 text-sm md:text-base font-light mt-2 tracking-[0.05em]">
+                  {slide.description}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       ))}
-
-      {/* Content - Text Overlay */}
-      <div className="relative z-10 flex items-center justify-center h-full">
-        <div className="text-center text-white px-4 max-w-4xl">
-          <p className="text-sm tracking-[0.08em] uppercase mb-4 opacity-90 animate-hidden animate-fade-up">
-            {t('overline')}
-          </p>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-semibold mb-4 leading-tight animate-hidden animate-fade-up stagger-1">
-            {t('title')}
-          </h1>
-          <p className="text-lg md:text-xl lg:text-2xl font-light opacity-90 animate-hidden animate-fade-up stagger-2">
-            {t('subtitle')}
-          </p>
-          {/* Gold accent divider */}
-          <div className="mt-12 flex justify-center animate-hidden animate-fade-up stagger-3">
-            <span className="w-16 h-px bg-gold" aria-hidden="true" />
-          </div>
-        </div>
-      </div>
 
       {/* Navigation Dots */}
       {slides.length > 1 && (
@@ -155,46 +143,6 @@ export function HeroRotator({ slides }: HeroRotatorProps) {
           ))}
         </div>
       )}
-
-      {/* Previous/Next Arrows */}
-      {slides.length > 1 && (
-        <>
-          <button
-            onClick={goToPrevious}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12
-                     flex items-center justify-center bg-white/10 hover:bg-white/20
-                     backdrop-blur-sm rounded-full transition-colors"
-            aria-label="Previous slide"
-          >
-            <ChevronLeftIcon className="w-6 h-6 text-white" />
-          </button>
-          <button
-            onClick={goToNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12
-                     flex items-center justify-center bg-white/10 hover:bg-white/20
-                     backdrop-blur-sm rounded-full transition-colors"
-            aria-label="Next slide"
-          >
-            <ChevronRightIcon className="w-6 h-6 text-white" />
-          </button>
-        </>
-      )}
     </section>
-  )
-}
-
-function ChevronLeftIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-    </svg>
-  )
-}
-
-function ChevronRightIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-    </svg>
   )
 }

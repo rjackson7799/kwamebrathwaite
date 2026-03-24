@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('hero_slides')
-      .select('id, image_url, overlay_opacity, display_order')
+      .select('id, image_url, overlay_opacity, display_order, title, description, link_url')
       .eq('status', 'published')
       .eq('is_active', true)
       .order('display_order', { ascending: true })

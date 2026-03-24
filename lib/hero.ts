@@ -6,6 +6,9 @@ export interface PublicHeroSlide {
   image_url: string
   overlay_opacity: number
   display_order: number
+  title: string | null
+  description: string | null
+  link_url: string | null
 }
 
 /**
@@ -17,7 +20,7 @@ export async function getHeroSlides(): Promise<PublicHeroSlide[]> {
 
   const { data, error } = await supabase
     .from('hero_slides')
-    .select('id, image_url, overlay_opacity, display_order')
+    .select('id, image_url, overlay_opacity, display_order, title, description, link_url')
     .eq('status', 'published')
     .eq('is_active', true)
     .order('display_order', { ascending: true })

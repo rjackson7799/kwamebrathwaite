@@ -490,6 +490,9 @@ export type Database = {
           display_order: number
           is_active: boolean
           status: ContentStatus
+          title: string | null
+          description: string | null
+          link_url: string | null
           created_at: string
           updated_at: string
         }
@@ -500,6 +503,9 @@ export type Database = {
           display_order: number
           is_active?: boolean
           status?: ContentStatus
+          title?: string | null
+          description?: string | null
+          link_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -510,6 +516,9 @@ export type Database = {
           display_order?: number
           is_active?: boolean
           status?: ContentStatus
+          title?: string | null
+          description?: string | null
+          link_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -947,6 +956,29 @@ export type Database = {
           created_at?: string
         }
       }
+      page_settings: {
+        Row: {
+          id: string
+          page_slug: string
+          show_title: boolean
+          metadata: Json | null
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          page_slug: string
+          show_title?: boolean
+          metadata?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          page_slug?: string
+          show_title?: boolean
+          metadata?: Json | null
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -1044,3 +1076,6 @@ export type OrderUpdate = Database['public']['Tables']['orders']['Update']
 
 export type OrderItem = Database['public']['Tables']['order_items']['Row']
 export type OrderItemInsert = Database['public']['Tables']['order_items']['Insert']
+
+export type PageSettings = Database['public']['Tables']['page_settings']['Row']
+export type PageSettingsUpdate = Database['public']['Tables']['page_settings']['Update']

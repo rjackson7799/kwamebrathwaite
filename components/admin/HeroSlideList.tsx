@@ -145,13 +145,13 @@ export function HeroSlideList({ slides: initialSlides }: HeroSlideListProps) {
                       <div className="relative w-32 h-20 rounded overflow-hidden flex-shrink-0">
                         <Image
                           src={slide.image_url}
-                          alt=""
+                          alt={slide.title || ''}
                           fill
                           className="object-cover"
                           sizes="128px"
                         />
                         <div
-                          className="absolute inset-0 bg-gradient-to-b from-black/20 via-black to-black/20"
+                          className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
                           style={{ opacity: slide.overlay_opacity / 100 }}
                         />
                       </div>
@@ -159,11 +159,16 @@ export function HeroSlideList({ slides: initialSlides }: HeroSlideListProps) {
                       {/* Slide Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium">Slide {index + 1}</span>
+                          <span className="font-medium truncate">
+                            {slide.title || `Slide ${index + 1}`}
+                          </span>
                           <span className="text-sm text-gray-500">
                             ({slide.overlay_opacity}% overlay)
                           </span>
                         </div>
+                        {slide.link_url && (
+                          <p className="text-xs text-gray-400 truncate mb-1">{slide.link_url}</p>
+                        )}
                         <div className="flex items-center gap-2">
                           <StatusBadge status={slide.status} />
                           {!slide.is_active && (
