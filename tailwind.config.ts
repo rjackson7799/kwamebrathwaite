@@ -33,7 +33,7 @@ const config: Config = {
       fontFamily: {
         sans: ['Inter', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
         serif: ['Playfair Display', 'Georgia', 'serif'],
-        heading: ['var(--font-heading)', 'Montserrat', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        heading: ['Helvetica Neue', 'Helvetica', 'Inter', 'Arial', 'sans-serif'],
         mono: ['SF Mono', 'Monaco', 'Inconsolata', 'monospace'],
       },
       fontSize: {
