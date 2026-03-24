@@ -67,7 +67,7 @@ export function Header() {
             <Link
               key={href}
               href={getLocalizedHref(href)}
-              className={`text-[11px] font-normal tracking-[0.08em] uppercase transition-colors duration-200 pb-1 ${
+              className={`font-heading text-[11px] font-normal tracking-[0.08em] uppercase transition-colors duration-200 pb-1 ${
                 isActive(href)
                   ? 'font-medium text-black dark:text-[#F0F0F0] border-b-2 border-black dark:border-[#F0F0F0]'
                   : 'text-black dark:text-[#F0F0F0] hover:text-gray-600 dark:hover:text-[#A0A0A0]'

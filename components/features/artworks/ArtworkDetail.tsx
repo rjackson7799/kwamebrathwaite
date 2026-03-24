@@ -199,14 +199,14 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
 
           {/* Right Column: Details — Museum wall label style */}
           <div className="flex flex-col">
-            {/* Title — museum heading style */}
-            <h1 className="text-sm font-normal uppercase tracking-[0.08em] text-gray-body dark:text-[#E0E0E0] leading-relaxed mb-6">
+            {/* Title — museum wall label style, Montserrat */}
+            <h1 className="font-heading text-sm font-normal uppercase tracking-[0.08em] text-gray-body dark:text-[#E0E0E0] leading-relaxed mb-6">
               {artwork.title}
               {artwork.year && <>, {artwork.year}</>}
             </h1>
 
             {/* Metadata — stacked without labels, like a museum wall label */}
-            <div className="space-y-2 mb-8 text-sm text-gray-meta dark:text-[#A0A0A0]">
+            <div className="space-y-1.5 mb-8 text-[13px] text-gray-meta dark:text-[#A0A0A0] leading-relaxed">
               {artwork.medium && (
                 <p>{artwork.medium}</p>
               )}
@@ -227,7 +227,7 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
             {artwork.description && (
               <div className="mb-8">
                 <div
-                  className="prose prose-sm dark:prose-invert max-w-[500px] text-gray-meta dark:text-[#B0B0B0]"
+                  className="max-w-[500px] text-[13px] leading-[1.8] text-gray-meta dark:text-[#B0B0B0]"
                   dangerouslySetInnerHTML={{ __html: artwork.description }}
                 />
               </div>
