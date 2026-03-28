@@ -208,6 +208,25 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
 
   const { externalControls } = viewport
 
+  // Compute artwork container size preserving aspect ratio within constraints
+  const artworkContainerStyle = (() => {
+    if (!artworkScale) return null
+    const ratio = artworkScale.width / artworkScale.height
+    const baseWidth = Math.min(artworkScale.width * artworkZoom, 960 * 0.9)
+    const baseHeight = baseWidth / ratio
+    const maxWPct = externalControls ? Math.min(85 * artworkZoom, 95) : Math.min(80 * artworkZoom, 95)
+    const maxHPct = externalControls ? Math.min(65 * artworkZoom, 85) : Math.min(55 * artworkZoom, 75)
+    const maxHPx = viewport.roomHeightPx * (maxHPct / 100)
+    // If height exceeds max, scale width down to maintain aspect ratio
+    let finalWidth = baseWidth
+    let finalHeight = baseHeight
+    if (finalHeight > maxHPx) {
+      finalHeight = maxHPx
+      finalWidth = finalHeight * ratio
+    }
+    return { width: finalWidth, height: finalHeight, maxWPct }
+  })()
+
   // Shared slider JSX
   const sliderElement = artworkScale && (
     <div className={`flex items-center gap-3 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full ${
@@ -357,17 +376,16 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
         )}
 
         {/* Artwork on Wall */}
-        {artworkScale && (
+        {artworkContainerStyle && (
           <div
             className={`absolute artwork-draggable ${isDragging ? 'is-dragging' : ''}`}
             style={{
-              width: `${Math.min(artworkScale.width * artworkZoom, 960 * 0.9)}px`,
-              aspectRatio: `${artworkScale.width} / ${artworkScale.height}`,
+              width: `${artworkContainerStyle.width}px`,
+              height: `${artworkContainerStyle.height}px`,
               top: `${position.y}%`,
               left: `${position.x}%`,
               transform: 'translate(-50%, -50%)',
-              maxWidth: `${externalControls ? Math.min(85 * artworkZoom, 95) : Math.min(80 * artworkZoom, 95)}%`,
-              maxHeight: `${externalControls ? Math.min(65 * artworkZoom, 85) : Math.min(55 * artworkZoom, 75)}%`,
+              maxWidth: `${artworkContainerStyle.maxWPct}%`,
               boxShadow: `0 ${shadowOffset}px ${shadowBlur}px rgba(0,0,0,0.15), 0 ${shadowOffset * 2}px ${shadowBlur * 2}px rgba(0,0,0,0.1)`,
               willChange: isDragging ? 'transform' : undefined,
             }}
