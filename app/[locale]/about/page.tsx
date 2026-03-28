@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Timeline, type TimelineEvent } from '@/components/features/timeline'
-import { getShowTitle } from '@/lib/page-settings'
+import { getPageSettings } from '@/lib/page-settings'
 import { PageTitle } from '@/components/ui/PageTitle'
 import { getPageContent } from '@/lib/supabase/queries/content'
 
@@ -96,11 +96,18 @@ export default async function AboutPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: 'about' })
 
   // Fetch content from CMS and page settings in parallel
-  const [biography, movement, showTitle] = await Promise.all([
+  const [biography, movement, settings] = await Promise.all([
     getPageContent('about', 'biography'),
     getPageContent('about', 'movement'),
-    getShowTitle('about'),
+    getPageSettings('about'),
   ])
+
+  const showTitle = settings?.show_title ?? true
+  const meta = (settings?.metadata && typeof settings.metadata === 'object' && !Array.isArray(settings.metadata))
+    ? settings.metadata as Record<string, unknown>
+    : {}
+  const showTimeline = meta.show_timeline === true
+  const showMovement = meta.show_movement === true
 
   return (
     <div className="container-page section-spacing">
@@ -131,26 +138,30 @@ export default async function AboutPage({ params }: Props) {
       </section>
 
       {/* Timeline section */}
-      <section className="mb-16 pt-8 border-t border-gray-light dark:border-[#333333]">
-        <h2 className="section-title-museum mb-8">{t('timeline.title')}</h2>
-        <Timeline
-          events={sampleTimelineEvents}
-          groupByDecade
-          showFilters
-        />
-      </section>
+      {showTimeline && (
+        <section className="mb-16 pt-8 border-t border-gray-light dark:border-[#333333]">
+          <h2 className="section-title-museum mb-8">{t('timeline.title')}</h2>
+          <Timeline
+            events={sampleTimelineEvents}
+            groupByDecade
+            showFilters
+          />
+        </section>
+      )}
 
       {/* Movement section */}
-      <section className="bg-charcoal dark:bg-[#0A0A0A] text-white -mx-6 md:-mx-12 lg:-mx-16 px-6 md:px-12 lg:px-16 py-16">
-        <h2 className="section-title-museum text-white/60 mb-6">{t('movement')}</h2>
-        <div className="prose prose-lg prose-invert max-w-3xl leading-[1.8]">
-          {movement?.content ? (
-            <div dangerouslySetInnerHTML={{ __html: movement.content }} />
-          ) : (
-            <p className="text-white/50">Movement history content coming soon.</p>
-          )}
-        </div>
-      </section>
+      {showMovement && (
+        <section className="bg-charcoal dark:bg-[#0A0A0A] text-white -mx-6 md:-mx-12 lg:-mx-16 px-6 md:px-12 lg:px-16 py-16">
+          <h2 className="section-title-museum text-white/60 mb-6">{t('movement')}</h2>
+          <div className="prose prose-lg prose-invert max-w-3xl leading-[1.8]">
+            {movement?.content ? (
+              <div dangerouslySetInnerHTML={{ __html: movement.content }} />
+            ) : (
+              <p className="text-white/50">Movement history content coming soon.</p>
+            )}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
