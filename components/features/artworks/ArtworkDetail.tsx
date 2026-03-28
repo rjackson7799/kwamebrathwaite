@@ -80,7 +80,7 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
 
   return (
     <>
-      <article className="container-page section-spacing">
+      <article className="container-page py-8 md:py-12 lg:py-16">
         {/* Top Bar: Back to Gallery + Share */}
         <div className="flex items-center justify-between mb-8">
           <Link
@@ -106,8 +106,8 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
 
         </div>
 
-        {/* Main Content: 60/40 split on desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-16 items-center">
+        {/* Main Content: centered two-column layout */}
+        <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* Left Column: Hero Image */}
           <div className="relative">
             <button
@@ -153,7 +153,7 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
           </div>
 
           {/* Right Column: Details — Museum wall label style */}
-          <div className="flex flex-col">
+          <div className="flex flex-col justify-center">
             {/* Title — museum wall label style, Montserrat */}
             <h1 className="font-heading text-sm font-normal uppercase tracking-[0.08em] text-gray-body dark:text-[#E0E0E0] leading-relaxed mb-6">
               {artwork.title}
