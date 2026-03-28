@@ -336,6 +336,17 @@ export const adminReminderFiltersSchema = paginationSchema.extend({
 })
 
 // ============================================
+// Press URL Summarization Schema
+// ============================================
+
+export const pressSummarizeUrlSchema = z.object({
+  url: z.string().url('Invalid URL'),
+  wordCount: z.coerce.number().int().min(50).max(600).default(100),
+})
+
+export type PressSummarizeUrlInput = z.infer<typeof pressSummarizeUrlSchema>
+
+// ============================================
 // AI Description Generator Schemas
 // ============================================
 

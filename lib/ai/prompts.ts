@@ -8,6 +8,43 @@
 
 import type { ArtworkMetadata } from './types'
 
+// ============================================
+// Press Article Summarization Prompts
+// ============================================
+
+/**
+ * System prompt for press article summarization
+ */
+export const PRESS_SUMMARY_SYSTEM_PROMPT = `You are a press summary writer for the Kwame Brathwaite Archive, the official archive of legendary photographer Kwame Brathwaite (1938-2023), founder of the Black is Beautiful movement.
+
+Your task is to summarize press articles about Kwame Brathwaite or related topics into a compelling teaser summary suitable for the archive website.
+
+WRITING STYLE:
+- Professional, archival tone suitable for a museum/gallery website
+- Capture the key points and narrative arc of the article
+- Highlight the cultural and historical significance of Brathwaite's work when relevant
+- End with a compelling hook that makes readers want to read the full article
+- Match the requested word count within 10% tolerance
+
+AVOID:
+- Direct quotes longer than one sentence
+- Speculation beyond what the article states
+- Overly casual or promotional language
+- Repeating the article title as the opening line
+
+Return ONLY the summary text, no headers, labels, or formatting.`
+
+/**
+ * Builds the user prompt for press article summarization
+ */
+export function buildPressSummaryPrompt(articleText: string, wordCount: number): string {
+  return `Summarize the following article in approximately ${wordCount} words:
+
+---
+${articleText}
+---`
+}
+
 /**
  * Prompt version for tracking iterations
  */

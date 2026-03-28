@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm, Controller } from 'react-hook-form'
 import { FormField, Input, Textarea, Select, Checkbox } from './FormField'
 import { ImageUploader } from './ImageUploader'
+import { Wand2, Loader2, AlertCircle, Check } from 'lucide-react'
 
 interface PressFormData {
   title: string
@@ -29,12 +30,18 @@ export function PressForm({ press, isEdit = false }: PressFormProps) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [summarizing, setSummarizing] = useState(false)
+  const [summaryError, setSummaryError] = useState<string | null>(null)
+  const [summarySuccess, setSummarySuccess] = useState(false)
+  const [wordCount, setWordCount] = useState(100)
 
   const {
     register,
     handleSubmit,
     control,
     setValue,
+    getValues,
+    watch,
     formState: { errors },
   } = useForm<PressFormData>({
     defaultValues: press || {
@@ -80,6 +87,59 @@ export function PressForm({ press, isEdit = false }: PressFormProps) {
       setError('An error occurred. Please try again.')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const watchedUrl = watch('url')
+  const isValidUrl = (() => {
+    if (!watchedUrl) return false
+    try {
+      new URL(watchedUrl)
+      return true
+    } catch {
+      return false
+    }
+  })()
+
+  const handleGenerateSummary = async () => {
+    const currentUrl = getValues('url')
+    if (!currentUrl) return
+
+    setSummarizing(true)
+    setSummaryError(null)
+    setSummarySuccess(false)
+
+    try {
+      const response = await fetch('/api/admin/press/summarize-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: currentUrl, wordCount }),
+      })
+
+      const result = await response.json()
+
+      if (!result.success) {
+        throw new Error(result.error?.message || 'Failed to generate summary')
+      }
+
+      const data = result.data
+      const currentValues = getValues()
+
+      // Always set excerpt (primary output)
+      setValue('excerpt', data.summary)
+
+      // Only auto-fill empty fields
+      if (!currentValues.title && data.title) setValue('title', data.title)
+      if (!currentValues.publication && data.publication) setValue('publication', data.publication)
+      if (!currentValues.author && data.author) setValue('author', data.author)
+      if (!currentValues.publish_date && data.publish_date) setValue('publish_date', data.publish_date)
+
+      setSummarySuccess(true)
+      setTimeout(() => setSummarySuccess(false), 2000)
+    } catch (err) {
+      setSummaryError(err instanceof Error ? err.message : 'Failed to generate summary')
+    } finally {
+      setSummarizing(false)
     }
   }
 
@@ -163,6 +223,64 @@ export function PressForm({ press, isEdit = false }: PressFormProps) {
                   placeholder="https://example.com/article"
                 />
               </FormField>
+
+              {/* AI Summary Generator */}
+              {isValidUrl && (
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <label htmlFor="wordCount" className="text-sm text-gray-600 whitespace-nowrap">
+                        Words:
+                      </label>
+                      <input
+                        id="wordCount"
+                        type="number"
+                        min={50}
+                        max={600}
+                        value={wordCount}
+                        onChange={(e) => setWordCount(Math.min(600, Math.max(50, parseInt(e.target.value) || 100)))}
+                        className="w-20 px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleGenerateSummary}
+                      disabled={summarizing}
+                      className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-white bg-black rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {summarizing ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Generating...
+                        </>
+                      ) : summarySuccess ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          Done
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 className="w-4 h-4" />
+                          Generate Summary
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  {summaryError && (
+                    <div className="flex items-center gap-2 text-sm text-red-600">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                      <span>{summaryError}</span>
+                      <button
+                        type="button"
+                        onClick={handleGenerateSummary}
+                        className="text-red-700 underline hover:text-red-800"
+                      >
+                        Retry
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

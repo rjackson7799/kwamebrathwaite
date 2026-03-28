@@ -148,3 +148,23 @@ export interface ApplyDescriptionResponse {
     details?: unknown
   }
 }
+
+/**
+ * Result from AI press article summarization
+ */
+export interface PressSummaryResult {
+  /** Generated article summary */
+  summary: string
+  /** Extracted article title from OG/meta tags */
+  title: string | null
+  /** Extracted author name */
+  author: string | null
+  /** Extracted publication/site name */
+  publication: string | null
+  /** Extracted publish date (YYYY-MM-DD format) */
+  publish_date: string | null
+  /** Total tokens used (input + output) */
+  tokens_used: number
+  /** Estimated cost in USD */
+  cost_usd: number
+}

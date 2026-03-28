@@ -31,5 +31,14 @@ export {
   cacheArtworkTranslations,
 } from './translation-service'
 
+// Press Summarizer
+export { generatePressSummary } from './press-summarizer'
+
 // Prompts (for reference/debugging)
-export { PROMPT_VERSION, SYSTEM_PROMPT, buildUserPrompt } from './prompts'
+export {
+  PROMPT_VERSION,
+  SYSTEM_PROMPT,
+  buildUserPrompt,
+  PRESS_SUMMARY_SYSTEM_PROMPT,
+  buildPressSummaryPrompt,
+} from './prompts'
