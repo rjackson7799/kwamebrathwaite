@@ -1,7 +1,20 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 28, 2026 (View on Wall — Remove Side Background)
+**Last Updated:** March 28, 2026 (About Page Section Visibility Toggles)
+
+---
+
+## About Page Section Visibility Toggles (March 2026)
+
+### Completed
+- [x] Added admin toggles to show/hide Timeline and Movement sections on the About page
+  - Uses existing `page_settings.metadata` JSONB column — no DB migration needed
+  - Added `getSectionVisibility()` helper in `lib/page-settings.ts`
+  - Extended PUT `/api/admin/page-settings` to accept `metadata` field
+  - Added "Section Visibility" sub-row in `/admin/page-settings` for the About page
+  - About page conditionally renders Timeline and Movement based on toggle state
+  - Both default to hidden (off) since content isn't ready yet
 
 ---
 
@@ -11,6 +24,12 @@
 - [x] Removed side background/padding on artwork in View on Wall modal
   - Replaced explicit `height` with `aspect-ratio` so container always matches image proportions
   - Changed `object-contain` to `object-cover` to eliminate letterboxing
+  - File: `components/ui/ViewOnWallModal.tsx`
+- [x] Fixed View on Wall aspect ratio using image's natural dimensions
+  - Container shape was derived from physical print dimensions (e.g. "20 × 24 inches" ≈ square), causing landscape photos to appear nearly square
+  - Now detects the image's intrinsic aspect ratio via `new Image()` on load
+  - Physical dimensions still control wall-relative scale; image ratio controls shape
+  - Changed image fit back to `object-contain` to prevent cropping
   - File: `components/ui/ViewOnWallModal.tsx`
 
 ---

@@ -7,7 +7,6 @@ import { useLocale, useTranslations } from 'next-intl'
 import { Lightbox, type LightboxImage } from '@/components/ui/Lightbox'
 import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder'
 import { ViewOnWallModal } from '@/components/ui/ViewOnWallModal'
-import { ShareButton } from './ShareButton'
 import { ArtworkInquiryModal } from './ArtworkInquiryModal'
 import type { Artwork, ArtworkLiterature } from '@/lib/supabase/types'
 
@@ -105,21 +104,16 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
             {t('detail.backToGallery')}
           </Link>
 
-          <ShareButton
-            url={artworkUrl}
-            title={artwork.title}
-            description={artwork.description || undefined}
-          />
         </div>
 
         {/* Main Content: 60/40 split on desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-16 items-center">
           {/* Left Column: Hero Image */}
           <div className="relative">
             <button
               type="button"
               onClick={() => setIsLightboxOpen(true)}
-              className="relative w-full aspect-[4/5] overflow-hidden cursor-zoom-in group"
+              className="relative w-full overflow-hidden cursor-zoom-in group"
               aria-label={t('detail.viewFullSize')}
             >
               {hasError ? (
@@ -127,21 +121,22 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
               ) : (
                 <>
                   {isLoading && (
-                    <div className="absolute inset-0">
+                    <div className="w-full aspect-[4/5]">
                       <ImagePlaceholder aspectRatio="4:5" />
                     </div>
                   )}
                   <Image
                     src={artwork.image_url}
                     alt={artwork.title}
-                    fill
+                    width={0}
+                    height={0}
                     sizes="(max-width: 1024px) 100vw, 60vw"
                     className={`
-                      object-contain
+                      w-auto h-auto max-w-full
                       transition-all
                       duration-slow
                       group-hover:scale-[1.02]
-                      ${isLoading ? 'opacity-0' : 'opacity-100'}
+                      ${isLoading ? 'opacity-0 absolute' : 'opacity-100'}
                     `}
                     priority
                     onLoad={() => setIsLoading(false)}
