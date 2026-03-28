@@ -49,6 +49,9 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
   // Artwork zoom (1.0 = calculated scale, range 0.5–1.5)
   const [artworkZoom, setArtworkZoom] = useState(1.0)
 
+  // Natural image aspect ratio (detected on load)
+  const [imageRatio, setImageRatio] = useState<number | null>(null)
+
   // Hint overlay (auto-fades after 3s)
   const [showHint, setShowHint] = useState(true)
 
@@ -117,6 +120,18 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
     const timer = setTimeout(() => setShowHint(false), 3000)
     return () => clearTimeout(timer)
   }, [isOpen, activeScene.id])
+
+  // Detect image natural aspect ratio
+  useEffect(() => {
+    if (!isOpen || !artwork.image_url) return
+    const img = new window.Image()
+    img.onload = () => {
+      if (img.naturalWidth && img.naturalHeight) {
+        setImageRatio(img.naturalWidth / img.naturalHeight)
+      }
+    }
+    img.src = artwork.image_url
+  }, [isOpen, artwork.image_url])
 
   // Keyboard navigation
   useEffect(() => {
@@ -209,20 +224,28 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
   const { externalControls } = viewport
 
   // Compute artwork container size preserving aspect ratio within constraints
+  // Uses the image's natural aspect ratio for shape, physical dimensions for scale
   const artworkContainerStyle = (() => {
     if (!artworkScale) return null
-    const ratio = artworkScale.width / artworkScale.height
-    const baseWidth = Math.min(artworkScale.width * artworkZoom, 960 * 0.9)
-    const baseHeight = baseWidth / ratio
+    const ratio = imageRatio ?? (artworkScale.width / artworkScale.height)
+    // Use physical height for wall-relative scale, image ratio for shape
+    const baseHeight = artworkScale.height * artworkZoom
+    const baseWidth = baseHeight * ratio
     const maxWPct = externalControls ? Math.min(85 * artworkZoom, 95) : Math.min(80 * artworkZoom, 95)
     const maxHPct = externalControls ? Math.min(65 * artworkZoom, 85) : Math.min(55 * artworkZoom, 75)
     const maxHPx = viewport.roomHeightPx * (maxHPct / 100)
-    // If height exceeds max, scale width down to maintain aspect ratio
+    const maxWPx = 960 * 0.9
     let finalWidth = baseWidth
     let finalHeight = baseHeight
+    // Clamp to max height
     if (finalHeight > maxHPx) {
       finalHeight = maxHPx
       finalWidth = finalHeight * ratio
+    }
+    // Clamp to max width
+    if (finalWidth > maxWPx) {
+      finalWidth = maxWPx
+      finalHeight = finalWidth / ratio
     }
     return { width: finalWidth, height: finalHeight, maxWPct }
   })()
@@ -398,7 +421,7 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
                 src={artwork.image_url}
                 alt={artwork.title}
                 fill
-                className="object-cover pointer-events-none"
+                className="object-contain pointer-events-none"
                 sizes="(max-width: 768px) 80vw, 50vw"
                 draggable={false}
               />
