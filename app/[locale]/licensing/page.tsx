@@ -51,7 +51,7 @@ export default async function LicensingPage() {
 
       {/* How It Works */}
       <div className="max-w-4xl mx-auto mb-20">
-        <h2 className="text-display-4 mb-10 text-center">{t('howItWorks')}</h2>
+        <h2 className="section-title-museum mb-10 text-center">{t('howItWorks')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step) => (
             <div key={step.number} className="text-center">
@@ -67,7 +67,7 @@ export default async function LicensingPage() {
 
       {/* License Types */}
       <div className="max-w-4xl mx-auto mb-20">
-        <h2 className="text-display-4 mb-10 text-center">License Types</h2>
+        <h2 className="section-title-museum mb-10 text-center">License Types</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <LicenseTypeCard
             title={t('types.editorial')}

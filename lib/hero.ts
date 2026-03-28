@@ -9,6 +9,7 @@ export interface PublicHeroSlide {
   title: string | null
   description: string | null
   link_url: string | null
+  show_centered_text: boolean
 }
 
 /**
@@ -20,7 +21,7 @@ export async function getHeroSlides(): Promise<PublicHeroSlide[]> {
 
   const { data, error } = await supabase
     .from('hero_slides')
-    .select('id, image_url, overlay_opacity, display_order, title, description, link_url')
+    .select('id, image_url, overlay_opacity, display_order, title, description, link_url, show_centered_text')
     .eq('status', 'published')
     .eq('is_active', true)
     .order('display_order', { ascending: true })

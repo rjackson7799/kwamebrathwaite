@@ -37,13 +37,25 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json()
-    const { page_slug, show_title } = body
+    const { page_slug, show_title, metadata } = body
 
-    if (!page_slug || typeof show_title !== 'boolean') {
+    if (!page_slug) {
+      return errorResponse(ErrorCodes.VALIDATION_ERROR, 'page_slug is required')
+    }
+
+    if (typeof show_title !== 'boolean' && metadata === undefined) {
       return errorResponse(
         ErrorCodes.VALIDATION_ERROR,
-        'page_slug (string) and show_title (boolean) are required'
+        'At least one of show_title (boolean) or metadata (object) is required'
       )
+    }
+
+    const updatePayload: Record<string, unknown> = {}
+    if (typeof show_title === 'boolean') {
+      updatePayload.show_title = show_title
+    }
+    if (metadata !== undefined) {
+      updatePayload.metadata = metadata
     }
 
     const supabase = await createClient()
@@ -51,7 +63,7 @@ export async function PUT(request: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (supabase as any)
       .from('page_settings')
-      .update({ show_title })
+      .update(updatePayload)
       .eq('page_slug', page_slug)
       .select()
       .single()

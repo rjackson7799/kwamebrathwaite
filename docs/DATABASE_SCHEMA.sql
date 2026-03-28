@@ -487,7 +487,16 @@ CREATE POLICY "Admins can update page settings"
     TO authenticated
     USING (true);
 
-COMMENT ON TABLE page_settings IS 'Per-page display settings (e.g., show/hide title)';
+COMMENT ON TABLE page_settings IS 'Per-page display settings (e.g., show/hide title). The metadata JSONB column stores page-specific flags such as {"show_timeline": bool, "show_movement": bool} for the about page.';
+
+-- ============================================
+-- HERO SLIDES (homepage rotator)
+-- ============================================
+-- Migration: Add show_centered_text toggle
+ALTER TABLE hero_slides
+  ADD COLUMN IF NOT EXISTS show_centered_text BOOLEAN NOT NULL DEFAULT false;
+
+COMMENT ON COLUMN hero_slides.show_centered_text IS 'Show shared centered text overlay (Photography Archive / Kwame Brathwaite) on this slide';
 
 -- ============================================
 -- END OF SCHEMA

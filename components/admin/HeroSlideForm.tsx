@@ -26,6 +26,7 @@ export function HeroSlideForm({ slide, nextDisplayOrder = 1 }: HeroSlideFormProp
     title: slide?.title || '',
     description: slide?.description || '',
     link_url: slide?.link_url || '',
+    show_centered_text: slide?.show_centered_text ?? false,
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -189,6 +190,33 @@ export function HeroSlideForm({ slide, nextDisplayOrder = 1 }: HeroSlideFormProp
           <p className="text-red-500 text-xs mt-1">Link must start with /</p>
         )}
       </FormField>
+
+      {/* Show Centered Text Toggle */}
+      <div className="mb-6">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <div className="relative">
+            <input
+              type="checkbox"
+              checked={formData.show_centered_text}
+              onChange={(e) => setFormData({
+                ...formData,
+                show_centered_text: e.target.checked
+              })}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-300 peer-checked:bg-black rounded-full
+                          peer-focus:ring-2 peer-focus:ring-black transition-colors" />
+            <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full
+                          transition-transform peer-checked:translate-x-5" />
+          </div>
+          <span className="text-sm font-medium">
+            Show centered text overlay
+          </span>
+        </label>
+        <p className="helper-text mt-2 ml-14">
+          Displays the shared &ldquo;Photography Archive / Kwame Brathwaite&rdquo; text centered on this slide. Useful for announcements or branding.
+        </p>
+      </div>
 
       {/* Opacity Slider */}
       <div className="mb-8">

@@ -28,3 +28,15 @@ export async function getShowTitle(slug: string): Promise<boolean> {
   // Default to true if no settings exist
   return settings?.show_title ?? true
 }
+
+export async function getSectionVisibility(
+  slug: string,
+  section: string
+): Promise<boolean> {
+  const settings = await getPageSettings(slug)
+  if (!settings?.metadata || typeof settings.metadata !== 'object' || Array.isArray(settings.metadata)) {
+    return false
+  }
+  const meta = settings.metadata as Record<string, unknown>
+  return meta[`show_${section}`] === true
+}

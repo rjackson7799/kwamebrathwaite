@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 interface HeroSlide {
   id: string
@@ -11,6 +12,7 @@ interface HeroSlide {
   title: string | null
   description: string | null
   link_url: string | null
+  show_centered_text: boolean
 }
 
 interface HeroRotatorProps {
@@ -18,6 +20,7 @@ interface HeroRotatorProps {
 }
 
 export function HeroRotator({ slides }: HeroRotatorProps) {
+  const t = useTranslations('home')
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
@@ -120,6 +123,22 @@ export function HeroRotator({ slides }: HeroRotatorProps) {
                   {slide.description}
                 </p>
               )}
+            </div>
+          )}
+          {/* Centered text overlay (admin-togglable per slide) */}
+          {slide.show_centered_text && (
+            <div className="absolute inset-0 flex items-center justify-center z-10 text-center px-8">
+              <div>
+                <p className="text-white/90 text-xs md:text-sm uppercase tracking-[0.25em] mb-4">
+                  {t('overline')}
+                </p>
+                <h1 className="text-white font-serif text-4xl md:text-6xl lg:text-7xl font-normal tracking-tight">
+                  {t('title')}
+                </h1>
+                <p className="text-white/80 text-base md:text-lg lg:text-xl font-light mt-4 tracking-wide">
+                  {t('subtitle')}
+                </p>
+              </div>
             </div>
           )}
         </div>

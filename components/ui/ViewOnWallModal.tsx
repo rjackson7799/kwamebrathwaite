@@ -362,7 +362,7 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
             className={`absolute artwork-draggable ${isDragging ? 'is-dragging' : ''}`}
             style={{
               width: `${Math.min(artworkScale.width * artworkZoom, 960 * 0.9)}px`,
-              height: `${Math.min(artworkScale.height * artworkZoom, viewport.roomHeightPx * 0.7)}px`,
+              aspectRatio: `${artworkScale.width} / ${artworkScale.height}`,
               top: `${position.y}%`,
               left: `${position.x}%`,
               transform: 'translate(-50%, -50%)',
@@ -380,7 +380,7 @@ export function ViewOnWallModal({ artwork, isOpen, onClose }: ViewOnWallModalPro
                 src={artwork.image_url}
                 alt={artwork.title}
                 fill
-                className="object-contain pointer-events-none"
+                className="object-cover pointer-events-none"
                 sizes="(max-width: 768px) 80vw, 50vw"
                 draggable={false}
               />

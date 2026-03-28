@@ -209,7 +209,7 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
             </span>
 
             {/* Title */}
-            <h1 className="text-display-2 font-semibold text-black dark:text-[#F0F0F0] mb-6">
+            <h1 className="page-title-museum mb-6">
               {exhibition.title}
             </h1>
 
@@ -323,7 +323,7 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
             {/* Description */}
             {exhibition.description && (
               <div className="mb-8">
-                <h2 className="text-h3 font-medium text-black dark:text-[#F0F0F0] mb-4">
+                <h2 className="section-title-museum mb-4">
                   {t('detail.aboutExhibition')}
                 </h2>
                 <div

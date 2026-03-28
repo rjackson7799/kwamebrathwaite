@@ -278,6 +278,7 @@ export const adminHeroSlideSchema = z.object({
   title: z.string().max(255).optional().nullable(),
   description: z.string().max(1000).optional().nullable(),
   link_url: z.string().max(500).regex(/^\//, 'Link must start with /').optional().nullable().or(z.literal('')),
+  show_centered_text: z.boolean().default(false),
 })
 
 export type AdminHeroSlideInput = z.infer<typeof adminHeroSlideSchema>

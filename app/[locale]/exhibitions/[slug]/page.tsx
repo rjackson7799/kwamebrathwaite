@@ -218,7 +218,7 @@ export default async function ExhibitionDetailPage({ params }: Props) {
       {/* Featured Works Section */}
       {artworks.length > 0 && (
         <section className="container-page section-spacing border-t border-gray-light dark:border-[#333333] pt-12">
-          <h2 className="text-h2 mb-8">{t('detail.featuredWorks')}</h2>
+          <h2 className="section-title-museum mb-8">{t('detail.featuredWorks')}</h2>
           <ArtworkGrid
             artworks={artworks}
             showMetadata

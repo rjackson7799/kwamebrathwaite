@@ -493,6 +493,7 @@ export type Database = {
           title: string | null
           description: string | null
           link_url: string | null
+          show_centered_text: boolean
           created_at: string
           updated_at: string
         }
@@ -506,6 +507,7 @@ export type Database = {
           title?: string | null
           description?: string | null
           link_url?: string | null
+          show_centered_text?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -519,6 +521,7 @@ export type Database = {
           title?: string | null
           description?: string | null
           link_url?: string | null
+          show_centered_text?: boolean
           created_at?: string
           updated_at?: string
         }

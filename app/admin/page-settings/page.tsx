@@ -1,11 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+
+interface SectionMetadata {
+  show_timeline?: boolean
+  show_movement?: boolean
+}
 
 interface PageSetting {
   id: string
   page_slug: string
   show_title: boolean
+  metadata: SectionMetadata | null
   updated_at: string
 }
 
@@ -33,13 +39,13 @@ export default function PageSettingsPage() {
   const fetchSettings = async () => {
     try {
       const res = await fetch('/api/admin/page-settings')
-      if (!res.ok) throw new Error('Failed to fetch')
       const data = await res.json()
-      if (data.success) {
-        setSettings(data.data)
+      if (!res.ok || !data.success) {
+        throw new Error(data.error?.message || 'Failed to fetch')
       }
-    } catch {
-      setError('Failed to load page settings')
+      setSettings(data.data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load page settings')
     } finally {
       setIsLoading(false)
     }
@@ -59,6 +65,36 @@ export default function PageSettingsPage() {
       setSettings(prev =>
         prev.map(s =>
           s.page_slug === pageSlug ? { ...s, show_title: !currentValue } : s
+        )
+      )
+    } catch {
+      setError('Failed to update setting')
+    } finally {
+      setSaving(null)
+    }
+  }
+
+  const toggleMetadataFlag = async (
+    pageSlug: string,
+    currentMetadata: SectionMetadata | null,
+    flag: keyof SectionMetadata
+  ) => {
+    setSaving(`${pageSlug}-${flag}`)
+    const newMetadata: SectionMetadata = {
+      show_timeline: currentMetadata?.show_timeline ?? false,
+      show_movement: currentMetadata?.show_movement ?? false,
+      [flag]: !(currentMetadata?.[flag] ?? false),
+    }
+    try {
+      const res = await fetch('/api/admin/page-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page_slug: pageSlug, metadata: newMetadata }),
+      })
+      if (!res.ok) throw new Error('Failed to update')
+      setSettings(prev =>
+        prev.map(s =>
+          s.page_slug === pageSlug ? { ...s, metadata: newMetadata } : s
         )
       )
     } catch {
@@ -112,49 +148,114 @@ export default function PageSettingsPage() {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {settings.map((setting) => (
-              <tr key={setting.id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-4 py-4">
-                  <span className="text-sm font-medium text-gray-900">
-                    {PAGE_LABELS[setting.page_slug] || setting.page_slug}
-                  </span>
-                  <span className="ml-2 text-xs text-gray-400">
-                    /{setting.page_slug}
-                  </span>
-                </td>
-                <td className="px-4 py-4">
-                  <button
-                    type="button"
-                    onClick={() => toggleShowTitle(setting.page_slug, setting.show_title)}
-                    disabled={saving === setting.page_slug}
-                    className={`
-                      relative inline-flex h-6 w-11 items-center rounded-full
-                      transition-colors duration-200
-                      ${setting.show_title ? 'bg-black' : 'bg-gray-300'}
-                      ${saving === setting.page_slug ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
-                    `}
-                    role="switch"
-                    aria-checked={setting.show_title}
-                    aria-label={`Toggle title for ${PAGE_LABELS[setting.page_slug] || setting.page_slug}`}
-                  >
-                    <span
+              <React.Fragment key={setting.id}>
+                <tr className="hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-4">
+                    <span className="text-sm font-medium text-gray-900">
+                      {PAGE_LABELS[setting.page_slug] || setting.page_slug}
+                    </span>
+                    <span className="ml-2 text-xs text-gray-400">
+                      /{setting.page_slug}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleShowTitle(setting.page_slug, setting.show_title)}
+                      disabled={saving === setting.page_slug}
                       className={`
-                        inline-block h-4 w-4 rounded-full bg-white
-                        transition-transform duration-200
-                        ${setting.show_title ? 'translate-x-6' : 'translate-x-1'}
+                        relative inline-flex h-6 w-11 items-center rounded-full
+                        transition-colors duration-200
+                        ${setting.show_title ? 'bg-black' : 'bg-gray-300'}
+                        ${saving === setting.page_slug ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
                       `}
-                    />
-                  </button>
-                </td>
-                <td className="px-4 py-4 text-xs text-gray-400">
-                  {new Date(setting.updated_at).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </td>
-              </tr>
+                      role="switch"
+                      aria-checked={setting.show_title}
+                      aria-label={`Toggle title for ${PAGE_LABELS[setting.page_slug] || setting.page_slug}`}
+                    >
+                      <span
+                        className={`
+                          inline-block h-4 w-4 rounded-full bg-white
+                          transition-transform duration-200
+                          ${setting.show_title ? 'translate-x-6' : 'translate-x-1'}
+                        `}
+                      />
+                    </button>
+                  </td>
+                  <td className="px-4 py-4 text-xs text-gray-400">
+                    {new Date(setting.updated_at).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </td>
+                </tr>
+                {setting.page_slug === 'about' && (
+                  <tr className="bg-gray-50/50 border-t border-gray-100">
+                    <td className="px-4 py-3 pl-8">
+                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Section Visibility
+                      </span>
+                    </td>
+                    <td className="px-4 py-3" colSpan={2}>
+                      <div className="flex gap-6">
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => toggleMetadataFlag(setting.page_slug, setting.metadata, 'show_timeline')}
+                            disabled={saving === `${setting.page_slug}-show_timeline`}
+                            className={`
+                              relative inline-flex h-6 w-11 items-center rounded-full
+                              transition-colors duration-200
+                              ${setting.metadata?.show_timeline ? 'bg-black' : 'bg-gray-300'}
+                              ${saving === `${setting.page_slug}-show_timeline` ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
+                            `}
+                            role="switch"
+                            aria-checked={setting.metadata?.show_timeline ?? false}
+                            aria-label="Toggle Timeline section"
+                          >
+                            <span
+                              className={`
+                                inline-block h-4 w-4 rounded-full bg-white
+                                transition-transform duration-200
+                                ${setting.metadata?.show_timeline ? 'translate-x-6' : 'translate-x-1'}
+                              `}
+                            />
+                          </button>
+                          <span className="text-xs text-gray-600">Timeline</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => toggleMetadataFlag(setting.page_slug, setting.metadata, 'show_movement')}
+                            disabled={saving === `${setting.page_slug}-show_movement`}
+                            className={`
+                              relative inline-flex h-6 w-11 items-center rounded-full
+                              transition-colors duration-200
+                              ${setting.metadata?.show_movement ? 'bg-black' : 'bg-gray-300'}
+                              ${saving === `${setting.page_slug}-show_movement` ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
+                            `}
+                            role="switch"
+                            aria-checked={setting.metadata?.show_movement ?? false}
+                            aria-label="Toggle Movement section"
+                          >
+                            <span
+                              className={`
+                                inline-block h-4 w-4 rounded-full bg-white
+                                transition-transform duration-200
+                                ${setting.metadata?.show_movement ? 'translate-x-6' : 'translate-x-1'}
+                              `}
+                            />
+                          </button>
+                          <span className="text-xs text-gray-600">Movement</span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
           </tbody>
         </table>

@@ -150,7 +150,7 @@ export function Timeline({
                     style={{ transform: 'translateX(-50%)' }}
                     aria-hidden="true"
                   />
-                  <h3 className="text-h3 font-medium text-black dark:text-[#F0F0F0]">
+                  <h3 className="section-title-museum">
                     {decade}
                   </h3>
                 </div>

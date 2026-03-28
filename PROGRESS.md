@@ -1,7 +1,17 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 23, 2026 (Museum Aesthetic Overhaul + Brand Brief)
+**Last Updated:** March 28, 2026 (View on Wall — Remove Side Background)
+
+---
+
+## View on Wall Refinements (March 2026)
+
+### Completed
+- [x] Removed side background/padding on artwork in View on Wall modal
+  - Replaced explicit `height` with `aspect-ratio` so container always matches image proportions
+  - Changed `object-contain` to `object-cover` to eliminate letterboxing
+  - File: `components/ui/ViewOnWallModal.tsx`
 
 ---
 
@@ -21,6 +31,15 @@
 - [x] Changed Press page grid from 3-column to 4-column
 - [x] Simplified ArtworkDetail: stacked metadata without labels, text-only CTAs, removed availability badge
 - [x] Updated About page: section-title-museum for H2s, generous line-height, muted body text
+- [x] Full heading consistency audit across all public pages (March 28, 2026)
+  - [x] Homepage: "Featured Works" and "Featured Exhibitions" h2s → `section-title-museum`
+  - [x] Archive page: "Mission" h2 → `section-title-museum`
+  - [x] Exhibition detail: h1 → `page-title-museum`, "About Exhibition" h2 → `section-title-museum`
+  - [x] Exhibition detail page: "Featured Works" h2 → `section-title-museum`
+  - [x] Artwork detail page: "Related Works" h2 → `section-title-museum`
+  - [x] Licensing page: "How It Works" and "License Types" h2s → `section-title-museum`
+  - [x] LicenseRequestForm: h1 → `page-title-museum`, success h2 → `section-title-museum`
+  - [x] Timeline: decade h3s → `section-title-museum`
 - [x] Created Admin Page Settings UI with toggle switches
 - [x] Added "Page Settings" to admin sidebar navigation
 - [x] Updated `DESIGN_SYSTEM.md` with museum heading typography specs

@@ -251,7 +251,7 @@ export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormP
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-display-4 mb-4">{t('title')}</h2>
+        <h2 className="section-title-museum mb-4">{t('title')}</h2>
         <p className="text-body-lg text-gray-warm max-w-lg mx-auto">{submitResult.message}</p>
       </div>
     )
@@ -261,7 +261,7 @@ export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormP
 
   return (
     <div>
-      <h1 className="text-display-3 mb-8">{t('title')}</h1>
+      <h1 className="page-title-museum mb-8">{t('title')}</h1>
 
       {/* Step indicator */}
       <div className="flex items-center justify-between mb-10">
