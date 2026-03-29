@@ -1,7 +1,39 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 28, 2026 (Exhibition Data Seed)
+**Last Updated:** March 29, 2026 (SEO Auto-Generate & Press Detail Pages)
+
+---
+
+## SEO & Accessibility Auto-Generate (March 2026)
+
+### Completed
+- [x] Added focused "Auto-generate" button in SEO & Accessibility card of artwork edit form
+  - Generates only `seo_title`, `alt_text`, `meta_title`, `meta_description` — never overwrites descriptions
+  - Uses existing hand-written description as context for higher quality SEO output
+  - GPT-4o Vision with `detail: 'low'` (cheaper since description provides context)
+  - DeepL translations to French and Japanese with caching
+  - Files created:
+    - `components/admin/SEOGenerateButton.tsx` — Compact button with loading/error states
+    - `app/api/admin/artworks/[id]/generate-seo/route.ts` — POST endpoint (auth-protected)
+  - Files modified:
+    - `lib/ai/prompts.ts` — Added `SEO_SYSTEM_PROMPT` + `buildSEOUserPrompt()`
+    - `lib/ai/types.ts` — Added `GeneratedSEOContent`, `TranslatedSEOContent`, `SEOGenerationResult`, `SEOGenerationOptions`
+    - `lib/ai/description-generator.ts` — Added `generateArtworkSEO()` function
+    - `lib/ai/translation-service.ts` — Added `translateSEOContent()` for meta_title/meta_description
+    - `lib/ai/index.ts` — New exports
+    - `components/admin/ArtworkForm.tsx` — Integrated button in SEO card header
+
+---
+
+## Press Detail Pages (March 2026)
+
+### Completed
+- [x] Added individual press article detail pages
+  - `app/[locale]/press/[id]/page.tsx` — Route with server-side data fetching
+  - `components/features/press/PressDetail.tsx` — Full article layout
+  - PressCard now links to detail pages instead of opening external URLs
+  - Added i18n keys for press detail page (en, fr, ja)
 
 ---
 
