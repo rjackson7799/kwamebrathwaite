@@ -53,7 +53,13 @@ type Props = {
 // Generate metadata for SEO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id, locale } = await params
-  const pressItem = await getPressItem(id)
+
+  let pressItem: DetailedPressItem | null = null
+  try {
+    pressItem = await getPressItem(id)
+  } catch {
+    // Fall through to not-found metadata
+  }
 
   if (!pressItem) {
     return { title: 'Press Item Not Found' }
@@ -110,22 +116,44 @@ export async function generateStaticParams() {
 
 export default async function PressDetailPage({ params }: Props) {
   const { id, locale } = await params
-  const pressItem = await getPressItem(id)
+
+  let pressItem: DetailedPressItem | null = null
+  try {
+    pressItem = await getPressItem(id)
+  } catch (err) {
+    console.error('[Press Detail] Failed to fetch press item:', err)
+  }
 
   if (!pressItem) {
     notFound()
   }
 
   // Translate title and excerpt for non-English locales
-  const translatedItem: DetailedPressItem = locale === 'en'
-    ? pressItem
-    : {
-        ...pressItem,
-        title: await translatePageContent(pressItem.title, locale, 'press', pressItem.id, 'title'),
-        excerpt: pressItem.excerpt
-          ? await translatePageContent(pressItem.excerpt, locale, 'press', pressItem.id, 'excerpt')
-          : pressItem.excerpt,
+  let translatedItem: DetailedPressItem = pressItem
+  if (locale !== 'en') {
+    let translatedTitle = pressItem.title
+    let translatedExcerpt = pressItem.excerpt
+
+    try {
+      translatedTitle = await translatePageContent(pressItem.title, locale, 'press', pressItem.id, 'title')
+    } catch (err) {
+      console.error('[Press Detail] Translation failed for title:', err)
+    }
+
+    try {
+      if (pressItem.excerpt) {
+        translatedExcerpt = await translatePageContent(pressItem.excerpt, locale, 'press', pressItem.id, 'excerpt')
       }
+    } catch (err) {
+      console.error('[Press Detail] Translation failed for excerpt:', err)
+    }
+
+    translatedItem = {
+      ...pressItem,
+      title: translatedTitle,
+      excerpt: translatedExcerpt,
+    }
+  }
 
   // Schema.org structured data for NewsArticle
   const jsonLd = {

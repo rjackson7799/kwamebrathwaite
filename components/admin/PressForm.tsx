@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useForm, Controller } from 'react-hook-form'
 import { FormField, Input, Textarea, Select, Checkbox } from './FormField'
 import { ImageUploader } from './ImageUploader'
+import { RichTextEditor } from './RichTextEditor'
 import { Wand2, Loader2, AlertCircle, Check } from 'lucide-react'
 
 interface PressFormData {
@@ -197,15 +198,20 @@ export function PressForm({ press, isEdit = false }: PressFormProps) {
             <h3 className="text-lg font-medium text-gray-900 mb-4">Content</h3>
             <div className="space-y-4">
               <FormField
-                label="Excerpt"
+                label="Article Summary"
                 htmlFor="excerpt"
-                hint="Brief summary or quote from the article"
+                hint="Article summary or quote - supports rich text formatting"
               >
-                <Textarea
-                  id="excerpt"
-                  {...register('excerpt')}
-                  rows={4}
-                  placeholder="Enter a brief excerpt or summary..."
+                <Controller
+                  name="excerpt"
+                  control={control}
+                  render={({ field }) => (
+                    <RichTextEditor
+                      value={field.value || ''}
+                      onChange={field.onChange}
+                      placeholder="Enter article summary..."
+                    />
+                  )}
                 />
               </FormField>
 
