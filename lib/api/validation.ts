@@ -85,7 +85,10 @@ export function parseSearchParams(searchParams: URLSearchParams): Record<string,
 // Admin artwork create/update schema
 export const adminArtworkSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255),
-  year: z.coerce.number().int().min(1900).max(2100).optional().nullable(),
+  year: z.preprocess(
+    (val) => (val === '' || val === null || val === undefined || Number.isNaN(Number(val)) ? null : Number(val)),
+    z.number().int().min(1900).max(2100).nullable().optional()
+  ),
   medium: z.string().max(255).optional().nullable(),
   dimensions: z.string().max(100).optional().nullable(),
   dimensions_cm: z.string().max(100).optional().nullable(),
@@ -93,8 +96,14 @@ export const adminArtworkSchema = z.object({
   short_description: z.string().max(500).optional().nullable(),
   seo_title: z.string().max(255).optional().nullable(),
   alt_text: z.string().max(255).optional().nullable(),
-  image_url: z.string().url('Invalid image URL'),
-  image_thumbnail_url: z.string().url().optional().nullable(),
+  image_url: z.string().min(1, 'Image URL is required').refine(
+    (val) => val.startsWith('/') || val.startsWith('http://') || val.startsWith('https://'),
+    'Image URL must be a valid URL or path starting with /'
+  ),
+  image_thumbnail_url: z.string().refine(
+    (val) => val.startsWith('/') || val.startsWith('http://') || val.startsWith('https://'),
+    'Invalid image URL'
+  ).optional().nullable(),
   category: z.enum(['photography', 'print', 'historical']).optional().nullable(),
   series: z.string().max(255).optional().nullable(),
   edition: z.string().max(255).optional().nullable(),

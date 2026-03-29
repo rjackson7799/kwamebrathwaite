@@ -11,13 +11,20 @@ interface Artwork {
   year: number | null
   medium: string | null
   dimensions: string | null
+  dimensions_cm: string | null
   description: string | null
+  short_description: string | null
+  seo_title: string | null
+  alt_text: string | null
   image_url: string
   image_thumbnail_url: string | null
   category: 'photography' | 'print' | 'historical' | null
   series: string | null
+  edition: string | null
+  archive_reference: string | null
   availability_status: 'available' | 'sold' | 'on_loan' | 'not_for_sale' | 'inquiry_only'
   is_featured: boolean
+  display_order: number | null
   related_artwork_ids: string[]
   status: 'draft' | 'published' | 'archived'
   meta_title: string | null

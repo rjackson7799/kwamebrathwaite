@@ -124,7 +124,15 @@ export function ArtworkForm({ artwork, isEdit = false }: ArtworkFormProps) {
       const result = await response.json()
 
       if (!result.success) {
-        setError(result.error?.message || 'Failed to save artwork')
+        const details = result.error?.details
+        if (details && typeof details === 'object') {
+          const fieldMessages = Object.entries(details)
+            .map(([field, msgs]) => `${field}: ${(msgs as string[]).join(', ')}`)
+            .join('; ')
+          setError(fieldMessages || result.error?.message || 'Failed to save artwork')
+        } else {
+          setError(result.error?.message || 'Failed to save artwork')
+        }
         return
       }
 
