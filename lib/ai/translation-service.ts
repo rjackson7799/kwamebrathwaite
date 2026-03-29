@@ -6,7 +6,7 @@
 
 import crypto from 'crypto'
 import { createClient } from '@/lib/supabase/server'
-import type { TranslatedContent } from './types'
+import type { TranslatedContent, TranslatedSEOContent, GeneratedSEOContent } from './types'
 
 /**
  * DeepL API configuration
@@ -220,6 +220,23 @@ export async function translateArtworkContent(
     seo_title,
     alt_text,
   }
+}
+
+/**
+ * Translate SEO & Accessibility fields to a target language
+ */
+export async function translateSEOContent(
+  content: GeneratedSEOContent,
+  targetLanguage: TargetLanguage
+): Promise<TranslatedSEOContent> {
+  const [seo_title, alt_text, meta_title, meta_description] = await Promise.all([
+    translateWithCache(content.seo_title, targetLanguage, 'seo_title'),
+    translateWithCache(content.alt_text, targetLanguage, 'alt_text'),
+    translateWithCache(content.meta_title, targetLanguage, 'meta_title'),
+    translateWithCache(content.meta_description, targetLanguage, 'meta_description'),
+  ])
+
+  return { seo_title, alt_text, meta_title, meta_description }
 }
 
 /**

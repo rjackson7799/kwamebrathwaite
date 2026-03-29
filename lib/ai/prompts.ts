@@ -177,3 +177,92 @@ IMPORTANT:
 - If year/title/series are unknown, work with visual analysis only
 - Confidence score should reflect the quality and completeness of available information`
 }
+
+// ============================================
+// SEO & Accessibility Generation Prompts
+// ============================================
+
+/**
+ * System prompt for SEO & Accessibility-only generation
+ */
+export const SEO_SYSTEM_PROMPT = `You are an SEO specialist and accessibility expert writing for the Kwame Brathwaite Archive.
+Kwame Brathwaite (1938-2023) was a pioneering photographer who co-founded the
+Black is Beautiful movement in the 1960s through his work with AJASS (African
+Jazz-Arts Society and Studios).
+
+Your task is to generate SEO metadata and accessibility text for artwork pages.
+You have access to the photograph and existing curatorial descriptions.
+
+GUIDELINES:
+- SEO titles must be keyword-rich and natural for search engines
+- Alt text must be literal, descriptive, and useful for screen readers
+- Meta descriptions must entice clicks from search results
+- All text should be factual — do not invent details not in the image or description
+- Use the existing description as your primary source of context
+- Include key searchable terms: artist name, subject, era, series, location`
+
+/**
+ * Builds the user prompt for SEO-only generation with existing description context
+ */
+export function buildSEOUserPrompt(metadata: ArtworkMetadata & { description?: string | null }): string {
+  const metadataLines: string[] = []
+
+  if (metadata.title) metadataLines.push(`- Title: ${metadata.title}`)
+  if (metadata.year) metadataLines.push(`- Year: ${metadata.year}`)
+  if (metadata.medium) metadataLines.push(`- Medium: ${metadata.medium}`)
+  if (metadata.series) metadataLines.push(`- Series: ${metadata.series}`)
+  if (metadata.dimensions) metadataLines.push(`- Dimensions: ${metadata.dimensions}`)
+
+  const metadataSection = metadataLines.length > 0
+    ? `ARTWORK METADATA:\n${metadataLines.join('\n')}`
+    : 'ARTWORK METADATA: No metadata available.'
+
+  const descriptionSection = metadata.description
+    ? `EXISTING DESCRIPTION (use as context, do NOT reproduce):\n${metadata.description}`
+    : 'No existing description available. Base content on visual analysis and metadata only.'
+
+  return `Analyze this photograph by Kwame Brathwaite and generate SEO & accessibility metadata.
+
+${metadataSection}
+
+${descriptionSection}
+
+GENERATE THE FOLLOWING:
+
+1. SEO TITLE (max 60 characters):
+   - Format: "[Subject/Theme] [Year] - Kwame Brathwaite"
+   - Natural, search-friendly language
+   - Include key searchable terms (subject, era, location)
+   - Example: "Miles Davis at RIJF 1959 - Kwame Brathwaite"
+
+2. ALT TEXT (max 125 characters):
+   - Literal description for screen readers
+   - Start with "Black and white photograph of..." or "Black and white photograph showing..."
+   - Focus on what's visible, not interpretation
+   - Example: "Black and white photograph of Miles Davis playing trumpet on stage"
+
+3. META TITLE (max 70 characters):
+   - Page title for browser tab and search results
+   - Format: "[Artwork Title] | Kwame Brathwaite Archive"
+   - If title is "Untitled (...)", use the parenthetical subject
+   - Example: "Miles Davis at RIJF | Kwame Brathwaite Archive"
+
+4. META DESCRIPTION (150-160 characters):
+   - Compelling snippet for search engine results
+   - Summarize subject, era, and significance
+   - End with a call to explore: "Explore the archive..."
+   - Example: "Kwame Brathwaite's iconic 1959 photograph of Miles Davis at the Randall's Island Jazz Festival. Explore the archive of the Black is Beautiful movement."
+
+Return your response as valid JSON matching this exact schema:
+{
+  "seo_title": "string (max 60 chars)",
+  "alt_text": "string (max 125 chars)",
+  "meta_title": "string (max 70 chars)",
+  "meta_description": "string (150-160 chars)"
+}
+
+IMPORTANT:
+- Return ONLY valid JSON, no markdown code blocks or preamble
+- Do not invent information not visible in the image or description
+- Keep within character limits strictly`
+}

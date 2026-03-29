@@ -17,17 +17,23 @@ export type {
   GenerateDescriptionResponse,
   ApplyDescriptionRequest,
   ApplyDescriptionResponse,
+  GeneratedSEOContent,
+  TranslatedSEOContent,
+  SEOGenerationResult,
+  SEOGenerationOptions,
 } from './types'
 
 // Description Generator
 export {
   generateArtworkDescription,
+  generateArtworkSEO,
   estimateBatchCost,
 } from './description-generator'
 
 // Translation Service
 export {
   translateArtworkContent,
+  translateSEOContent,
   cacheArtworkTranslations,
 } from './translation-service'
 
@@ -39,6 +45,8 @@ export {
   PROMPT_VERSION,
   SYSTEM_PROMPT,
   buildUserPrompt,
+  SEO_SYSTEM_PROMPT,
+  buildSEOUserPrompt,
   PRESS_SUMMARY_SYSTEM_PROMPT,
   buildPressSummaryPrompt,
 } from './prompts'

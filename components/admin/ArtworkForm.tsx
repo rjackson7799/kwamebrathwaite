@@ -8,6 +8,7 @@ import { ImageUploader } from './ImageUploader'
 import { RichTextEditor } from './RichTextEditor'
 import { ArtworkPicker } from './ArtworkPicker'
 import { AIGenerationPanel } from './AIGenerationPanel'
+import { SEOGenerateButton } from './SEOGenerateButton'
 
 interface ArtworkFormData {
   title: string
@@ -289,7 +290,20 @@ export function ArtworkForm({ artwork, isEdit = false }: ArtworkFormProps) {
 
           {/* SEO & Accessibility Card */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">SEO & Accessibility</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">SEO & Accessibility</h3>
+              {isEdit && artwork?.id && imageUrl && (
+                <SEOGenerateButton
+                  artworkId={artwork.id}
+                  onGenerated={(seo) => {
+                    setValue('seo_title', seo.seo_title)
+                    setValue('alt_text', seo.alt_text)
+                    setValue('meta_title', seo.meta_title)
+                    setValue('meta_description', seo.meta_description)
+                  }}
+                />
+              )}
+            </div>
             <div className="space-y-4">
               <FormField
                 label="SEO Title"

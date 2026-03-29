@@ -5,13 +5,17 @@
  */
 
 import OpenAI from 'openai'
-import { SYSTEM_PROMPT, buildUserPrompt } from './prompts'
-import { translateArtworkContent } from './translation-service'
+import { SYSTEM_PROMPT, buildUserPrompt, SEO_SYSTEM_PROMPT, buildSEOUserPrompt } from './prompts'
+import { translateArtworkContent, translateSEOContent } from './translation-service'
 import type {
   GenerationOptions,
   GenerationResult,
   GeneratedContent,
   TranslatedContent,
+  SEOGenerationOptions,
+  SEOGenerationResult,
+  GeneratedSEOContent,
+  TranslatedSEOContent,
 } from './types'
 
 // Lazy-load OpenAI client to avoid initialization errors during build
@@ -170,6 +174,82 @@ export async function generateArtworkDescription(
     translations,
     tokens_used: totalTokens,
     cost_usd: Math.round(cost * 10000) / 10000, // Round to 4 decimal places
+  }
+}
+
+/**
+ * Generate SEO & Accessibility metadata for an artwork using GPT-4o Vision.
+ * Does NOT generate descriptions — only seo_title, alt_text, meta_title, meta_description.
+ * Uses existing description as context for better results.
+ */
+export async function generateArtworkSEO(
+  options: SEOGenerationOptions
+): Promise<SEOGenerationResult> {
+  const { image_url, metadata, include_translations = true } = options
+
+  const openai = getOpenAIClient()
+
+  const response = await openai.chat.completions.create({
+    model: GPT_MODEL,
+    messages: [
+      { role: 'system', content: SEO_SYSTEM_PROMPT },
+      {
+        role: 'user',
+        content: [
+          { type: 'text', text: buildSEOUserPrompt(metadata) },
+          { type: 'image_url', image_url: { url: image_url, detail: 'low' } },
+        ],
+      },
+    ],
+    max_tokens: 500,
+    temperature: 0.5,
+    response_format: { type: 'json_object' },
+  })
+
+  const content = response.choices[0]?.message?.content || '{}'
+  let generated: GeneratedSEOContent
+
+  try {
+    const parsed = JSON.parse(content)
+    generated = {
+      seo_title: parsed.seo_title || '',
+      alt_text: parsed.alt_text || '',
+      meta_title: parsed.meta_title || '',
+      meta_description: parsed.meta_description || '',
+    }
+  } catch {
+    console.error('Failed to parse AI SEO response:', content)
+    generated = { seo_title: '', alt_text: '', meta_title: '', meta_description: '' }
+  }
+
+  const inputTokens = response.usage?.prompt_tokens || 0
+  const outputTokens = response.usage?.completion_tokens || 0
+  const cost =
+    (inputTokens * COST_PER_1K_INPUT_TOKENS) / 1000 +
+    (outputTokens * COST_PER_1K_OUTPUT_TOKENS) / 1000
+
+  let translations: { fr: TranslatedSEOContent; ja: TranslatedSEOContent } = {
+    fr: { seo_title: '', alt_text: '', meta_title: '', meta_description: '' },
+    ja: { seo_title: '', alt_text: '', meta_title: '', meta_description: '' },
+  }
+
+  if (include_translations && generated.seo_title) {
+    try {
+      const [fr, ja] = await Promise.all([
+        translateSEOContent(generated, 'fr'),
+        translateSEOContent(generated, 'ja'),
+      ])
+      translations = { fr, ja }
+    } catch (error) {
+      console.error('SEO translation failed:', error)
+    }
+  }
+
+  return {
+    ...generated,
+    translations,
+    tokens_used: inputTokens + outputTokens,
+    cost_usd: Math.round(cost * 10000) / 10000,
   }
 }
 
