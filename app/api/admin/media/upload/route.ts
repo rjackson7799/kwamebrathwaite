@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     if (uploadError) {
       console.error('Storage upload error:', uploadError)
-      return errorResponse(ErrorCodes.DB_ERROR, 'Failed to upload file', 500)
+      return errorResponse(ErrorCodes.DB_ERROR, uploadError.message || 'Failed to upload file', 500)
     }
 
     // Get public URL

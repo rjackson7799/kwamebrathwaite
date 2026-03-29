@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import Image from 'next/image'
+import { MediaBrowserModal } from './MediaBrowserModal'
 
 interface ImageUploaderProps {
   bucket: 'artworks' | 'exhibitions' | 'press' | 'hero' | 'about' | 'archive'
@@ -25,6 +26,7 @@ export function ImageUploader({
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [dragActive, setDragActive] = useState(false)
+  const [showBrowser, setShowBrowser] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleDrag = useCallback((e: React.DragEvent) => {
@@ -151,37 +153,49 @@ export function ImageUploader({
           )}
         </div>
       ) : (
-        // Upload zone
-        <div
-          className={`
-            relative border-2 border-dashed rounded-lg p-8
-            flex flex-col items-center justify-center
-            transition-colors cursor-pointer
-            ${dragActive ? 'border-black bg-gray-50' : 'border-gray-300 hover:border-gray-400'}
-            ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-          `}
-          style={{ aspectRatio }}
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-          onClick={() => !disabled && !uploading && inputRef.current?.click()}
-        >
-          {uploading ? (
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm text-gray-500">Uploading...</p>
-            </div>
-          ) : (
-            <>
-              <UploadIcon className="w-10 h-10 text-gray-400 mb-3" />
-              <p className="text-sm text-gray-600 text-center">
-                <span className="font-medium text-black">Click to upload</span> or drag and drop
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                PNG, JPG, WebP up to {maxSizeMB}MB
-              </p>
-            </>
+        // Upload zone + Browse
+        <div className="space-y-3">
+          <div
+            className={`
+              relative border-2 border-dashed rounded-lg p-8
+              flex flex-col items-center justify-center
+              transition-colors cursor-pointer
+              ${dragActive ? 'border-black bg-gray-50' : 'border-gray-300 hover:border-gray-400'}
+              ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+            `}
+            style={{ aspectRatio }}
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+            onClick={() => !disabled && !uploading && inputRef.current?.click()}
+          >
+            {uploading ? (
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm text-gray-500">Uploading...</p>
+              </div>
+            ) : (
+              <>
+                <UploadIcon className="w-10 h-10 text-gray-400 mb-3" />
+                <p className="text-sm text-gray-600 text-center">
+                  <span className="font-medium text-black">Click to upload</span> or drag and drop
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  PNG, JPG, WebP up to {maxSizeMB}MB
+                </p>
+              </>
+            )}
+          </div>
+          {!disabled && (
+            <button
+              type="button"
+              onClick={() => setShowBrowser(true)}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            >
+              <BrowseIcon className="w-4 h-4" />
+              Browse Media Library
+            </button>
           )}
         </div>
       )}
@@ -198,7 +212,25 @@ export function ImageUploader({
         disabled={disabled || uploading}
         className="hidden"
       />
+
+      <MediaBrowserModal
+        open={showBrowser}
+        onClose={() => setShowBrowser(false)}
+        onSelect={(url) => {
+          onChange(url)
+          setError(null)
+        }}
+        bucket={bucket}
+      />
     </div>
+  )
+}
+
+function BrowseIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
+    </svg>
   )
 }
 
