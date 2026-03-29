@@ -35,7 +35,7 @@ export default function AdminArtworksPage() {
 
   // Filters
   const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || '')
-  const [categoryFilter, setCategoryFilter] = useState(searchParams.get('category') || '')
+
   const [search, setSearch] = useState(searchParams.get('q') || '')
 
   // Delete dialog
@@ -49,7 +49,7 @@ export default function AdminArtworksPage() {
       params.set('page', String(page))
       params.set('limit', String(pageSize))
       if (statusFilter) params.set('status', statusFilter)
-      if (categoryFilter) params.set('category', categoryFilter)
+
       if (search) params.set('q', search)
 
       const response = await fetch(`/api/admin/artworks?${params}`)
@@ -64,7 +64,7 @@ export default function AdminArtworksPage() {
     } finally {
       setLoading(false)
     }
-  }, [page, pageSize, statusFilter, categoryFilter, search])
+  }, [page, pageSize, statusFilter, search])
 
   useEffect(() => {
     fetchArtworks()
@@ -75,12 +75,12 @@ export default function AdminArtworksPage() {
     const params = new URLSearchParams()
     if (page > 1) params.set('page', String(page))
     if (statusFilter) params.set('status', statusFilter)
-    if (categoryFilter) params.set('category', categoryFilter)
+
     if (search) params.set('q', search)
 
     const newUrl = params.toString() ? `?${params}` : '/admin/artworks'
     router.replace(newUrl, { scroll: false })
-  }, [page, statusFilter, categoryFilter, search, router])
+  }, [page, statusFilter, search, router])
 
   const handleDelete = async () => {
     if (!deleteTarget) return
@@ -123,15 +123,6 @@ export default function AdminArtworksPage() {
           <p className="font-medium text-gray-900">{row.title}</p>
           {row.year && <p className="text-xs text-gray-500">{row.year}</p>}
         </div>
-      ),
-    },
-    {
-      key: 'category',
-      label: 'Category',
-      render: (row) => (
-        <span className="text-sm text-gray-600 capitalize">
-          {row.category || '—'}
-        </span>
       ),
     },
     {
@@ -226,26 +217,11 @@ export default function AdminArtworksPage() {
             <option value="archived">Archived</option>
           </select>
 
-          <select
-            value={categoryFilter}
-            onChange={(e) => {
-              setCategoryFilter(e.target.value)
-              setPage(1)
-            }}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black"
-          >
-            <option value="">All Categories</option>
-            <option value="photography">Photography</option>
-            <option value="print">Print</option>
-            <option value="historical">Historical</option>
-          </select>
-
-          {(search || statusFilter || categoryFilter) && (
+          {(search || statusFilter) && (
             <button
               onClick={() => {
                 setSearch('')
                 setStatusFilter('')
-                setCategoryFilter('')
                 setPage(1)
               }}
               className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700"
