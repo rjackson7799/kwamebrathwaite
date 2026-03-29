@@ -88,6 +88,48 @@ export default async function ArtworkDetailPage({ params }: Props) {
     notFound()
   }
 
+  // Fetch previous and next artworks for navigation
+  // Use the same ordering as the gallery: featured desc, display_order asc, created_at desc
+  const currentOrder = artwork.display_order ?? 999999
+  const currentCreatedAt = artwork.created_at
+
+  type NavArtwork = { id: string; title: string; image_thumbnail_url: string | null; image_url: string }
+
+  const [{ data: prevArtworks }, { data: nextArtworks }] = await Promise.all([
+    // Previous: artworks that come before this one in display order
+    supabase
+      .from('artworks')
+      .select('id, title, image_thumbnail_url, image_url')
+      .eq('status', 'published')
+      .or(`display_order.lt.${currentOrder},and(display_order.eq.${currentOrder},created_at.gt.${currentCreatedAt})`)
+      .order('display_order', { ascending: false })
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .returns<NavArtwork[]>(),
+    // Next: artworks that come after this one in display order
+    supabase
+      .from('artworks')
+      .select('id, title, image_thumbnail_url, image_url')
+      .eq('status', 'published')
+      .or(`display_order.gt.${currentOrder},and(display_order.eq.${currentOrder},created_at.lt.${currentCreatedAt})`)
+      .order('display_order', { ascending: true })
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .returns<NavArtwork[]>(),
+  ])
+
+  const prevArtwork = prevArtworks?.[0] ? {
+    id: prevArtworks[0].id,
+    title: prevArtworks[0].title,
+    image_url: prevArtworks[0].image_thumbnail_url || prevArtworks[0].image_url,
+  } : null
+
+  const nextArtwork = nextArtworks?.[0] ? {
+    id: nextArtworks[0].id,
+    title: nextArtworks[0].title,
+    image_url: nextArtworks[0].image_thumbnail_url || nextArtworks[0].image_url,
+  } : null
+
   // Fetch literature citations if any
   const { data: literature } = await supabase
     .from('artwork_literature')
@@ -153,6 +195,8 @@ export default async function ArtworkDetailPage({ params }: Props) {
         artwork={artwork}
         literature={(literature as ArtworkLiterature[]) || []}
         relatedArtworks={relatedArtworks}
+        prevArtwork={prevArtwork}
+        nextArtwork={nextArtwork}
       />
 
       {/* Related Works Section */}

@@ -39,13 +39,21 @@ interface RelatedArtwork {
   image_thumbnail_url: string | null
 }
 
+interface ArtworkNav {
+  id: string
+  title: string
+  image_url: string
+}
+
 interface ArtworkDetailProps {
   artwork: DetailedArtwork | Artwork
   literature?: ArtworkLiterature[]
   relatedArtworks?: RelatedArtwork[]
+  prevArtwork?: ArtworkNav | null
+  nextArtwork?: ArtworkNav | null
 }
 
-export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }: ArtworkDetailProps) {
+export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [], prevArtwork, nextArtwork }: ArtworkDetailProps) {
   const locale = useLocale()
   const t = useTranslations('works')
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
@@ -81,7 +89,7 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
   return (
     <>
       <article className="container-page py-8 md:py-12 lg:py-16">
-        {/* Top Bar: Back to Gallery + Share */}
+        {/* Top Bar: Back to Gallery + Prev/Next */}
         <div className="flex items-center justify-between mb-8">
           <Link
             href={galleryHref}
@@ -104,6 +112,78 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [] }
             {t('detail.backToGallery')}
           </Link>
 
+          {/* Prev / Next navigation */}
+          {(prevArtwork || nextArtwork) && (
+            <div className="flex items-center gap-1">
+              {prevArtwork ? (
+                <Link
+                  href={`${locale === 'en' ? '' : `/${locale}`}/works/${prevArtwork.id}`}
+                  className="group relative flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-[#333] text-gray-400 dark:text-[#888] hover:border-black dark:hover:border-[#E0E0E0] hover:text-black dark:hover:text-[#F0F0F0] transition-all duration-200"
+                  aria-label={`Previous: ${prevArtwork.title}`}
+                  title={prevArtwork.title}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  {/* Tooltip with thumbnail on hover */}
+                  <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 hidden md:block">
+                    <div className="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#333] shadow-lg p-1.5 flex items-center gap-2.5 whitespace-nowrap">
+                      <Image
+                        src={prevArtwork.image_url}
+                        alt=""
+                        width={40}
+                        height={50}
+                        className="w-10 h-[50px] object-cover"
+                      />
+                      <span className="text-[11px] uppercase tracking-[0.06em] text-gray-500 dark:text-[#A0A0A0] max-w-[160px] truncate pr-1">
+                        {prevArtwork.title}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ) : (
+                <span className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-100 dark:border-[#222] text-gray-200 dark:text-[#444] cursor-default">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </span>
+              )}
+
+              {nextArtwork ? (
+                <Link
+                  href={`${locale === 'en' ? '' : `/${locale}`}/works/${nextArtwork.id}`}
+                  className="group relative flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-[#333] text-gray-400 dark:text-[#888] hover:border-black dark:hover:border-[#E0E0E0] hover:text-black dark:hover:text-[#F0F0F0] transition-all duration-200"
+                  aria-label={`Next: ${nextArtwork.title}`}
+                  title={nextArtwork.title}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+                  </svg>
+                  {/* Tooltip with thumbnail on hover */}
+                  <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 hidden md:block">
+                    <div className="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#333] shadow-lg p-1.5 flex items-center gap-2.5 whitespace-nowrap">
+                      <Image
+                        src={nextArtwork.image_url}
+                        alt=""
+                        width={40}
+                        height={50}
+                        className="w-10 h-[50px] object-cover"
+                      />
+                      <span className="text-[11px] uppercase tracking-[0.06em] text-gray-500 dark:text-[#A0A0A0] max-w-[160px] truncate pr-1">
+                        {nextArtwork.title}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ) : (
+                <span className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-100 dark:border-[#222] text-gray-200 dark:text-[#444] cursor-default">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Main Content: centered two-column layout */}
