@@ -1,7 +1,27 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 28, 2026 (Archive Page CMS Integration)
+**Last Updated:** March 28, 2026 (Press Reorder Feature)
+
+---
+
+## Press Reorder Feature (March 2026)
+
+### Completed
+- [x] Added drag-and-drop reorder functionality for press items (mirrors artworks reorder)
+  - Admin can reorder press items via Admin > Press > Reorder button
+  - Drag-and-drop UI with auto-save using `@hello-pangea/dnd`
+  - Filter tabs: "All" vs "Featured Only" for independent reordering
+  - Featured star toggle to mark/unmark press items as featured
+  - Public press page now sorts by: featured first → display_order → publish_date → created_at
+  - Files created:
+    - `app/api/admin/press/reorder/route.ts` — PUT endpoint for bulk reorder (updates `display_order`)
+    - `components/admin/PressReorderList.tsx` — Drag-and-drop reorder component
+    - `app/admin/press/reorder/page.tsx` — Reorder page with loading/error states
+  - Files modified:
+    - `app/admin/press/page.tsx` — Added "Reorder" button next to "Add Press"
+    - `app/[locale]/press/page.tsx` — Updated sort order to respect `display_order`
+  - Reuses existing `adminReorderSchema` validation and `display_order` DB column/index
 
 ---
 
