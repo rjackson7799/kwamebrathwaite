@@ -1,7 +1,47 @@
 'use client'
 
+import { useRef, useEffect, useState } from 'react'
 import { ArtworkCard, Artwork } from './ArtworkCard'
 import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder'
+
+function ScrollFadeItem({ children, index }: { children: React.ReactNode; index: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  // Stagger delay for items in the same viewport batch (cap at 8)
+  const staggerDelay = Math.min(index % 4, 3) * 80
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
+        transition: `opacity 0.5s ease ${staggerDelay}ms, transform 0.5s ease ${staggerDelay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
 
 interface ArtworkGridProps {
   /** Array of artworks to display */
@@ -73,25 +113,17 @@ export function ArtworkGrid({
         ${className}
       `}
     >
-      {artworks.map((artwork, index) => {
-        // Calculate stagger class for first 8 items
-        const staggerClass = index < 8 ? `stagger-${index + 1}` : ''
-
-        return (
-          <div
-            key={artwork.id}
-            className={`animate-hidden animate-fade-up ${staggerClass}`}
-          >
-            <ArtworkCard
-              artwork={artwork}
-              showMetadata={showMetadata}
-              showAvailability={showAvailability}
-              onClick={onArtworkClick}
-              priority={index < 4}
-            />
-          </div>
-        )
-      })}
+      {artworks.map((artwork, index) => (
+        <ScrollFadeItem key={artwork.id} index={index}>
+          <ArtworkCard
+            artwork={artwork}
+            showMetadata={showMetadata}
+            showAvailability={showAvailability}
+            onClick={onArtworkClick}
+            priority={index < 4}
+          />
+        </ScrollFadeItem>
+      ))}
     </div>
   )
 }

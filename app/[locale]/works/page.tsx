@@ -101,6 +101,7 @@ function WorksContent() {
         if (urlQuery) params.set('q', urlQuery)
         if (urlCategory && urlCategory !== 'all') params.set('category', urlCategory)
 
+        params.set('limit', '100')
         const response = await fetch(`/api/artworks?${params.toString()}`)
 
         if (!response.ok) {
