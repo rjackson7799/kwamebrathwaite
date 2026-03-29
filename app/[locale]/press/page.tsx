@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
-import { PressCard } from '@/components/features/press'
+import { PressGrid } from '@/components/features/press'
 import type { PressItem } from '@/components/features/press'
 import { getShowTitle } from '@/lib/page-settings'
 import { PageTitle } from '@/components/ui/PageTitle'
@@ -73,15 +73,7 @@ export default async function PressPage({ params }: Props) {
       <PageTitle title={t('title')} showTitle={showTitle} />
 
       {translatedItems && translatedItems.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {translatedItems.map((item, index) => (
-            <PressCard
-              key={item.id}
-              pressItem={item}
-              priority={index < 4}
-            />
-          ))}
-        </div>
+        <PressGrid items={translatedItems} />
       ) : (
         <p className="text-center text-neutral-500 py-16">
           No press coverage available yet.
