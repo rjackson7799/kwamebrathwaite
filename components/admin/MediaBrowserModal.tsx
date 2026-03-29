@@ -116,6 +116,7 @@ export function MediaBrowserModal({ open, onClose, onSelect, bucket }: MediaBrow
             {BUCKETS.map((b) => (
               <button
                 key={b.id}
+                type="button"
                 onClick={() => setActiveBucket(b.id)}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                   activeBucket === b.id
@@ -196,6 +197,7 @@ export function MediaBrowserModal({ open, onClose, onSelect, bucket }: MediaBrow
             {totalPages > 1 && (
               <>
                 <button
+                  type="button"
                   onClick={() => setPage(page - 1)}
                   disabled={page === 1}
                   className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-50 hover:bg-gray-50"
@@ -206,6 +208,7 @@ export function MediaBrowserModal({ open, onClose, onSelect, bucket }: MediaBrow
                   {page} / {totalPages}
                 </span>
                 <button
+                  type="button"
                   onClick={() => setPage(page + 1)}
                   disabled={page === totalPages}
                   className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-50 hover:bg-gray-50"
