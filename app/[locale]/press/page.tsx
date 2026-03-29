@@ -48,6 +48,8 @@ export default async function PressPage() {
     .from('press')
     .select('*')
     .eq('status', 'published')
+    .order('is_featured', { ascending: false })
+    .order('display_order', { ascending: true, nullsFirst: false })
     .order('publish_date', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false }) as { data: PressItem[] | null }
 

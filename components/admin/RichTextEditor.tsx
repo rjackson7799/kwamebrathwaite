@@ -3,7 +3,7 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 interface RichTextEditorProps {
   value: string
@@ -18,6 +18,8 @@ export function RichTextEditor({
   placeholder = 'Write something...',
   disabled = false,
 }: RichTextEditorProps) {
+  const [showSource, setShowSource] = useState(false)
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -145,6 +147,23 @@ export function RichTextEditor({
         <div className="flex-1" />
 
         <ToolbarButton
+          onClick={() => {
+            if (showSource) {
+              // Switching back to WYSIWYG — re-parse current HTML into editor
+              editor.commands.setContent(value)
+            }
+            setShowSource(!showSource)
+          }}
+          active={showSource}
+          disabled={disabled}
+          title={showSource ? 'Visual editor' : 'Edit HTML source'}
+        >
+          <CodeIcon />
+        </ToolbarButton>
+
+        <div className="w-px h-6 bg-gray-300 mx-1" />
+
+        <ToolbarButton
           onClick={() => editor.chain().focus().undo().run()}
           disabled={disabled || !editor.can().undo()}
           title="Undo"
@@ -161,10 +180,20 @@ export function RichTextEditor({
       </div>
 
       {/* Editor Content */}
-      <EditorContent
-        editor={editor}
-        className="prose prose-sm max-w-none p-4 min-h-[200px] focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[180px] [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-gray-400 [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0 [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none"
-      />
+      {showSource ? (
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
+          className="w-full p-4 min-h-[200px] font-mono text-sm bg-gray-50 text-gray-800 resize-y focus:outline-none"
+          spellCheck={false}
+        />
+      ) : (
+        <EditorContent
+          editor={editor}
+          className="prose prose-sm max-w-none p-4 min-h-[200px] focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[180px] [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-gray-400 [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0 [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none"
+        />
+      )}
     </div>
   )
 }
@@ -238,6 +267,10 @@ function HorizontalRuleIcon() {
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
     </svg>
   )
+}
+
+function CodeIcon() {
+  return <span className="font-mono text-xs w-5 h-5 flex items-center justify-center">&lt;/&gt;</span>
 }
 
 function UndoIcon() {
