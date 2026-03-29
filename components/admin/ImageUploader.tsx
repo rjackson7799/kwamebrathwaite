@@ -2,7 +2,6 @@
 
 import { useState, useRef, useCallback } from 'react'
 import Image from 'next/image'
-import { createClient } from '@/lib/supabase/client'
 
 interface ImageUploaderProps {
   bucket: 'artworks' | 'exhibitions' | 'press' | 'hero' | 'about' | 'archive'
@@ -38,49 +37,6 @@ export function ImageUploader({
     }
   }, [])
 
-  const generateThumbnail = async (file: File): Promise<Blob | null> => {
-    return new Promise((resolve) => {
-      const img = document.createElement('img')
-      img.onload = () => {
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
-        if (!ctx) {
-          resolve(null)
-          return
-        }
-
-        // Target thumbnail size
-        const maxSize = 400
-        let width = img.width
-        let height = img.height
-
-        if (width > height) {
-          if (width > maxSize) {
-            height = (height * maxSize) / width
-            width = maxSize
-          }
-        } else {
-          if (height > maxSize) {
-            width = (width * maxSize) / height
-            height = maxSize
-          }
-        }
-
-        canvas.width = width
-        canvas.height = height
-        ctx.drawImage(img, 0, 0, width, height)
-
-        canvas.toBlob(
-          (blob) => resolve(blob),
-          'image/jpeg',
-          0.8
-        )
-      }
-      img.onerror = () => resolve(null)
-      img.src = URL.createObjectURL(file)
-    })
-  }
-
   const uploadFile = async (file: File) => {
     setError(null)
     setUploading(true)
@@ -97,50 +53,27 @@ export function ImageUploader({
         throw new Error(`File size must be less than ${maxSizeMB}MB`)
       }
 
-      const supabase = createClient()
+      // Upload via server-side API to bypass storage RLS
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('bucket', bucket)
 
-      // Generate unique filename
-      const ext = file.name.split('.').pop()
-      const timestamp = Date.now()
-      const randomStr = Math.random().toString(36).substring(2, 8)
-      const filename = `${timestamp}-${randomStr}.${ext}`
-      const thumbnailFilename = `${timestamp}-${randomStr}-thumb.jpg`
+      const response = await fetch('/api/admin/media/upload', {
+        method: 'POST',
+        body: formData,
+      })
 
-      // Upload main image
-      const { error: uploadError } = await supabase.storage
-        .from(bucket)
-        .upload(filename, file, {
-          cacheControl: '3600',
-          upsert: false,
-        })
+      const result = await response.json()
 
-      if (uploadError) throw uploadError
+      if (!result.success) {
+        throw new Error(result.error?.message || 'Failed to upload image')
+      }
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(filename)
+      onChange(result.data.publicUrl)
 
-      onChange(publicUrl)
-
-      // Generate and upload thumbnail if callback provided
-      if (onThumbnailChange) {
-        const thumbnail = await generateThumbnail(file)
-        if (thumbnail) {
-          const { error: thumbError } = await supabase.storage
-            .from('thumbnails')
-            .upload(thumbnailFilename, thumbnail, {
-              cacheControl: '3600',
-              upsert: false,
-            })
-
-          if (!thumbError) {
-            const { data: { publicUrl: thumbUrl } } = supabase.storage
-              .from('thumbnails')
-              .getPublicUrl(thumbnailFilename)
-            onThumbnailChange(thumbUrl)
-          }
-        }
+      // Handle thumbnail if callback provided
+      if (onThumbnailChange && result.data.thumbnailUrl) {
+        onThumbnailChange(result.data.thumbnailUrl)
       }
     } catch (err) {
       console.error('Upload error:', err)
