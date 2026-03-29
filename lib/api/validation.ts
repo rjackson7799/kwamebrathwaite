@@ -119,6 +119,15 @@ export const adminArtworkSchema = z.object({
 
 export type AdminArtworkInput = z.infer<typeof adminArtworkSchema>
 
+// Quick update schema for inline editing (status, availability, featured)
+export const artworkQuickUpdateSchema = z.object({
+  status: z.enum(['draft', 'published', 'archived']).optional(),
+  availability_status: z.enum(['available', 'sold', 'on_loan', 'not_for_sale', 'inquiry_only']).optional(),
+  is_featured: z.boolean().optional(),
+}).refine(data => Object.keys(data).length > 0, {
+  message: 'At least one field must be provided',
+})
+
 // Admin artwork filters (extends public filters to include drafts)
 export const adminArtworkFiltersSchema = paginationSchema.extend({
   // Override limit to allow up to 500 for admin operations like reordering

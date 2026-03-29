@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { successResponse, errorResponse, ErrorCodes } from '@/lib/api/response'
-import { adminArtworkSchema } from '@/lib/api/validation'
+import { adminArtworkSchema, artworkQuickUpdateSchema } from '@/lib/api/validation'
 import { requireAuth, logActivity, getCurrentUserEmail } from '@/lib/api/admin'
 import type { Database } from '@/lib/supabase/types'
 
@@ -121,6 +121,77 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       await logActivity(userEmail, action, 'artwork', data.id, data.title, {
         previous_status: existing.status,
         new_status: result.data.status,
+      })
+    }
+
+    return successResponse(data)
+  } catch (error) {
+    console.error('Error updating artwork:', error)
+    return errorResponse(ErrorCodes.INTERNAL_ERROR, 'An error occurred', 500)
+  }
+}
+
+// PATCH /api/admin/artworks/:id - Quick update (status, availability, featured)
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
+  const { user, errorResponse: authError } = await requireAuth(request)
+  if (authError) return authError
+
+  try {
+    const { id } = await params
+    const body = await request.json()
+    const result = artworkQuickUpdateSchema.safeParse(body)
+
+    if (!result.success) {
+      return errorResponse(
+        ErrorCodes.VALIDATION_ERROR,
+        'Invalid update data',
+        400,
+        result.error.flatten().fieldErrors
+      )
+    }
+
+    const supabase = await createAdminClient()
+
+    // Check if artwork exists
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: existing, error: checkError } = await (supabase as any)
+      .from('artworks')
+      .select('id, title, status, availability_status')
+      .eq('id', id)
+      .single()
+
+    if (checkError || !existing) {
+      return errorResponse(ErrorCodes.NOT_FOUND, 'Artwork not found', 404)
+    }
+
+    const updateData: ArtworkUpdate = {
+      ...result.data,
+      updated_at: new Date().toISOString(),
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any)
+      .from('artworks')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Database error:', error)
+      return errorResponse(ErrorCodes.DB_ERROR, 'Failed to update artwork', 500)
+    }
+
+    // Log activity
+    const userEmail = await getCurrentUserEmail()
+    if (userEmail) {
+      const statusChanged = result.data.status && existing.status !== result.data.status
+      const action = statusChanged ? 'status_change' : 'update'
+      await logActivity(userEmail, action, 'artwork', data.id, data.title, {
+        previous_status: existing.status,
+        new_status: result.data.status || existing.status,
+        previous_availability: existing.availability_status,
+        new_availability: result.data.availability_status || existing.availability_status,
       })
     }
 

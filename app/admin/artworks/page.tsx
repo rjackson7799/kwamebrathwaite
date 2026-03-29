@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { PageHeader } from '@/components/admin/PageHeader'
 import { DataTable, Column, ThumbnailCell, ActionButtons } from '@/components/admin/DataTable'
-import { StatusBadge } from '@/components/admin/StatusBadge'
 import { ConfirmDialog } from '@/components/admin/ConfirmDialog'
 
 interface Artwork {
@@ -102,6 +101,40 @@ export default function AdminArtworksPage() {
     }
   }
 
+  const statusStyles: Record<string, string> = {
+    draft: 'bg-gray-100 text-gray-700',
+    published: 'bg-green-100 text-green-700',
+    archived: 'bg-gray-100 text-gray-500',
+  }
+
+  const availabilityStyles: Record<string, string> = {
+    available: 'bg-green-100 text-green-700',
+    sold: 'bg-red-100 text-red-700',
+    on_loan: 'bg-blue-100 text-blue-700',
+    not_for_sale: 'bg-gray-100 text-gray-700',
+    inquiry_only: 'bg-amber-100 text-amber-700',
+  }
+
+  const handleQuickUpdate = async (id: string, field: string, value: string) => {
+    // Optimistic update
+    setArtworks(prev => prev.map(a => a.id === id ? { ...a, [field]: value } : a))
+
+    try {
+      const response = await fetch(`/api/admin/artworks/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [field]: value }),
+      })
+
+      if (!response.ok) {
+        // Revert on failure
+        fetchArtworks()
+      }
+    } catch {
+      fetchArtworks()
+    }
+  }
+
   const columns: Column<Artwork>[] = [
     {
       key: 'image_thumbnail_url',
@@ -128,12 +161,38 @@ export default function AdminArtworksPage() {
     {
       key: 'status',
       label: 'Status',
-      render: (row) => <StatusBadge status={row.status} />,
+      render: (row) => (
+        <select
+          value={row.status}
+          onChange={(e) => handleQuickUpdate(row.id, 'status', e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+          className={`px-2 py-0.5 text-xs font-medium rounded-full border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-black appearance-none pr-6 ${statusStyles[row.status] || 'bg-gray-100 text-gray-700'}`}
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 4px center' }}
+        >
+          <option value="draft">Draft</option>
+          <option value="published">Published</option>
+          <option value="archived">Archived</option>
+        </select>
+      ),
     },
     {
       key: 'availability_status',
       label: 'Availability',
-      render: (row) => <StatusBadge status={row.availability_status} />,
+      render: (row) => (
+        <select
+          value={row.availability_status}
+          onChange={(e) => handleQuickUpdate(row.id, 'availability_status', e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+          className={`px-2 py-0.5 text-xs font-medium rounded-full border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-black appearance-none pr-6 ${availabilityStyles[row.availability_status] || 'bg-gray-100 text-gray-700'}`}
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 4px center' }}
+        >
+          <option value="available">Available</option>
+          <option value="sold">Sold</option>
+          <option value="on_loan">On Loan</option>
+          <option value="not_for_sale">Not for Sale</option>
+          <option value="inquiry_only">Inquiry Only</option>
+        </select>
+      ),
     },
     {
       key: 'is_featured',
