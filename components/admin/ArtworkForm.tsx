@@ -14,14 +14,16 @@ interface ArtworkFormData {
   year?: number | null
   medium?: string | null
   dimensions?: string | null
+  dimensions_cm?: string | null
   description?: string | null
   short_description?: string | null
   seo_title?: string | null
   alt_text?: string | null
   image_url: string
   image_thumbnail_url?: string | null
-  category?: 'photography' | 'print' | 'historical' | null
   series?: string | null
+  edition?: string | null
+  archive_reference?: string | null
   availability_status: 'available' | 'sold' | 'on_loan' | 'not_for_sale' | 'inquiry_only'
   is_featured: boolean
   related_artwork_ids: string[]
@@ -66,14 +68,16 @@ export function ArtworkForm({ artwork, isEdit = false }: ArtworkFormProps) {
       year: null,
       medium: null,
       dimensions: null,
+      dimensions_cm: null,
       description: null,
       short_description: null,
       seo_title: null,
       alt_text: null,
       image_url: '',
       image_thumbnail_url: null,
-      category: null,
       series: null,
+      edition: null,
+      archive_reference: null,
       availability_status: 'available',
       is_featured: false,
       related_artwork_ids: [],
@@ -182,14 +186,24 @@ export function ArtworkForm({ artwork, isEdit = false }: ArtworkFormProps) {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <FormField label="Dimensions" htmlFor="dimensions">
+                <FormField label="Dimensions (in)" htmlFor="dimensions">
                   <Input
                     id="dimensions"
                     {...register('dimensions')}
-                    placeholder="e.g., 20 x 24 inches"
+                    placeholder="e.g., 30 x 30 in"
                   />
                 </FormField>
 
+                <FormField label="Dimensions (cm)" htmlFor="dimensions_cm">
+                  <Input
+                    id="dimensions_cm"
+                    {...register('dimensions_cm')}
+                    placeholder="e.g., 76.2 x 76.2 cm"
+                  />
+                </FormField>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
                 <FormField label="Series" htmlFor="series">
                   <Input
                     id="series"
@@ -197,15 +211,22 @@ export function ArtworkForm({ artwork, isEdit = false }: ArtworkFormProps) {
                     placeholder="e.g., Grandassa Models"
                   />
                 </FormField>
+
+                <FormField label="Edition" htmlFor="edition">
+                  <Input
+                    id="edition"
+                    {...register('edition')}
+                    placeholder="e.g., #1/5 (Ed. 5 + 2AP)"
+                  />
+                </FormField>
               </div>
 
-              <FormField label="Category" htmlFor="category">
-                <Select id="category" {...register('category')}>
-                  <option value="">Select category</option>
-                  <option value="photography">Photography</option>
-                  <option value="print">Print</option>
-                  <option value="historical">Historical</option>
-                </Select>
+              <FormField label="Unique ID" htmlFor="archive_reference">
+                <Input
+                  id="archive_reference"
+                  {...register('archive_reference')}
+                  placeholder="e.g., AJASS_Loc_59_001"
+                />
               </FormField>
             </div>
           </div>
