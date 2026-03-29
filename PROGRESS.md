@@ -1,7 +1,29 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 28, 2026 (AI Press Article Summarizer)
+**Last Updated:** March 28, 2026 (Content Font Size Adjuster)
+
+---
+
+## Content Font Size Adjuster (March 2026)
+
+### Completed
+- [x] Admin-controlled content font size adjuster in Page Settings
+  - Global setting with three presets: Small (87.5%), Default (100%), Large (112.5%)
+  - Segmented button control in admin Page Settings panel
+  - Uses CSS custom property `--content-font-scale` on `<main>` element
+  - Applies to all public pages across all languages (en, fr, ja)
+  - Scoped to content text only — header, footer, admin panel unaffected
+  - Artwork wall label metadata (13px) intentionally stays fixed
+  - Stored in `page_settings` table via `_global` row metadata JSONB
+  - No schema migration needed — uses existing `metadata` column
+  - Files modified:
+    - `lib/page-settings.ts` — Added `getContentFontScale()` helper
+    - `app/admin/page-settings/page.tsx` — Added font size segmented control
+    - `app/[locale]/layout.tsx` — Reads setting, sets CSS variable on `<main>`
+    - `app/globals.css` — CSS rules using `--content-font-scale`
+    - `docs/DATABASE_SCHEMA.sql` — Added `_global` seed row
+  - DB setup: `INSERT INTO page_settings (page_slug, show_title, metadata) VALUES ('_global', true, '{"content_font_scale": "default"}')`
 
 ---
 
