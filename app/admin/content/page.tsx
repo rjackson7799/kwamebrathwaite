@@ -182,7 +182,7 @@ export default function AdminContentPage() {
                     </div>
                     <div className="p-4 max-w-sm">
                       <ImageUploader
-                        bucket="about"
+                        bucket={activeTab as 'about' | 'archive'}
                         value={section.content || null}
                         onChange={(url) => handleImageChange(activeTab, section.section, url)}
                         aspectRatio="1/1"

@@ -33,19 +33,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArchivePage() {
   const t = await getTranslations('archive')
-  const [settings, mission, description] = await Promise.all([
+  const [settings, mission, description, archiveImage] = await Promise.all([
     getPageSettings('archive'),
     getPageContent('archive', 'mission'),
     getPageContent('archive', 'description'),
+    getPageContent('archive', 'page_image'),
   ])
 
   const showTitle = settings?.show_title ?? true
-  const meta = (settings?.metadata && typeof settings.metadata === 'object' && !Array.isArray(settings.metadata))
-    ? settings.metadata as Record<string, unknown>
-    : {}
-  const imageUrl = (typeof meta.image_url === 'string' && meta.image_url)
-    ? meta.image_url
-    : '/images/about/kwame-portrait.jpeg'
+  const imageUrl = archiveImage?.content || '/images/about/kwame-portrait.jpeg'
 
   return (
     <div className="container-page section-spacing">

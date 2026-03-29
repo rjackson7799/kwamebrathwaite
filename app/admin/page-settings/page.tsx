@@ -5,7 +5,6 @@ import React, { useState, useEffect } from 'react'
 interface SectionMetadata {
   show_timeline?: boolean
   show_movement?: boolean
-  image_url?: string
 }
 
 interface GlobalMetadata {
@@ -335,68 +334,6 @@ export default function PageSettingsPage() {
                           <span className="text-xs text-gray-600">Movement</span>
                         </div>
                       </div>
-                    </td>
-                  </tr>
-                )}
-                {setting.page_slug === 'archive' && (
-                  <tr className="bg-gray-50/50 border-t border-gray-100">
-                    <td className="px-4 py-3 pl-8">
-                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Page Image
-                      </span>
-                    </td>
-                    <td className="px-4 py-3" colSpan={2}>
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="text"
-                          placeholder="/images/archive/archive-hero.jpeg"
-                          value={(setting.metadata as SectionMetadata)?.image_url || ''}
-                          onChange={(e) => {
-                            const newUrl = e.target.value
-                            setSettings(prev =>
-                              prev.map(s =>
-                                s.page_slug === 'archive'
-                                  ? { ...s, metadata: { ...s.metadata as SectionMetadata, image_url: newUrl } }
-                                  : s
-                              )
-                            )
-                          }}
-                          className="flex-1 max-w-md px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
-                        />
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            setSaving('archive-image')
-                            const currentMeta = (setting.metadata as SectionMetadata) || {}
-                            try {
-                              const res = await fetch('/api/admin/page-settings', {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                  page_slug: 'archive',
-                                  metadata: currentMeta,
-                                }),
-                              })
-                              if (!res.ok) throw new Error('Failed to update')
-                            } catch {
-                              setError('Failed to update archive image')
-                            } finally {
-                              setSaving(null)
-                            }
-                          }}
-                          disabled={saving === 'archive-image'}
-                          className={`
-                            px-3 py-1.5 text-sm font-medium rounded-md
-                            bg-black text-white hover:bg-gray-800
-                            ${saving === 'archive-image' ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
-                          `}
-                        >
-                          {saving === 'archive-image' ? 'Saving...' : 'Save'}
-                        </button>
-                      </div>
-                      <p className="mt-1 text-xs text-gray-400">
-                        Image URL or path displayed alongside the archive content. Leave empty for default.
-                      </p>
                     </td>
                   </tr>
                 )}

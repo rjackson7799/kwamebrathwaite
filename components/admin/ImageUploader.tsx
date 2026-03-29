@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
 interface ImageUploaderProps {
-  bucket: 'artworks' | 'exhibitions' | 'press' | 'hero' | 'about'
+  bucket: 'artworks' | 'exhibitions' | 'press' | 'hero' | 'about' | 'archive'
   value?: string | null
   onChange: (url: string | null) => void
   onThumbnailChange?: (url: string | null) => void
