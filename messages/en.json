@@ -194,7 +194,36 @@
     "movement": "The Black is Beautiful Movement",
     "timeline": {
       "title": "Life & Career",
-      "events": "Career timeline events",
+      "events": {
+        "1": {
+          "title": "Born in Brooklyn, New York",
+          "description": "Kwame Brathwaite was born in Brooklyn, New York, to parents who emigrated from Barbados."
+        },
+        "2": {
+          "title": "Co-founds AJASS",
+          "description": "Co-founded the African Jazz-Art Society and Studios (AJASS) with his brother Elombe Brath, a cultural organization that promoted African American arts."
+        },
+        "3": {
+          "title": "Grandassa Models Founded",
+          "description": "Created the Grandassa Models, a modeling group celebrating natural African beauty and challenging Eurocentric beauty standards."
+        },
+        "4": {
+          "title": "\"Black is Beautiful\" Movement Emerges",
+          "description": "The phrase \"Black is Beautiful\" emerges from AJASS fashion shows photographed by Brathwaite, becoming a cultural rallying cry."
+        },
+        "5": {
+          "title": "Naturally '68 Fashion Show",
+          "description": "Major fashion show at the Apollo Theater celebrating natural Black beauty and African aesthetics."
+        },
+        "6": {
+          "title": "Aperture Foundation Retrospective",
+          "description": "Landmark retrospective \"Black Is Beautiful: The Photography of Kwame Brathwaite\" opens at Aperture Foundation in New York City."
+        },
+        "7": {
+          "title": "Passing",
+          "description": "Kwame Brathwaite passed away at age 85, leaving behind an unparalleled legacy in photography and cultural activism."
+        }
+      },
       "filter": {
         "all": "All",
         "biography": "Life Events",

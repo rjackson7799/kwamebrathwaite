@@ -44,16 +44,30 @@ function hashContent(content: string): string {
   return crypto.createHash('md5').update(content).digest('hex')
 }
 
+interface TranslateOptions {
+  tagHandling?: 'html'
+}
+
 /**
  * Translate a single text string using DeepL API
  *
  * @param text - Text to translate
  * @param targetLanguage - Target language code ('fr' or 'ja')
+ * @param options - Optional settings (e.g., tagHandling for HTML)
  * @returns Translated text
  */
-async function translateText(text: string, targetLanguage: TargetLanguage): Promise<string> {
+async function translateText(text: string, targetLanguage: TargetLanguage, options?: TranslateOptions): Promise<string> {
   if (!text || !DEEPL_API_KEY) {
     return text
+  }
+
+  const body: Record<string, unknown> = {
+    text: [text],
+    target_lang: DEEPL_LANGUAGE_MAP[targetLanguage],
+    source_lang: 'EN',
+  }
+  if (options?.tagHandling) {
+    body.tag_handling = options.tagHandling
   }
 
   const response = await fetch(DEEPL_API_URL, {
@@ -62,11 +76,7 @@ async function translateText(text: string, targetLanguage: TargetLanguage): Prom
       Authorization: `DeepL-Auth-Key ${DEEPL_API_KEY}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      text: [text],
-      target_lang: DEEPL_LANGUAGE_MAP[targetLanguage],
-      source_lang: 'EN',
-    }),
+    body: JSON.stringify(body),
   })
 
   if (!response.ok) {
@@ -85,15 +95,23 @@ async function translateText(text: string, targetLanguage: TargetLanguage): Prom
  * @param text - Text to translate
  * @param targetLanguage - Target language code
  * @param fieldName - Field name for cache key
+ * @param sourceTable - Source table for cache key (default: 'artworks')
+ * @param sourceId - Source row ID for cache key
+ * @param options - Optional translate settings
  * @returns Translated text
  */
 async function translateWithCache(
   text: string,
   targetLanguage: TargetLanguage,
-  fieldName: string
+  fieldName: string,
+  sourceTable: string = 'artworks',
+  sourceId?: string,
+  options?: TranslateOptions
 ): Promise<string> {
   if (!text) return ''
 
+  const AI_GENERATED_SOURCE_ID = '00000000-0000-0000-0000-000000000001'
+  const resolvedSourceId = sourceId || AI_GENERATED_SOURCE_ID
   const sourceHash = hashContent(text)
 
   try {
@@ -113,18 +131,15 @@ async function translateWithCache(
     }
 
     // Not cached, call DeepL API
-    const translated = await translateText(text, targetLanguage)
+    const translated = await translateText(text, targetLanguage, options)
 
-    // Cache the result (use a placeholder source_id for AI-generated content)
-    // We use a fixed UUID to indicate this is AI-generated content
-    const AI_GENERATED_SOURCE_ID = '00000000-0000-0000-0000-000000000001'
-
+    // Cache the result
     // Type assertion for upsert - table exists but types need DB migration
     await supabase.from('translation_cache').upsert(
       {
-        source_table: 'artworks',
-        source_id: AI_GENERATED_SOURCE_ID,
-        source_field: `ai_${fieldName}`,
+        source_table: sourceTable,
+        source_id: resolvedSourceId,
+        source_field: sourceTable === 'artworks' && !sourceId ? `ai_${fieldName}` : fieldName,
         source_hash: sourceHash,
         target_language: targetLanguage,
         translated_content: translated,
@@ -139,7 +154,43 @@ async function translateWithCache(
   } catch (error) {
     console.error(`Translation cache error for ${fieldName}:`, error)
     // Fall back to direct translation without caching
-    return translateText(text, targetLanguage)
+    return translateText(text, targetLanguage, options)
+  }
+}
+
+/**
+ * Translate page content (HTML or plain text) with locale-aware short-circuiting.
+ * Returns English content unchanged. For fr/ja, translates via DeepL with caching.
+ *
+ * @param content - The content to translate (HTML or plain text)
+ * @param locale - Current locale ('en', 'fr', 'ja')
+ * @param sourceTable - Source table for cache key (e.g., 'site_content', 'press')
+ * @param sourceId - Source row UUID for cache key
+ * @param sourceField - Field name for cache key (e.g., 'mission', 'title')
+ * @returns Translated content, or original English content on error
+ */
+export async function translatePageContent(
+  content: string,
+  locale: string,
+  sourceTable: string,
+  sourceId: string,
+  sourceField: string
+): Promise<string> {
+  if (!content || locale === 'en') return content
+  if (locale !== 'fr' && locale !== 'ja') return content
+
+  try {
+    return await translateWithCache(
+      content,
+      locale as TargetLanguage,
+      sourceField,
+      sourceTable,
+      sourceId,
+      { tagHandling: 'html' }
+    )
+  } catch (error) {
+    console.error(`translatePageContent error (${sourceTable}/${sourceField}):`, error)
+    return content
   }
 }
 

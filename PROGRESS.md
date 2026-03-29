@@ -1,7 +1,30 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 28, 2026 (Press Reorder Feature)
+**Last Updated:** March 28, 2026 (Multi-lingual Content Translation)
+
+---
+
+## Multi-lingual Content Translation Fix (March 2026)
+
+### Completed
+- [x] Fixed untranslated body content on Archive, About, and Press pages for French and Japanese locales
+  - Page titles/nav already translated via next-intl; body content from Supabase CMS and press items remained in English
+  - **Translation service extended** (`lib/ai/translation-service.ts`):
+    - Added `translatePageContent()` export — locale-aware wrapper using DeepL API with HTML tag preservation
+    - Generalized cache params to support any source table (was hardcoded to `artworks`)
+    - Added `tag_handling: 'html'` support for DeepL to preserve HTML markup
+  - **Archive page** (`app/[locale]/archive/page.tsx`):
+    - Now accepts locale param and translates CMS content (mission + description) via DeepL before rendering
+  - **About page** (`app/[locale]/about/page.tsx`):
+    - Translates CMS content (biography + movement) via DeepL
+    - Replaced hardcoded English timeline events with next-intl `t()` calls
+  - **Press page** (`app/[locale]/press/page.tsx`):
+    - Translates press item `title` and `excerpt` server-side (author/publication names left untranslated as proper nouns)
+  - **Message files** (`messages/en.json`, `fr.json`, `ja.json`):
+    - Added all 7 timeline events with translated title and description for each locale
+  - All translations cached in `translation_cache` table; English locale has zero overhead
+  - Cache uses MD5 hash of source content — editing English content auto-triggers re-translation
 
 ---
 

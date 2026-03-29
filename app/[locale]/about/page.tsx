@@ -5,6 +5,7 @@ import { Timeline, type TimelineEvent } from '@/components/features/timeline'
 import { getPageSettings } from '@/lib/page-settings'
 import { PageTitle } from '@/components/ui/PageTitle'
 import { getPageContent } from '@/lib/supabase/queries/content'
+import { translatePageContent } from '@/lib/ai/translation-service'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -38,57 +39,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-// Sample timeline data - replace with database fetch when available
-const sampleTimelineEvents: TimelineEvent[] = [
-  {
-    id: '1',
-    year: 1938,
-    title: 'Born in Brooklyn, New York',
-    description: 'Kwame Brathwaite was born in Brooklyn, New York, to parents who emigrated from Barbados.',
-    type: 'biography',
-  },
-  {
-    id: '2',
-    year: 1956,
-    title: 'Co-founds AJASS',
-    description: 'Co-founded the African Jazz-Art Society and Studios (AJASS) with his brother Elombe Brath, a cultural organization that promoted African American arts.',
-    type: 'milestone',
-  },
-  {
-    id: '3',
-    year: 1962,
-    title: 'Grandassa Models Founded',
-    description: 'Created the Grandassa Models, a modeling group celebrating natural African beauty and challenging Eurocentric beauty standards.',
-    type: 'milestone',
-  },
-  {
-    id: '4',
-    year: 1966,
-    title: '"Black is Beautiful" Movement Emerges',
-    description: 'The phrase "Black is Beautiful" emerges from AJASS fashion shows photographed by Brathwaite, becoming a cultural rallying cry.',
-    type: 'milestone',
-  },
-  {
-    id: '5',
-    year: 1968,
-    title: 'Naturally \'68 Fashion Show',
-    description: 'Major fashion show at the Apollo Theater celebrating natural Black beauty and African aesthetics.',
-    type: 'exhibition',
-  },
-  {
-    id: '6',
-    year: 2019,
-    title: 'Aperture Foundation Retrospective',
-    description: 'Landmark retrospective "Black Is Beautiful: The Photography of Kwame Brathwaite" opens at Aperture Foundation in New York City.',
-    type: 'exhibition',
-  },
-  {
-    id: '7',
-    year: 2023,
-    title: 'Passing',
-    description: 'Kwame Brathwaite passed away at age 85, leaving behind an unparalleled legacy in photography and cultural activism.',
-    type: 'biography',
-  },
+// Timeline event metadata (non-translatable fields)
+const timelineEventMeta: { id: string; year: number; type: TimelineEvent['type'] }[] = [
+  { id: '1', year: 1938, type: 'biography' },
+  { id: '2', year: 1956, type: 'milestone' },
+  { id: '3', year: 1962, type: 'milestone' },
+  { id: '4', year: 1966, type: 'milestone' },
+  { id: '5', year: 1968, type: 'exhibition' },
+  { id: '6', year: 2019, type: 'exhibition' },
+  { id: '7', year: 2023, type: 'biography' },
 ]
 
 export default async function AboutPage({ params }: Props) {
@@ -102,6 +61,23 @@ export default async function AboutPage({ params }: Props) {
     getPageContent('about', 'portrait_image'),
     getPageSettings('about'),
   ])
+
+  // Translate CMS content for non-English locales
+  const [translatedBiography, translatedMovement] = await Promise.all([
+    biography?.content
+      ? translatePageContent(biography.content, locale, 'site_content', biography.id, 'biography')
+      : null,
+    movement?.content
+      ? translatePageContent(movement.content, locale, 'site_content', movement.id, 'movement')
+      : null,
+  ])
+
+  // Build timeline events from next-intl translations
+  const timelineEvents: TimelineEvent[] = timelineEventMeta.map((meta) => ({
+    ...meta,
+    title: t(`timeline.events.${meta.id}.title`),
+    description: t(`timeline.events.${meta.id}.description`),
+  }))
 
   const showTitle = settings?.show_title ?? true
   const meta = (settings?.metadata && typeof settings.metadata === 'object' && !Array.isArray(settings.metadata))
@@ -119,8 +95,8 @@ export default async function AboutPage({ params }: Props) {
       <section className="mb-16">
         <div className="flex flex-col md:flex-row gap-8 md:gap-12">
           <div className="md:w-[62%] prose prose-lg dark:prose-invert max-w-none text-gray-body dark:text-[#C0C0C0] leading-[1.8]">
-            {biography?.content ? (
-              <div dangerouslySetInnerHTML={{ __html: biography.content }} />
+            {translatedBiography ? (
+              <div dangerouslySetInnerHTML={{ __html: translatedBiography }} />
             ) : (
               <p className="text-gray-meta">Biography content coming soon.</p>
             )}
@@ -145,7 +121,7 @@ export default async function AboutPage({ params }: Props) {
         <section className="mb-16 pt-8 border-t border-gray-light dark:border-[#333333]">
           <h2 className="section-title-museum mb-8">{t('timeline.title')}</h2>
           <Timeline
-            events={sampleTimelineEvents}
+            events={timelineEvents}
             groupByDecade
             showFilters
           />
@@ -157,8 +133,8 @@ export default async function AboutPage({ params }: Props) {
         <section className="bg-charcoal dark:bg-[#0A0A0A] text-white -mx-6 md:-mx-12 lg:-mx-16 px-6 md:px-12 lg:px-16 py-16">
           <h2 className="section-title-museum text-white/60 mb-6">{t('movement')}</h2>
           <div className="prose prose-lg prose-invert max-w-3xl leading-[1.8]">
-            {movement?.content ? (
-              <div dangerouslySetInnerHTML={{ __html: movement.content }} />
+            {translatedMovement ? (
+              <div dangerouslySetInnerHTML={{ __html: translatedMovement }} />
             ) : (
               <p className="text-white/50">Movement history content coming soon.</p>
             )}

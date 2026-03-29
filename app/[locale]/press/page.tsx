@@ -5,6 +5,7 @@ import type { PressItem } from '@/components/features/press'
 import { getShowTitle } from '@/lib/page-settings'
 import { PageTitle } from '@/components/ui/PageTitle'
 import { createClient } from '@/lib/supabase/server'
+import { translatePageContent } from '@/lib/ai/translation-service'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -38,7 +39,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function PressPage() {
+export default async function PressPage({ params }: Props) {
+  const { locale } = await params
   const t = await getTranslations('press')
   const showTitle = await getShowTitle('press')
 
@@ -53,13 +55,26 @@ export default async function PressPage() {
     .order('publish_date', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false }) as { data: PressItem[] | null }
 
+  // Translate press item titles and excerpts for non-English locales
+  const translatedItems = locale === 'en' || !pressItems
+    ? pressItems
+    : await Promise.all(
+        pressItems.map(async (item) => ({
+          ...item,
+          title: await translatePageContent(item.title, locale, 'press', item.id, 'title'),
+          excerpt: item.excerpt
+            ? await translatePageContent(item.excerpt, locale, 'press', item.id, 'excerpt')
+            : item.excerpt,
+        }))
+      )
+
   return (
     <div className="container-page section-spacing">
       <PageTitle title={t('title')} showTitle={showTitle} />
 
-      {pressItems && pressItems.length > 0 ? (
+      {translatedItems && translatedItems.length > 0 ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {pressItems.map((item, index) => (
+          {translatedItems.map((item, index) => (
             <PressCard
               key={item.id}
               pressItem={item}
