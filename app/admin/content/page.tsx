@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { PageHeader } from '@/components/admin/PageHeader'
 import { ContentSectionCard } from '@/components/admin/ContentSectionCard'
+import { ImageUploader } from '@/components/admin/ImageUploader'
 
 interface ContentSection {
   id: string
@@ -80,6 +81,14 @@ export default function AdminContentPage() {
           : s
       ) || [],
     }))
+  }
+
+  const handleImageChange = async (page: string, section: string, imageUrl: string | null) => {
+    try {
+      await handleSave(page, section, imageUrl || '')
+    } catch (err) {
+      console.error('Failed to save image:', err)
+    }
   }
 
   const activeSections = content[activeTab] || []
@@ -163,17 +172,42 @@ export default function AdminContentPage() {
         {!loading && !error && (
           <div className="space-y-4">
             {activeSections.length > 0 ? (
-              activeSections.map((section) => (
-                <ContentSectionCard
-                  key={section.id}
-                  page={activeTab}
-                  section={section.section}
-                  content={section.content || ''}
-                  contentType={section.content_type}
-                  updatedAt={section.updated_at}
-                  onSave={(newContent) => handleSave(activeTab, section.section, newContent)}
-                />
-              ))
+              activeSections.map((section) =>
+                section.content_type === 'image' ? (
+                  <div key={section.id} className="border border-gray-200 rounded-lg bg-white overflow-hidden">
+                    <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                      <h3 className="text-sm font-medium text-gray-900 capitalize">
+                        {section.section.replace(/_/g, ' ')}
+                      </h3>
+                    </div>
+                    <div className="p-4 max-w-sm">
+                      <ImageUploader
+                        bucket="about"
+                        value={section.content || null}
+                        onChange={(url) => handleImageChange(activeTab, section.section, url)}
+                        aspectRatio="1/1"
+                      />
+                    </div>
+                    {section.updated_at && (
+                      <div className="px-4 py-2 bg-gray-50 border-t border-gray-200">
+                        <p className="text-xs text-gray-500">
+                          Last updated: {new Date(section.updated_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <ContentSectionCard
+                    key={section.id}
+                    page={activeTab}
+                    section={section.section}
+                    content={section.content || ''}
+                    contentType={section.content_type}
+                    updatedAt={section.updated_at}
+                    onSave={(newContent) => handleSave(activeTab, section.section, newContent)}
+                  />
+                )
+              )
             ) : (
               <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
                 <EmptyIcon />

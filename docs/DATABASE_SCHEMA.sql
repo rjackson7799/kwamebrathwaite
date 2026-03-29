@@ -412,6 +412,7 @@ INSERT INTO site_content (page, section, content, content_type) VALUES
 -- INSERT INTO storage.buckets (id, name, public) VALUES ('exhibitions', 'exhibitions', true);
 -- INSERT INTO storage.buckets (id, name, public) VALUES ('press', 'press', true);
 -- INSERT INTO storage.buckets (id, name, public) VALUES ('press-kit', 'press-kit', true);
+-- INSERT INTO storage.buckets (id, name, public) VALUES ('about', 'about', true);
 
 -- ============================================
 -- COMMENTS FOR DOCUMENTATION

@@ -96,9 +96,10 @@ export default async function AboutPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: 'about' })
 
   // Fetch content from CMS and page settings in parallel
-  const [biography, movement, settings] = await Promise.all([
+  const [biography, movement, portraitImage, settings] = await Promise.all([
     getPageContent('about', 'biography'),
     getPageContent('about', 'movement'),
+    getPageContent('about', 'portrait_image'),
     getPageSettings('about'),
   ])
 
@@ -108,6 +109,7 @@ export default async function AboutPage({ params }: Props) {
     : {}
   const showTimeline = meta.show_timeline === true
   const showMovement = meta.show_movement === true
+  const portraitSrc = portraitImage?.content || '/images/about/kwame-portrait.jpeg'
 
   return (
     <div className="container-page section-spacing">
@@ -126,7 +128,7 @@ export default async function AboutPage({ params }: Props) {
           <div className="md:w-[38%] flex-shrink-0 sticky top-24 self-start">
             <div className="relative aspect-square rounded-sm overflow-hidden">
               <Image
-                src="/images/about/kwame-portrait.jpeg"
+                src={portraitSrc}
                 alt="Kwame Brathwaite"
                 fill
                 className="object-cover"
