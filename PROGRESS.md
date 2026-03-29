@@ -1,7 +1,47 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 28, 2026 (About Page Section Visibility Toggles)
+**Last Updated:** March 28, 2026 (AI Press Article Summarizer)
+
+---
+
+## AI Press Article Summarizer (March 2026)
+
+### Completed
+- [x] AI-powered URL summarization for press articles
+  - Admin pastes article URL, clicks "Generate Summary" to auto-fill form fields
+  - Fetches article HTML server-side, parses with `cheerio` for metadata + content
+  - Extracts: title, author, publication name, publish date (from OG/meta tags)
+  - Sends clean article text to GPT-4o for summary generation
+  - Configurable word count: 50-600 words (default 100)
+  - Auto-fills excerpt (always), plus title/author/publication/date (only if empty)
+  - Cost: ~$0.01-0.03 per summarization
+  - Files created:
+    - `lib/ai/press-summarizer.ts` — URL fetching, cheerio parsing, GPT-4o summarization
+    - `app/api/admin/press/summarize-url/route.ts` — Authenticated POST endpoint
+  - Files modified:
+    - `components/admin/PressForm.tsx` — Added Generate Summary button + word count input
+    - `lib/ai/types.ts` — Added `PressSummaryResult` interface
+    - `lib/ai/prompts.ts` — Added press summary system prompt
+    - `lib/ai/index.ts` — Added exports
+    - `lib/api/validation.ts` — Added `pressSummarizeUrlSchema`
+  - New dependency: `cheerio` (HTML parser)
+  - Design spec: `docs/superpowers/specs/2026-03-28-press-url-summarizer-design.md`
+
+---
+
+## Artwork Form Field Updates (March 2026)
+
+### Completed
+- [x] Split single Dimensions field into two: Dimensions (in) and Dimensions (cm)
+  - DB column `dimensions_cm` already existed, now exposed in form
+- [x] Removed Category dropdown from the artwork form
+  - Category field kept in validation schema for backwards compatibility
+- [x] Added Edition field (e.g., `#1/5 (Ed. 5 + 2AP)`)
+  - DB column `edition` already existed, now exposed in form
+- [x] Added Unique ID field (e.g., `AJASS_Loc_59_001`)
+  - Maps to `archive_reference` DB column, already existed
+- Files modified: `components/admin/ArtworkForm.tsx`, `lib/api/validation.ts`
 
 ---
 
@@ -663,6 +703,13 @@ components/
     └── ExhibitionForm.tsx
 
 lib/
+├── ai/
+│   ├── index.ts
+│   ├── description-generator.ts
+│   ├── press-summarizer.ts
+│   ├── prompts.ts
+│   ├── translation-service.ts
+│   └── types.ts
 ├── api/
 │   ├── index.ts
 │   ├── response.ts
@@ -731,7 +778,8 @@ app/api/
     │   └── [id]/route.ts
     └── press/
         ├── route.ts
-        └── [id]/route.ts
+        ├── [id]/route.ts
+        └── summarize-url/route.ts
 
 app/admin/
 ├── layout.tsx

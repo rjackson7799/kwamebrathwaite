@@ -468,6 +468,10 @@ INSERT INTO page_settings (page_slug, show_title) VALUES
     ('shop', true),
     ('licensing', true);
 
+-- Global settings row (content font scale, etc.)
+INSERT INTO page_settings (page_slug, show_title, metadata) VALUES
+    ('_global', true, '{"content_font_scale": "default"}');
+
 -- Trigger to auto-update updated_at
 CREATE TRIGGER update_page_settings_updated_at
     BEFORE UPDATE ON page_settings

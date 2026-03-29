@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import type { PageSettings } from '@/lib/supabase/types'
 
+export type FontScalePreset = 'small' | 'default' | 'large'
+
 export async function getPageSettings(slug: string): Promise<PageSettings | null> {
   try {
     const supabase = await createClient()
@@ -39,4 +41,15 @@ export async function getSectionVisibility(
   }
   const meta = settings.metadata as Record<string, unknown>
   return meta[`show_${section}`] === true
+}
+
+export async function getContentFontScale(): Promise<FontScalePreset> {
+  const settings = await getPageSettings('_global')
+  if (!settings?.metadata || typeof settings.metadata !== 'object' || Array.isArray(settings.metadata)) {
+    return 'default'
+  }
+  const meta = settings.metadata as Record<string, unknown>
+  const scale = meta.content_font_scale
+  if (scale === 'small' || scale === 'large') return scale
+  return 'default'
 }

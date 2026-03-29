@@ -7,13 +7,19 @@ interface SectionMetadata {
   show_movement?: boolean
 }
 
+interface GlobalMetadata {
+  content_font_scale?: 'small' | 'default' | 'large'
+}
+
 interface PageSetting {
   id: string
   page_slug: string
   show_title: boolean
-  metadata: SectionMetadata | null
+  metadata: SectionMetadata | GlobalMetadata | null
   updated_at: string
 }
+
+type FontScalePreset = 'small' | 'default' | 'large'
 
 const PAGE_LABELS: Record<string, string> = {
   works: 'Works (Gallery)',
@@ -25,6 +31,12 @@ const PAGE_LABELS: Record<string, string> = {
   shop: 'Shop',
   licensing: 'Licensing',
 }
+
+const FONT_SCALE_OPTIONS: { value: FontScalePreset; label: string; description: string }[] = [
+  { value: 'small', label: 'Small', description: '87.5%' },
+  { value: 'default', label: 'Default', description: '100%' },
+  { value: 'large', label: 'Large', description: '112.5%' },
+]
 
 export default function PageSettingsPage() {
   const [settings, setSettings] = useState<PageSetting[]>([])
@@ -48,6 +60,41 @@ export default function PageSettingsPage() {
       setError(err instanceof Error ? err.message : 'Failed to load page settings')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  // Separate global settings from per-page settings
+  const globalSettings = settings.find(s => s.page_slug === '_global')
+  const pageSettings = settings.filter(s => s.page_slug !== '_global')
+
+  const currentFontScale: FontScalePreset =
+    (globalSettings?.metadata as GlobalMetadata)?.content_font_scale || 'default'
+
+  const updateFontScale = async (value: FontScalePreset) => {
+    setSaving('_global-font-scale')
+    try {
+      const res = await fetch('/api/admin/page-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          page_slug: '_global',
+          metadata: { content_font_scale: value },
+        }),
+      })
+
+      if (!res.ok) throw new Error('Failed to update')
+
+      setSettings(prev =>
+        prev.map(s =>
+          s.page_slug === '_global'
+            ? { ...s, metadata: { content_font_scale: value } }
+            : s
+        )
+      )
+    } catch {
+      setError('Failed to update font scale')
+    } finally {
+      setSaving(null)
     }
   }
 
@@ -131,6 +178,41 @@ export default function PageSettingsPage() {
         </div>
       )}
 
+      {/* Global Content Settings */}
+      <div className="mb-8 border border-gray-200 rounded-lg p-5">
+        <h2 className="text-sm font-medium uppercase tracking-wider text-gray-500 mb-1">
+          Content Font Size
+        </h2>
+        <p className="text-xs text-gray-400 mb-4">
+          Adjust the body text size across all public pages (all languages).
+        </p>
+        <div className="inline-flex rounded-lg border border-gray-200 overflow-hidden">
+          {FONT_SCALE_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => updateFontScale(option.value)}
+              disabled={saving === '_global-font-scale'}
+              className={`
+                px-4 py-2 text-sm font-medium transition-colors duration-150
+                ${currentFontScale === option.value
+                  ? 'bg-black text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                }
+                ${saving === '_global-font-scale' ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
+                border-r border-gray-200 last:border-r-0
+              `}
+            >
+              {option.label}
+              <span className={`ml-1.5 text-xs ${currentFontScale === option.value ? 'text-gray-300' : 'text-gray-400'}`}>
+                {option.description}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Per-Page Settings Table */}
       <div className="border border-gray-200 rounded-lg overflow-hidden">
         <table className="w-full">
           <thead>
@@ -147,7 +229,7 @@ export default function PageSettingsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {settings.map((setting) => (
+            {pageSettings.map((setting) => (
               <React.Fragment key={setting.id}>
                 <tr className="hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-4">
@@ -204,23 +286,23 @@ export default function PageSettingsPage() {
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
-                            onClick={() => toggleMetadataFlag(setting.page_slug, setting.metadata, 'show_timeline')}
+                            onClick={() => toggleMetadataFlag(setting.page_slug, setting.metadata as SectionMetadata, 'show_timeline')}
                             disabled={saving === `${setting.page_slug}-show_timeline`}
                             className={`
                               relative inline-flex h-6 w-11 items-center rounded-full
                               transition-colors duration-200
-                              ${setting.metadata?.show_timeline ? 'bg-black' : 'bg-gray-300'}
+                              ${(setting.metadata as SectionMetadata)?.show_timeline ? 'bg-black' : 'bg-gray-300'}
                               ${saving === `${setting.page_slug}-show_timeline` ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
                             `}
                             role="switch"
-                            aria-checked={setting.metadata?.show_timeline ?? false}
+                            aria-checked={(setting.metadata as SectionMetadata)?.show_timeline ?? false}
                             aria-label="Toggle Timeline section"
                           >
                             <span
                               className={`
                                 inline-block h-4 w-4 rounded-full bg-white
                                 transition-transform duration-200
-                                ${setting.metadata?.show_timeline ? 'translate-x-6' : 'translate-x-1'}
+                                ${(setting.metadata as SectionMetadata)?.show_timeline ? 'translate-x-6' : 'translate-x-1'}
                               `}
                             />
                           </button>
@@ -229,23 +311,23 @@ export default function PageSettingsPage() {
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
-                            onClick={() => toggleMetadataFlag(setting.page_slug, setting.metadata, 'show_movement')}
+                            onClick={() => toggleMetadataFlag(setting.page_slug, setting.metadata as SectionMetadata, 'show_movement')}
                             disabled={saving === `${setting.page_slug}-show_movement`}
                             className={`
                               relative inline-flex h-6 w-11 items-center rounded-full
                               transition-colors duration-200
-                              ${setting.metadata?.show_movement ? 'bg-black' : 'bg-gray-300'}
+                              ${(setting.metadata as SectionMetadata)?.show_movement ? 'bg-black' : 'bg-gray-300'}
                               ${saving === `${setting.page_slug}-show_movement` ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
                             `}
                             role="switch"
-                            aria-checked={setting.metadata?.show_movement ?? false}
+                            aria-checked={(setting.metadata as SectionMetadata)?.show_movement ?? false}
                             aria-label="Toggle Movement section"
                           >
                             <span
                               className={`
                                 inline-block h-4 w-4 rounded-full bg-white
                                 transition-transform duration-200
-                                ${setting.metadata?.show_movement ? 'translate-x-6' : 'translate-x-1'}
+                                ${(setting.metadata as SectionMetadata)?.show_movement ? 'translate-x-6' : 'translate-x-1'}
                               `}
                             />
                           </button>

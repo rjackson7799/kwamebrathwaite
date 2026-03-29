@@ -25,6 +25,9 @@
   --text-secondary: #6B6B6B;
   --border-primary: #E5E5E5;
   --gold-adaptive: #B8945F;
+
+  /* Content font scale - controlled by admin Page Settings */
+  --content-font-scale: 1;
 }
 
 .dark {
@@ -90,6 +93,19 @@
   /* Focus styles for accessibility */
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-black dark:outline-white;
+  }
+
+  /* Content font scaling - admin-controlled via Page Settings */
+  main#main-content .prose,
+  main#main-content .prose p,
+  main#main-content .prose li,
+  main#main-content .prose blockquote {
+    font-size: calc(var(--content-font-scale, 1) * 1em);
+  }
+
+  main#main-content > .container-page p,
+  main#main-content .text-body-lg {
+    font-size: calc(var(--content-font-scale, 1) * 1em);
   }
 }
 
