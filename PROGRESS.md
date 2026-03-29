@@ -22,6 +22,14 @@
     - `app/admin/press/page.tsx` — Added "Reorder" button next to "Add Press"
     - `app/[locale]/press/page.tsx` — Updated sort order to respect `display_order`
   - Reuses existing `adminReorderSchema` validation and `display_order` DB column/index
+- [x] Rich text editor HTML source view toggle
+  - Added `</>` toolbar button to switch between WYSIWYG and raw HTML editing
+  - Useful for fixing formatting issues or pasting pre-formatted HTML
+  - File modified: `components/admin/RichTextEditor.tsx`
+- [x] Modern thin scrollbar styling
+  - Global 6px translucent scrollbar replacing browser default (~15px)
+  - Rounded thumb, invisible track, dark mode support
+  - File modified: `app/globals.css`
 
 ---
 
