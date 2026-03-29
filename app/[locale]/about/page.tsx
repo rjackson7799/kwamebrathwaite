@@ -115,24 +115,25 @@ export default async function AboutPage({ params }: Props) {
 
       {/* Biography section — museum style: content flows with portrait */}
       <section className="mb-16">
-        <h2 className="section-title-museum mb-6">{t('biography')}</h2>
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="relative aspect-[3/4] rounded-sm overflow-hidden sticky top-24 self-start">
-            <Image
-              src="/images/about/kwame-portrait.jpeg"
-              alt="Kwame Brathwaite"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority
-            />
-          </div>
-          <div className="prose prose-lg dark:prose-invert max-w-none text-gray-body dark:text-[#C0C0C0] leading-[1.8]">
+        <div className="flex flex-col md:flex-row gap-8 md:gap-12">
+          <div className="md:w-[62%] prose prose-lg dark:prose-invert max-w-none text-gray-body dark:text-[#C0C0C0] leading-[1.8]">
             {biography?.content ? (
               <div dangerouslySetInnerHTML={{ __html: biography.content }} />
             ) : (
               <p className="text-gray-meta">Biography content coming soon.</p>
             )}
+          </div>
+          <div className="md:w-[38%] flex-shrink-0 sticky top-24 self-start">
+            <div className="relative aspect-square rounded-sm overflow-hidden">
+              <Image
+                src="/images/about/kwame-portrait.jpeg"
+                alt="Kwame Brathwaite"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 38vw"
+                priority
+              />
+            </div>
           </div>
         </div>
       </section>

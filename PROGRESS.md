@@ -1,7 +1,24 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 28, 2026 (Content Font Size Adjuster)
+**Last Updated:** March 28, 2026 (Archive Page CMS Integration)
+
+---
+
+## Archive Page CMS Integration (March 2026)
+
+### Completed
+- [x] Connected Archive page to Supabase `site_content` table
+  - Fetches `mission` and `description` sections via `getPageContent()`
+  - Renders CMS HTML content with `dangerouslySetInnerHTML` (same pattern as About page)
+  - Two-column layout: rich HTML content on left, sticky image on right
+  - Image URL configurable via `page_settings` metadata (`image_url` field)
+  - Defaults to existing portrait photo if no image URL is set
+  - Admin can edit content via Admin > Content > Archive tab (already existed)
+  - Admin can set archive image via Admin > Page Settings > Archive row (new)
+  - Files modified:
+    - `app/[locale]/archive/page.tsx` — Replaced skeleton loaders with CMS content, two-column layout with image
+    - `app/admin/page-settings/page.tsx` — Added image URL input for archive page
 
 ---
 

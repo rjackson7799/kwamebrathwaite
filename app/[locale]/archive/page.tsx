@@ -1,7 +1,9 @@
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
-import { getShowTitle } from '@/lib/page-settings'
+import Image from 'next/image'
+import { getPageSettings } from '@/lib/page-settings'
 import { PageTitle } from '@/components/ui/PageTitle'
+import { getPageContent } from '@/lib/supabase/queries/content'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -31,35 +33,47 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArchivePage() {
   const t = await getTranslations('archive')
-  const showTitle = await getShowTitle('archive')
+  const [settings, mission, description] = await Promise.all([
+    getPageSettings('archive'),
+    getPageContent('archive', 'mission'),
+    getPageContent('archive', 'description'),
+  ])
+
+  const showTitle = settings?.show_title ?? true
+  const meta = (settings?.metadata && typeof settings.metadata === 'object' && !Array.isArray(settings.metadata))
+    ? settings.metadata as Record<string, unknown>
+    : {}
+  const imageUrl = (typeof meta.image_url === 'string' && meta.image_url)
+    ? meta.image_url
+    : '/images/about/kwame-portrait.jpeg'
 
   return (
     <div className="container-page section-spacing">
       <PageTitle title={t('title')} showTitle={showTitle} />
 
-      {/* Mission section */}
-      <section className="max-w-3xl mb-16">
-        <h2 className="section-title-museum mb-6">{t('mission')}</h2>
-        <div className="space-y-4">
-          <div className="h-4 bg-gray-light dark:bg-[#2A2A2A] animate-pulse rounded" />
-          <div className="h-4 bg-gray-light dark:bg-[#2A2A2A] animate-pulse rounded" />
-          <div className="h-4 bg-gray-light dark:bg-[#2A2A2A] animate-pulse rounded w-3/4" />
-        </div>
-      </section>
+      {/* Two-column layout: content left, image right */}
+      <section className="grid md:grid-cols-2 gap-8">
+        <div className="prose prose-lg dark:prose-invert max-w-none text-gray-body dark:text-[#C0C0C0] leading-[1.8]">
+          {mission?.content ? (
+            <div dangerouslySetInnerHTML={{ __html: mission.content }} />
+          ) : (
+            <p className="text-gray-meta">Content coming soon.</p>
+          )}
 
-      {/* Archive highlights */}
-      <section>
-        <div className="grid md:grid-cols-3 gap-6">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="text-center">
-              <div className="text-display-1 font-serif mb-2">
-                {['10K+', '60+', '50+'][i]}
-              </div>
-              <div className="text-body text-gray-warm">
-                {['Images', 'Years', 'Exhibitions'][i]}
-              </div>
-            </div>
-          ))}
+          {description?.content && (
+            <div dangerouslySetInnerHTML={{ __html: description.content }} />
+          )}
+        </div>
+
+        <div className="relative aspect-[3/4] rounded-sm overflow-hidden md:sticky md:top-24 self-start">
+          <Image
+            src={imageUrl}
+            alt="Kwame Brathwaite Archive"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority
+          />
         </div>
       </section>
     </div>
