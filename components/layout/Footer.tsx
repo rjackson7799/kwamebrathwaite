@@ -133,6 +133,12 @@ export function Footer() {
             >
               {t('links.terms')}
             </Link>
+            <Link
+              href={getLocalizedHref('/licensing')}
+              className="hover:text-white/60 transition-colors"
+            >
+              {t('links.licensing')}
+            </Link>
             <a
               href="https://instagram.com/kwamebrathwaitearchive"
               target="_blank"
