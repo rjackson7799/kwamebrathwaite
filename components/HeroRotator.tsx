@@ -66,13 +66,13 @@ export function HeroRotator({ slides }: HeroRotatorProps) {
   // Handle empty state
   if (slides.length === 0) {
     return (
-      <section className="relative h-screen bg-charcoal" />
+      <section className="relative h-[calc(100vh-5rem)] bg-charcoal" />
     )
   }
 
   return (
     <section
-      className="relative h-screen overflow-hidden"
+      className="relative h-[calc(100vh-5rem)] overflow-hidden"
       onMouseEnter={() => {
         setHasInteracted(true)
         setIsPaused(true)
