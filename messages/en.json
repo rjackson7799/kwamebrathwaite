@@ -182,7 +182,17 @@
       "description": "Press coverage, reviews, and articles about Kwame Brathwaite's photography and the Black is Beautiful movement."
     },
     "readMore": "Read More",
-    "downloadPressKit": "Download Press Kit"
+    "downloadPressKit": "Download Press Kit",
+    "detail": {
+      "backToPress": "Back to Press",
+      "readFullArticle": "Read Full Article",
+      "type": {
+        "article": "Article",
+        "review": "Review",
+        "interview": "Interview",
+        "feature": "Feature"
+      }
+    }
   },
   "about": {
     "title": "About",

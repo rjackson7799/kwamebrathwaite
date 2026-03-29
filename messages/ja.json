@@ -145,7 +145,17 @@
       "description": "クワメ・ブラスウェイトの写真とブラック・イズ・ビューティフル運動に関するメディア報道、レビュー、記事をご覧ください。"
     },
     "readMore": "続きを読む",
-    "downloadPressKit": "プレスキットをダウンロード"
+    "downloadPressKit": "プレスキットをダウンロード",
+    "detail": {
+      "backToPress": "プレスに戻る",
+      "readFullArticle": "記事全文を読む",
+      "type": {
+        "article": "記事",
+        "review": "レビュー",
+        "interview": "インタビュー",
+        "feature": "特集"
+      }
+    }
   },
   "about": {
     "title": "について",

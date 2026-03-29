@@ -1,7 +1,20 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 28, 2026 (Multi-lingual Content Translation)
+**Last Updated:** March 28, 2026 (Exhibition Data Seed)
+
+---
+
+## Exhibition Data Seed (March 2026)
+
+### Completed
+- [x] Parsed `docs/events.md` (2026 Exhibit Schedule) into SQL insert statements
+  - Created `docs/seed_exhibitions.sql` with all 18 exhibitions
+  - 1 past, 8 current, 9 upcoming (based on today's date 2026-03-28)
+  - Includes slug, title, venue, city, state/region, country, dates, exhibition_type, venue_url, display_order
+  - Duplicate show titles (Disco, Sunday Best, Bold & Brilliant) get city-suffixed slugs for uniqueness
+  - Clears `exhibition_artworks` and `exhibitions` tables before inserting (safe re-run)
+  - Successfully run against production Supabase database
 
 ---
 

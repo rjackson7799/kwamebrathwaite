@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useLocale } from 'next-intl'
 import { useState } from 'react'
 
@@ -101,23 +102,15 @@ export function PressCard({
     </article>
   )
 
-  if (pressItem.url) {
-    return (
-      <a
-        href={pressItem.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`group block h-full ${className}`}
-        aria-label={`${pressItem.title} - Opens in new tab`}
-      >
-        <CardContent />
-      </a>
-    )
-  }
+  const detailHref = locale === 'en' ? `/press/${pressItem.id}` : `/${locale}/press/${pressItem.id}`
 
   return (
-    <div className={`group block h-full ${className}`}>
+    <Link
+      href={detailHref}
+      className={`group block h-full ${className}`}
+      aria-label={pressItem.title}
+    >
       <CardContent />
-    </div>
+    </Link>
   )
 }

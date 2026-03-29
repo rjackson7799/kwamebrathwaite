@@ -1,2 +1,4 @@
 export { PressCard } from './PressCard'
 export type { PressItem } from './PressCard'
+export { PressDetail } from './PressDetail'
+export type { DetailedPressItem } from './PressDetail'
