@@ -7,9 +7,12 @@ import { FormField, Input, Textarea, Select, Checkbox } from './FormField'
 import { ImageUploader } from './ImageUploader'
 import { RichTextEditor } from './RichTextEditor'
 import { Wand2, Loader2, AlertCircle, Check } from 'lucide-react'
+import { generateSlug } from '@/lib/utils/slug'
+import { PressSEOGenerateButton } from './PressSEOGenerateButton'
 
 interface PressFormData {
   title: string
+  slug?: string | null
   publication?: string | null
   author?: string | null
   publish_date?: string | null
@@ -20,6 +23,8 @@ interface PressFormData {
   is_featured: boolean
   display_order?: number | null
   status: 'draft' | 'published' | 'archived'
+  meta_title?: string | null
+  meta_description?: string | null
 }
 
 interface PressFormProps {
@@ -47,6 +52,7 @@ export function PressForm({ press, isEdit = false }: PressFormProps) {
   } = useForm<PressFormData>({
     defaultValues: press || {
       title: '',
+      slug: null,
       publication: null,
       author: null,
       publish_date: null,
@@ -57,6 +63,8 @@ export function PressForm({ press, isEdit = false }: PressFormProps) {
       is_featured: false,
       display_order: null,
       status: 'draft',
+      meta_title: null,
+      meta_description: null,
     },
   })
 
@@ -345,6 +353,68 @@ export function PressForm({ press, isEdit = false }: PressFormProps) {
                   />
                 )}
               />
+            </div>
+          </div>
+
+          {/* SEO Card */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">SEO & Accessibility</h3>
+              {isEdit && press?.id && (
+                <PressSEOGenerateButton
+                  pressId={press.id}
+                  onGenerated={(seo) => {
+                    setValue('meta_title', seo.meta_title)
+                    setValue('meta_description', seo.meta_description)
+                  }}
+                />
+              )}
+            </div>
+            <div className="space-y-4">
+              <FormField
+                label="URL Slug"
+                htmlFor="slug"
+                hint="Auto-generated from title. Edit for custom URL."
+              >
+                <Input
+                  id="slug"
+                  {...register('slug')}
+                  placeholder="article-title-here"
+                  onFocus={() => {
+                    // Auto-generate slug from title if empty (new items)
+                    const currentSlug = getValues('slug')
+                    const currentTitle = getValues('title')
+                    if (!currentSlug && currentTitle) {
+                      setValue('slug', generateSlug(currentTitle))
+                    }
+                  }}
+                />
+              </FormField>
+
+              <FormField
+                label="Meta Title"
+                htmlFor="meta_title"
+                hint="Max 60 characters recommended"
+              >
+                <Input
+                  id="meta_title"
+                  {...register('meta_title')}
+                  placeholder="Custom page title for search engines"
+                />
+              </FormField>
+
+              <FormField
+                label="Meta Description"
+                htmlFor="meta_description"
+                hint="Max 160 characters recommended"
+              >
+                <Textarea
+                  id="meta_description"
+                  {...register('meta_description')}
+                  rows={3}
+                  placeholder="Brief description for search results"
+                />
+              </FormField>
             </div>
           </div>
 

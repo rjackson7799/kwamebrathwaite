@@ -171,6 +171,7 @@ export const adminExhibitionSchema = z.object({
   location_lat: z.coerce.number().optional().nullable(),
   location_lng: z.coerce.number().optional().nullable(),
   venue_url: z.string().url().optional().nullable().or(z.literal('')),
+  venue_description: z.string().optional().nullable(),
   display_order: z.coerce.number().int().optional().nullable(),
   status: z.enum(['draft', 'published', 'archived']).default('draft'),
   meta_title: z.string().max(255).optional().nullable(),
@@ -193,6 +194,17 @@ export const exhibitionArtworksSchema = z.object({
   artworkIds: z.array(z.string().uuid()),
 })
 
+// Exhibition press linking schema
+export const exhibitionPressSchema = z.object({
+  pressIds: z.array(z.string().uuid()),
+})
+
+// Venue description generation schema
+export const generateVenueDescriptionSchema = z.object({
+  venue_url: z.string().url('Valid URL required'),
+  venue_name: z.string().min(1, 'Venue name required'),
+})
+
 // ============================================
 // Press Schemas
 // ============================================
@@ -200,6 +212,9 @@ export const exhibitionArtworksSchema = z.object({
 // Admin press create/update schema
 export const adminPressSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255),
+  slug: z.string().max(255)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be lowercase letters, numbers, and hyphens only')
+    .optional().nullable(),
   publication: z.string().max(255).optional().nullable(),
   author: z.string().max(255).optional().nullable(),
   publish_date: z.string().optional().nullable(),
@@ -210,6 +225,8 @@ export const adminPressSchema = z.object({
   is_featured: z.boolean().default(false),
   display_order: z.coerce.number().int().optional().nullable(),
   status: z.enum(['draft', 'published', 'archived']).default('draft'),
+  meta_title: z.string().max(255).optional().nullable(),
+  meta_description: z.string().max(500).optional().nullable(),
 })
 
 export type AdminPressInput = z.infer<typeof adminPressSchema>

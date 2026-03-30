@@ -7,6 +7,7 @@ import { useState } from 'react'
 
 export interface PressItem {
   id: string
+  slug?: string
   title: string
   publication?: string
   author?: string
@@ -102,7 +103,8 @@ export function PressCard({
     </article>
   )
 
-  const detailHref = locale === 'en' ? `/press/${pressItem.id}` : `/${locale}/press/${pressItem.id}`
+  const identifier = pressItem.slug || pressItem.id
+  const detailHref = locale === 'en' ? `/press/${identifier}` : `/${locale}/press/${identifier}`
 
   return (
     <Link

@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 import { successResponse, errorResponse, ErrorCodes } from '@/lib/api'
+import { isUUID } from '@/lib/utils/slug'
 
 type RouteParams = {
   params: Promise<{ id: string }>
@@ -9,14 +10,21 @@ type RouteParams = {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params
-    const supabase = await createClient()
+    const supabase = createPublicClient()
 
-    const { data, error } = await supabase
+    // Support lookup by UUID or slug
+    let query = supabase
       .from('press')
       .select('*')
-      .eq('id', id)
       .eq('status', 'published')
-      .single()
+
+    if (isUUID(id)) {
+      query = query.eq('id', id)
+    } else {
+      query = query.eq('slug', id)
+    }
+
+    const { data, error } = await query.single()
 
     if (error) {
       if (error.code === 'PGRST116') {

@@ -126,6 +126,7 @@ export type Database = {
           location_lat: number | null
           location_lng: number | null
           venue_url: string | null
+          venue_description: string | null
           display_order: number | null
           status: ContentStatus
           meta_title: string | null
@@ -151,6 +152,7 @@ export type Database = {
           location_lat?: number | null
           location_lng?: number | null
           venue_url?: string | null
+          venue_description?: string | null
           display_order?: number | null
           status?: ContentStatus
           meta_title?: string | null
@@ -176,6 +178,7 @@ export type Database = {
           location_lat?: number | null
           location_lng?: number | null
           venue_url?: string | null
+          venue_description?: string | null
           display_order?: number | null
           status?: ContentStatus
           meta_title?: string | null
@@ -198,6 +201,23 @@ export type Database = {
         Update: {
           exhibition_id?: string
           artwork_id?: string
+          display_order?: number
+        }
+      }
+      exhibition_press: {
+        Row: {
+          exhibition_id: string
+          press_id: string
+          display_order: number
+        }
+        Insert: {
+          exhibition_id: string
+          press_id: string
+          display_order?: number
+        }
+        Update: {
+          exhibition_id?: string
+          press_id?: string
           display_order?: number
         }
       }
@@ -267,6 +287,7 @@ export type Database = {
         Row: {
           id: string
           title: string
+          slug: string
           publication: string | null
           author: string | null
           publish_date: string | null
@@ -277,12 +298,15 @@ export type Database = {
           is_featured: boolean
           display_order: number | null
           status: ContentStatus
+          meta_title: string | null
+          meta_description: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
           title: string
+          slug: string
           publication?: string | null
           author?: string | null
           publish_date?: string | null
@@ -293,12 +317,15 @@ export type Database = {
           is_featured?: boolean
           display_order?: number | null
           status?: ContentStatus
+          meta_title?: string | null
+          meta_description?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           title?: string
+          slug?: string
           publication?: string | null
           author?: string | null
           publish_date?: string | null
@@ -309,6 +336,8 @@ export type Database = {
           is_featured?: boolean
           display_order?: number | null
           status?: ContentStatus
+          meta_title?: string | null
+          meta_description?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -1038,6 +1067,9 @@ export type HeroSlideUpdate = Database['public']['Tables']['hero_slides']['Updat
 export type ArtworkLiterature = Database['public']['Tables']['artwork_literature']['Row']
 export type ArtworkLiteratureInsert = Database['public']['Tables']['artwork_literature']['Insert']
 export type ArtworkLiteratureUpdate = Database['public']['Tables']['artwork_literature']['Update']
+
+export type ExhibitionPress = Database['public']['Tables']['exhibition_press']['Row']
+export type ExhibitionPressInsert = Database['public']['Tables']['exhibition_press']['Insert']
 
 export type ExhibitionReminder = Database['public']['Tables']['exhibition_reminders']['Row']
 export type ExhibitionReminderInsert = Database['public']['Tables']['exhibition_reminders']['Insert']

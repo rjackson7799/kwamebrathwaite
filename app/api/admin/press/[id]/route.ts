@@ -74,9 +74,29 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return errorResponse(ErrorCodes.NOT_FOUND, 'Press item not found', 404)
     }
 
+    // Validate slug uniqueness if changed
+    if (result.data.slug) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: slugCheck } = await (supabase as any)
+        .from('press')
+        .select('id')
+        .eq('slug', result.data.slug)
+        .neq('id', id)
+        .single()
+
+      if (slugCheck) {
+        return errorResponse(
+          ErrorCodes.VALIDATION_ERROR,
+          'This slug is already in use by another press item',
+          400
+        )
+      }
+    }
+
     // Update press item
     const updateData: PressUpdate = {
       title: result.data.title,
+      slug: result.data.slug || undefined,
       publication: result.data.publication,
       author: result.data.author,
       publish_date: result.data.publish_date,
@@ -87,6 +107,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       is_featured: result.data.is_featured,
       display_order: result.data.display_order,
       status: result.data.status,
+      meta_title: result.data.meta_title || null,
+      meta_description: result.data.meta_description || null,
       updated_at: new Date().toISOString(),
     }
 

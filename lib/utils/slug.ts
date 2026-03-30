@@ -35,3 +35,10 @@ export function generateUniqueSlug(
 
   return uniqueSlug
 }
+
+/**
+ * Check if a string is a valid UUID v4
+ */
+export function isUUID(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)
+}

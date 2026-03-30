@@ -4,6 +4,7 @@ import { successResponse, errorResponse, ErrorCodes } from '@/lib/api/response'
 import { adminPressSchema, adminPressFiltersSchema, parseSearchParams } from '@/lib/api/validation'
 import { requireAuth, logActivity, getCurrentUserEmail } from '@/lib/api/admin'
 import { getPagination } from '@/lib/api/pagination'
+import { generateSlug } from '@/lib/utils/slug'
 
 // GET /api/admin/press - List all press items (including drafts)
 export async function GET(request: NextRequest) {
@@ -87,13 +88,35 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = await createAdminClient()
+    const supabase = createAdminClient()
+
+    // Generate slug from title if not provided
+    let slug = result.data.slug || generateSlug(result.data.title)
+
+    // Ensure slug uniqueness
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: existingSlugs } = await (supabase as any)
+      .from('press')
+      .select('slug')
+      .like('slug', `${slug}%`)
+
+    if (existingSlugs && existingSlugs.length > 0) {
+      const slugSet = new Set(existingSlugs.map((r: { slug: string }) => r.slug))
+      if (slugSet.has(slug)) {
+        let counter = 2
+        while (slugSet.has(`${slug}-${counter}`)) counter++
+        slug = `${slug}-${counter}`
+      }
+    }
 
     // Clean empty strings to null
     const insertData = {
       ...result.data,
+      slug,
       url: result.data.url || null,
       image_url: result.data.image_url || null,
+      meta_title: result.data.meta_title || null,
+      meta_description: result.data.meta_description || null,
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
