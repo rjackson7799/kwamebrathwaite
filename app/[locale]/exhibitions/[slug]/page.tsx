@@ -167,14 +167,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-// Generate static params for SSG
-// With dynamic data, we use dynamic rendering (no pre-generated paths)
-// The revalidate setting above handles ISR caching
-export async function generateStaticParams() {
-  // Return empty array to enable dynamic rendering with ISR
-  // Each page will be generated on first request and cached
-  return []
-}
 
 export default async function ExhibitionDetailPage({ params }: Props) {
   const { slug, locale } = await params
