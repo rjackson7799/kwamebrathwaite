@@ -127,6 +127,7 @@ export type Database = {
           location_lng: number | null
           venue_url: string | null
           venue_description: string | null
+          exhibition_url: string | null
           display_order: number | null
           status: ContentStatus
           meta_title: string | null
@@ -153,6 +154,7 @@ export type Database = {
           location_lng?: number | null
           venue_url?: string | null
           venue_description?: string | null
+          exhibition_url?: string | null
           display_order?: number | null
           status?: ContentStatus
           meta_title?: string | null
@@ -179,6 +181,7 @@ export type Database = {
           location_lng?: number | null
           venue_url?: string | null
           venue_description?: string | null
+          exhibition_url?: string | null
           display_order?: number | null
           status?: ContentStatus
           meta_title?: string | null

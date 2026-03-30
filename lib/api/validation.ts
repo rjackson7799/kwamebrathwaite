@@ -172,6 +172,7 @@ export const adminExhibitionSchema = z.object({
   location_lng: z.coerce.number().optional().nullable(),
   venue_url: z.string().url().optional().nullable().or(z.literal('')),
   venue_description: z.string().optional().nullable(),
+  exhibition_url: z.string().url().optional().nullable().or(z.literal('')),
   display_order: z.coerce.number().int().optional().nullable(),
   status: z.enum(['draft', 'published', 'archived']).default('draft'),
   meta_title: z.string().max(255).optional().nullable(),
@@ -203,6 +204,12 @@ export const exhibitionPressSchema = z.object({
 export const generateVenueDescriptionSchema = z.object({
   venue_url: z.string().url('Valid URL required'),
   venue_name: z.string().min(1, 'Venue name required'),
+})
+
+// Exhibition description generation schema
+export const generateExhibitionDescriptionSchema = z.object({
+  exhibition_url: z.string().url('Valid URL required'),
+  exhibition_title: z.string().min(1, 'Exhibition title required'),
 })
 
 // ============================================

@@ -28,6 +28,7 @@ interface ExhibitionFormData {
   location_lng?: number | null
   venue_url?: string | null
   venue_description?: string | null
+  exhibition_url?: string | null
   status: 'draft' | 'published' | 'archived'
   meta_title?: string | null
   meta_description?: string | null
@@ -45,6 +46,7 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
   const [linkedArtworkIds, setLinkedArtworkIds] = useState<string[]>([])
   const [linkedPressIds, setLinkedPressIds] = useState<string[]>([])
   const [generatingDescription, setGeneratingDescription] = useState(false)
+  const [generatingExhibitionDescription, setGeneratingExhibitionDescription] = useState(false)
 
   const {
     register,
@@ -70,6 +72,7 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
       location_lng: null,
       venue_url: null,
       venue_description: null,
+      exhibition_url: null,
       status: 'draft',
       meta_title: null,
       meta_description: null,
@@ -93,6 +96,7 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
   const watchedAddress = watch('formatted_address')
   const watchedVenue = watch('venue')
   const watchedVenueUrl = watch('venue_url')
+  const watchedExhibitionUrl = watch('exhibition_url')
 
   // Handle place selection from autocomplete
   const handlePlaceSelected = (place: PlaceResult) => {
@@ -135,6 +139,29 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
       console.error('Failed to generate venue description:', err)
     } finally {
       setGeneratingDescription(false)
+    }
+  }
+
+  const handleGenerateExhibitionDescription = async () => {
+    const exhibitionUrl = watch('exhibition_url')
+    const title = watch('title')
+    if (!exhibitionUrl || !title) return
+
+    setGeneratingExhibitionDescription(true)
+    try {
+      const response = await fetch('/api/admin/exhibitions/generate-exhibition-description', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ exhibition_url: exhibitionUrl, exhibition_title: title }),
+      })
+      const result = await response.json()
+      if (result.success && result.data?.description) {
+        setValue('description', result.data.description, { shouldDirty: true })
+      }
+    } catch (err) {
+      console.error('Failed to generate exhibition description:', err)
+    } finally {
+      setGeneratingExhibitionDescription(false)
     }
   }
 
@@ -301,6 +328,19 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
               </FormField>
 
               <FormField
+                label="Exhibition URL"
+                htmlFor="exhibition_url"
+                hint="Link to this specific exhibition on the venue's website"
+              >
+                <Input
+                  id="exhibition_url"
+                  type="url"
+                  {...register('exhibition_url')}
+                  placeholder="https://museum.org/exhibitions/kwame-brathwaite"
+                />
+              </FormField>
+
+              <FormField
                 label="Venue Description"
                 htmlFor="venue_description"
                 hint="Brief description of the venue for the public exhibition page"
@@ -413,17 +453,34 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
           {/* Description Card */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Description</h3>
-            <Controller
-              name="description"
-              control={control}
-              render={({ field }) => (
-                <RichTextEditor
-                  value={field.value || ''}
-                  onChange={field.onChange}
-                  placeholder="Enter exhibition description..."
-                />
-              )}
-            />
+            <div className="space-y-2">
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => (
+                  <RichTextEditor
+                    value={field.value || ''}
+                    onChange={field.onChange}
+                    placeholder="Enter exhibition description..."
+                  />
+                )}
+              />
+              <button
+                type="button"
+                onClick={handleGenerateExhibitionDescription}
+                disabled={!watchedExhibitionUrl || !watch('title') || generatingExhibitionDescription}
+                className="text-sm text-gray-600 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+              >
+                {generatingExhibitionDescription ? (
+                  <>
+                    <span className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  '✨ Generate from exhibition URL'
+                )}
+              </button>
+            </div>
           </div>
 
           {/* SEO Card */}
