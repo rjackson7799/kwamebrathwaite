@@ -4,7 +4,7 @@ import { PressGrid } from '@/components/features/press'
 import type { PressItem } from '@/components/features/press'
 import { getShowTitle } from '@/lib/page-settings'
 import { PageTitle } from '@/components/ui/PageTitle'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 import { translatePageContent } from '@/lib/ai/translation-service'
 
 type Props = {
@@ -44,7 +44,7 @@ export default async function PressPage({ params }: Props) {
   const t = await getTranslations('press')
   const showTitle = await getShowTitle('press')
 
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: pressItems } = await (supabase as any)
     .from('press')

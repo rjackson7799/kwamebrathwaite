@@ -1,8 +1,7 @@
 import { notFound } from 'next/navigation'
-import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import { PressDetail, type DetailedPressItem } from '@/components/features/press'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 import { translatePageContent } from '@/lib/ai/translation-service'
 
 // Revalidate every hour (ISR) per TECHNICAL_SPEC_v2.md
@@ -11,7 +10,7 @@ export const revalidate = 3600
 // Fetch press item from database by ID
 async function getPressItem(id: string): Promise<DetailedPressItem | null> {
   try {
-    const supabase = await createClient()
+    const supabase = createPublicClient()
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (supabase as any)
@@ -107,11 +106,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     },
   }
-}
-
-// Generate static params — empty for dynamic rendering with ISR
-export async function generateStaticParams() {
-  return []
 }
 
 export default async function PressDetailPage({ params }: Props) {

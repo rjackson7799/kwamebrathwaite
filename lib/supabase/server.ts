@@ -39,3 +39,12 @@ export function createAdminClient() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 }
+
+// For public ISR/SSG pages where cookies() may not be available
+// during background revalidation. Uses anon key so RLS is respected.
+export function createPublicClient() {
+  return createSupabaseClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
