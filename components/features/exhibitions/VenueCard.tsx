@@ -12,6 +12,7 @@ interface VenueCardProps {
   venue: string | null
   venueDescription: string | null
   venueUrl: string | null
+  exhibitionUrl: string | null
   streetAddress: string | null
   city: string | null
   stateRegion: string | null
@@ -42,6 +43,7 @@ export function VenueCard({
   venue,
   venueDescription,
   venueUrl,
+  exhibitionUrl,
   streetAddress,
   city,
   stateRegion,
@@ -155,12 +157,22 @@ export function VenueCard({
 
         {/* Action Buttons */}
         <div className="space-y-2">
+          {exhibitionUrl && (
+            <a
+              href={exhibitionUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-center py-2.5 border border-gold dark:border-[#C9A870] text-gold dark:text-[#C9A870] text-[11px] tracking-[0.12em] uppercase hover:bg-gold hover:text-white dark:hover:bg-[#C9A870] dark:hover:text-[#121212] transition-colors duration-200"
+            >
+              View Exhibition Page →
+            </a>
+          )}
           {venueUrl && (
             <a
               href={venueUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-center py-2.5 border border-gold dark:border-[#C9A870] text-gold dark:text-[#C9A870] text-[11px] tracking-[0.12em] uppercase hover:bg-gold hover:text-white dark:hover:bg-[#C9A870] dark:hover:text-[#121212] transition-colors duration-200"
+              className="block text-center py-2.5 border border-gray-light dark:border-[#444] text-gray-warm dark:text-[#A0A0A0] text-[11px] tracking-[0.12em] uppercase hover:border-gray-warm dark:hover:border-[#666] transition-colors duration-200"
             >
               Visit Venue Website →
             </a>

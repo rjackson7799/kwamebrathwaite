@@ -286,6 +286,7 @@ export default async function ExhibitionDetailPage({ params }: Props) {
                 venue={exhibition.venue}
                 venueDescription={exhibition.venue_description}
                 venueUrl={exhibition.venue_url}
+                exhibitionUrl={exhibition.exhibition_url}
                 streetAddress={exhibition.street_address}
                 city={exhibition.city}
                 stateRegion={exhibition.state_region}
