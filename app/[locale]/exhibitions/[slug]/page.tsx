@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ExhibitionDetail, VenueCard, ExhibitionPressLinks, type DetailedExhibition } from '@/components/features/exhibitions'
 import { ArtworkGrid, type Artwork } from '@/components/features/artworks'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 import type { Exhibition as DbExhibition, Artwork as DbArtwork } from '@/lib/supabase/types'
 import type { ExhibitionPressArticle } from '@/components/features/exhibitions/types'
 
@@ -30,7 +30,7 @@ interface ExhibitionWithJoins extends DbExhibition {
 // Fetch exhibition from database by slug
 async function getExhibitionBySlug(slug: string): Promise<{ exhibition: DetailedExhibition; artworks: Artwork[]; press: ExhibitionPressArticle[] } | null> {
   try {
-    const supabase = await createClient()
+    const supabase = createPublicClient()
 
     const { data, error } = await supabase
       .from('exhibitions')
