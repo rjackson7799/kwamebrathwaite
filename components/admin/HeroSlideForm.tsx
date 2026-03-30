@@ -27,6 +27,7 @@ export function HeroSlideForm({ slide, nextDisplayOrder = 1 }: HeroSlideFormProp
     description: slide?.description || '',
     link_url: slide?.link_url || '',
     show_centered_text: slide?.show_centered_text ?? false,
+    image_position_y: slide?.image_position_y ?? 50,
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,6 +83,7 @@ export function HeroSlideForm({ slide, nextDisplayOrder = 1 }: HeroSlideFormProp
                 alt="Preview"
                 fill
                 className="object-cover"
+                style={{ objectPosition: `center ${formData.image_position_y}%` }}
                 sizes="(max-width: 768px) 100vw, 800px"
               />
               {/* Bottom Gradient Overlay */}
@@ -217,6 +219,38 @@ export function HeroSlideForm({ slide, nextDisplayOrder = 1 }: HeroSlideFormProp
           Displays the shared &ldquo;Photography Archive / Kwame Brathwaite&rdquo; text centered on this slide. Useful for announcements or branding.
         </p>
       </div>
+
+      {/* Vertical Position Slider — only shown when an image is selected */}
+      {formData.image_url && (
+        <div className="mb-8">
+          <label className="label">Vertical Position</label>
+          <div className="flex items-center gap-4">
+            <span className="text-xs text-gray-500 w-8 shrink-0">Top</span>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="5"
+              value={formData.image_position_y}
+              onChange={(e) => setFormData({
+                ...formData,
+                image_position_y: Number(e.target.value)
+              })}
+              className="hero-opacity-slider flex-1 h-2 rounded-lg appearance-none cursor-pointer"
+            />
+            <span className="text-xs text-gray-500 w-12 shrink-0 text-right">Bottom</span>
+            <span className="text-sm font-medium w-16 text-right shrink-0">
+              {formData.image_position_y <= 20 ? 'Top' :
+               formData.image_position_y <= 40 ? 'Upper' :
+               formData.image_position_y <= 60 ? 'Center' :
+               formData.image_position_y <= 80 ? 'Lower' : 'Bottom'}
+            </span>
+          </div>
+          <p className="helper-text mt-2">
+            Drag to reposition the image vertically within the slide frame. The live preview updates in real time.
+          </p>
+        </div>
+      )}
 
       {/* Opacity Slider */}
       <div className="mb-8">

@@ -13,6 +13,7 @@ interface HeroSlide {
   description: string | null
   link_url: string | null
   show_centered_text: boolean
+  image_position_y: number
 }
 
 interface HeroRotatorProps {
@@ -95,6 +96,7 @@ export function HeroRotator({ slides }: HeroRotatorProps) {
             alt={slide.title || ''}
             fill
             className="object-cover"
+            style={{ objectPosition: `center ${slide.image_position_y}%` }}
             priority={index === 0}
             quality={90}
             sizes="100vw"

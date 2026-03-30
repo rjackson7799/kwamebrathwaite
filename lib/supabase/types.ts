@@ -523,6 +523,7 @@ export type Database = {
           description: string | null
           link_url: string | null
           show_centered_text: boolean
+          image_position_y: number
           created_at: string
           updated_at: string
         }
@@ -537,6 +538,7 @@ export type Database = {
           description?: string | null
           link_url?: string | null
           show_centered_text?: boolean
+          image_position_y?: number
           created_at?: string
           updated_at?: string
         }
@@ -551,6 +553,7 @@ export type Database = {
           description?: string | null
           link_url?: string | null
           show_centered_text?: boolean
+          image_position_y?: number
           created_at?: string
           updated_at?: string
         }
