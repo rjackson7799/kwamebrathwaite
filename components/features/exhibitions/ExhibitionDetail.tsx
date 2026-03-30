@@ -22,6 +22,7 @@ export interface DetailedExhibition {
   exhibition_type: 'past' | 'current' | 'upcoming'
   venue_url: string | null
   venue_description: string | null
+  exhibition_url: string | null
   location_lat: number | null
   location_lng: number | null
   meta_title: string | null

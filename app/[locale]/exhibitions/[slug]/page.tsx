@@ -100,6 +100,7 @@ async function getExhibitionBySlug(slug: string): Promise<{ exhibition: Detailed
       exhibition_type: exhibitionData.exhibition_type || 'current',
       venue_url: exhibitionData.venue_url,
       venue_description: exhibitionData.venue_description,
+      exhibition_url: exhibitionData.exhibition_url,
       location_lat: exhibitionData.location_lat,
       location_lng: exhibitionData.location_lng,
       meta_title: exhibitionData.meta_title,
