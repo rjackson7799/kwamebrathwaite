@@ -173,9 +173,10 @@
 
   .cta-museum {
     @apply text-[11px] font-normal uppercase tracking-[0.12em] text-gray-cta
-           transition-colors duration-normal
-           hover:text-black
-           dark:text-[#888888] dark:hover:text-[#F0F0F0];
+           border border-gray-300 px-5 py-2.5
+           transition-all duration-normal
+           hover:text-black hover:border-gray-500
+           dark:text-[#888888] dark:border-[#333] dark:hover:text-[#F0F0F0] dark:hover:border-[#777];
   }
 
   /* Filter pill buttons - per DESIGN_SYSTEM.md */

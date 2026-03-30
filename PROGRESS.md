@@ -1,7 +1,21 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 29, 2026 (SEO Auto-Generate & Press Detail Pages)
+**Last Updated:** March 29, 2026 (Works Page Image Loading & Lazy Scroll)
+
+---
+
+## Works Page Image Loading & Lazy Scroll (March 2026)
+
+### Completed
+- [x] Fixed all artworks not loading on Works page — API fetch defaulted to 20 items, increased to 100
+- [x] Added scroll-based lazy fade-in using IntersectionObserver (replaces broken CSS-only animation)
+  - Each artwork fades in with translateY transition when entering viewport
+  - Staggered delays per row for natural appearance
+  - Follows same pattern as `TimelineItem.tsx`
+  - Files modified:
+    - `app/[locale]/works/page.tsx` — Added `limit=100` to API fetch
+    - `components/features/artworks/ArtworkGrid.tsx` — Replaced `animate-hidden`/`animate-fade-up` with `ScrollFadeItem` using IntersectionObserver
 
 ---
 
@@ -587,6 +601,7 @@
   - [x] Literature citations section
   - [x] ShareButton integration
   - [x] ArtworkInquiryModal integration (replaces link to contact page)
+  - [x] Full-bleed artwork image on mobile (edge-to-edge, matching live site)
   - [x] "View on Wall" button placeholder (disabled, for Agent 2)
 - [x] Updated gallery page (`app/[locale]/works/page.tsx`)
   - [x] Clicking artwork navigates to detail page (was opening lightbox)

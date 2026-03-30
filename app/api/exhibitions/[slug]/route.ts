@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { successResponse, errorResponse, ErrorCodes } from '@/lib/api'
-import type { Artwork, Exhibition } from '@/lib/supabase/types'
+import type { Artwork, Exhibition, Press } from '@/lib/supabase/types'
 
 type RouteParams = {
   params: Promise<{ slug: string }>
@@ -12,8 +12,14 @@ interface ExhibitionArtworkJoin {
   artworks: Artwork | null
 }
 
-interface ExhibitionWithArtworks extends Exhibition {
+interface ExhibitionPressJoin {
+  display_order: number
+  press: Pick<Press, 'id' | 'title' | 'slug' | 'publication' | 'publish_date'> | null
+}
+
+interface ExhibitionWithJoins extends Exhibition {
   exhibition_artworks: ExhibitionArtworkJoin[] | null
+  exhibition_press: ExhibitionPressJoin[] | null
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
@@ -30,6 +36,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         exhibition_artworks (
           display_order,
           artworks (*)
+        ),
+        exhibition_press (
+          display_order,
+          press (id, title, slug, publication, publish_date)
         )
       `
       )
@@ -46,7 +56,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // Cast to our known type
-    const exhibitionData = data as unknown as ExhibitionWithArtworks
+    const exhibitionData = data as unknown as ExhibitionWithJoins
 
     // Transform the response to flatten artworks and sort by display_order
     const artworks = exhibitionData.exhibition_artworks
@@ -54,10 +64,16 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       .map((ea) => ea.artworks)
       .filter((artwork): artwork is Artwork => artwork !== null)
 
-    const { exhibition_artworks, ...exhibitionWithoutJoin } = exhibitionData
+    const press = exhibitionData.exhibition_press
+      ?.sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
+      .map((ep) => ep.press)
+      .filter((p): p is NonNullable<typeof p> => p !== null)
+
+    const { exhibition_artworks, exhibition_press, ...exhibitionWithoutJoins } = exhibitionData
     const response = {
-      ...exhibitionWithoutJoin,
+      ...exhibitionWithoutJoins,
       artworks: artworks || [],
+      press: press || [],
     }
 
     return successResponse(response)

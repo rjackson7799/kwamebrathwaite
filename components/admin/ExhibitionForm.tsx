@@ -7,6 +7,7 @@ import { FormField, Input, Textarea, Select } from './FormField'
 import { ImageUploader } from './ImageUploader'
 import { RichTextEditor } from './RichTextEditor'
 import { ArtworkPicker } from './ArtworkPicker'
+import { PressPicker } from './PressPicker'
 import { AddressAutocomplete, type PlaceResult } from './AddressAutocomplete'
 import { LocationMapPreview } from './LocationMapPreview'
 import { generateSlug } from '@/lib/utils'
@@ -26,6 +27,7 @@ interface ExhibitionFormData {
   location_lat?: number | null
   location_lng?: number | null
   venue_url?: string | null
+  venue_description?: string | null
   status: 'draft' | 'published' | 'archived'
   meta_title?: string | null
   meta_description?: string | null
@@ -41,6 +43,8 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [linkedArtworkIds, setLinkedArtworkIds] = useState<string[]>([])
+  const [linkedPressIds, setLinkedPressIds] = useState<string[]>([])
+  const [generatingDescription, setGeneratingDescription] = useState(false)
 
   const {
     register,
@@ -65,6 +69,7 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
       location_lat: null,
       location_lng: null,
       venue_url: null,
+      venue_description: null,
       status: 'draft',
       meta_title: null,
       meta_description: null,
@@ -87,6 +92,7 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
   const watchedLng = watch('location_lng')
   const watchedAddress = watch('formatted_address')
   const watchedVenue = watch('venue')
+  const watchedVenueUrl = watch('venue_url')
 
   // Handle place selection from autocomplete
   const handlePlaceSelected = (place: PlaceResult) => {
@@ -109,6 +115,29 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
     setValue('location_lng', lng, options)
   }
 
+  const handleGenerateVenueDescription = async () => {
+    const venueUrl = watch('venue_url')
+    const venueName = watch('venue')
+    if (!venueUrl || !venueName) return
+
+    setGeneratingDescription(true)
+    try {
+      const response = await fetch('/api/admin/exhibitions/generate-venue-description', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ venue_url: venueUrl, venue_name: venueName }),
+      })
+      const result = await response.json()
+      if (result.success && result.data?.description) {
+        setValue('venue_description', result.data.description, { shouldDirty: true })
+      }
+    } catch (err) {
+      console.error('Failed to generate venue description:', err)
+    } finally {
+      setGeneratingDescription(false)
+    }
+  }
+
   // Load linked artworks when editing
   useEffect(() => {
     if (isEdit && exhibition?.id) {
@@ -117,6 +146,19 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
         .then((result) => {
           if (result.success && result.data) {
             setLinkedArtworkIds(result.data.map((item: { artwork_id: string }) => item.artwork_id))
+          }
+        })
+        .catch(console.error)
+    }
+  }, [isEdit, exhibition?.id])
+
+  useEffect(() => {
+    if (isEdit && exhibition?.id) {
+      fetch(`/api/admin/exhibitions/${exhibition.id}/press`)
+        .then((res) => res.json())
+        .then((result) => {
+          if (result.success && result.data) {
+            setLinkedPressIds(result.data.map((item: { press_id: string }) => item.press_id))
           }
         })
         .catch(console.error)
@@ -153,6 +195,15 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ artworkIds: linkedArtworkIds }),
+        })
+      }
+
+      // Save linked press
+      if (exhibitionId) {
+        await fetch(`/api/admin/exhibitions/${exhibitionId}/press`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pressIds: linkedPressIds }),
         })
       }
 
@@ -247,6 +298,36 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
                   {...register('venue_url')}
                   placeholder="https://example.com"
                 />
+              </FormField>
+
+              <FormField
+                label="Venue Description"
+                htmlFor="venue_description"
+                hint="Brief description of the venue for the public exhibition page"
+              >
+                <div className="space-y-2">
+                  <Textarea
+                    id="venue_description"
+                    {...register('venue_description')}
+                    rows={3}
+                    placeholder="Brief description of the venue..."
+                  />
+                  <button
+                    type="button"
+                    onClick={handleGenerateVenueDescription}
+                    disabled={!watchedVenueUrl || !watchedVenue || generatingDescription}
+                    className="text-sm text-gray-600 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                  >
+                    {generatingDescription ? (
+                      <>
+                        <span className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      '✨ Generate from venue URL'
+                    )}
+                  </button>
+                </div>
               </FormField>
             </div>
           </div>
@@ -416,6 +497,18 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
             <ArtworkPicker
               value={linkedArtworkIds}
               onChange={setLinkedArtworkIds}
+            />
+          </div>
+
+          {/* Press Coverage Card */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Press Coverage</h3>
+            <p className="text-sm text-gray-500 mb-4">
+              Link press articles to this exhibition.
+            </p>
+            <PressPicker
+              value={linkedPressIds}
+              onChange={setLinkedPressIds}
             />
           </div>
         </div>

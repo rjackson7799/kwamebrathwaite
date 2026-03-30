@@ -91,6 +91,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       location_lat: result.data.location_lat,
       location_lng: result.data.location_lng,
       venue_url: result.data.venue_url || null,
+      venue_description: result.data.venue_description,
       display_order: result.data.display_order,
       status: result.data.status,
       meta_title: result.data.meta_title,

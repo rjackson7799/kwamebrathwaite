@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
-import { ExhibitionDetail, type DetailedExhibition } from '@/components/features/exhibitions'
+import Link from 'next/link'
+import { ExhibitionDetail, VenueCard, ExhibitionPressLinks, type DetailedExhibition } from '@/components/features/exhibitions'
 import { ArtworkGrid, type Artwork } from '@/components/features/artworks'
 import { createClient } from '@/lib/supabase/server'
 import type { Exhibition as DbExhibition, Artwork as DbArtwork } from '@/lib/supabase/types'
+import type { ExhibitionPressArticle } from '@/components/features/exhibitions/types'
 
 // Revalidate every hour (ISR) per TECHNICAL_SPEC_v2.md
 export const revalidate = 3600
@@ -15,12 +17,18 @@ interface ExhibitionArtworkJoin {
   artworks: DbArtwork | null
 }
 
-interface ExhibitionWithArtworks extends DbExhibition {
+interface ExhibitionPressJoin {
+  display_order: number
+  press: { id: string; title: string; slug: string; publication: string | null; publish_date: string | null } | null
+}
+
+interface ExhibitionWithJoins extends DbExhibition {
   exhibition_artworks: ExhibitionArtworkJoin[] | null
+  exhibition_press: ExhibitionPressJoin[] | null
 }
 
 // Fetch exhibition from database by slug
-async function getExhibitionBySlug(slug: string): Promise<{ exhibition: DetailedExhibition; artworks: Artwork[] } | null> {
+async function getExhibitionBySlug(slug: string): Promise<{ exhibition: DetailedExhibition; artworks: Artwork[]; press: ExhibitionPressArticle[] } | null> {
   try {
     const supabase = await createClient()
 
@@ -31,6 +39,10 @@ async function getExhibitionBySlug(slug: string): Promise<{ exhibition: Detailed
         exhibition_artworks (
           display_order,
           artworks (*)
+        ),
+        exhibition_press (
+          display_order,
+          press (id, title, slug, publication, publish_date)
         )
       `)
       .eq('slug', slug)
@@ -48,7 +60,7 @@ async function getExhibitionBySlug(slug: string): Promise<{ exhibition: Detailed
     }
 
     // Cast to our known type
-    const exhibitionData = data as unknown as ExhibitionWithArtworks
+    const exhibitionData = data as unknown as ExhibitionWithJoins
 
     // Extract artworks from the join table
     const artworks: Artwork[] = (exhibitionData.exhibition_artworks || [])
@@ -64,6 +76,11 @@ async function getExhibitionBySlug(slug: string): Promise<{ exhibition: Detailed
         image_thumbnail_url: artwork.image_thumbnail_url,
         availability_status: artwork.availability_status,
       }))
+
+    const press: ExhibitionPressArticle[] = (exhibitionData.exhibition_press || [])
+      .sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
+      .map((ep) => ep.press)
+      .filter((p): p is NonNullable<typeof p> => p !== null)
 
     // Map database fields to DetailedExhibition type
     const exhibition: DetailedExhibition = {
@@ -82,11 +99,14 @@ async function getExhibitionBySlug(slug: string): Promise<{ exhibition: Detailed
       image_url: exhibitionData.image_url,
       exhibition_type: exhibitionData.exhibition_type || 'current',
       venue_url: exhibitionData.venue_url,
+      venue_description: exhibitionData.venue_description,
+      location_lat: exhibitionData.location_lat,
+      location_lng: exhibitionData.location_lng,
       meta_title: exhibitionData.meta_title,
       meta_description: exhibitionData.meta_description,
     }
 
-    return { exhibition, artworks }
+    return { exhibition, artworks, press }
   } catch (err) {
     console.error('[Exhibition Detail] Unexpected error:', err)
     return null
@@ -109,7 +129,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const { exhibition } = result
-  const title = exhibition.meta_title || `${exhibition.title} - Kwame Brathwaite`
+  const title = exhibition.meta_title || (exhibition.venue ? `${exhibition.title} at ${exhibition.venue} | Kwame Brathwaite` : `${exhibition.title} | Kwame Brathwaite`)
   const description = exhibition.meta_description || exhibition.description || `${exhibition.title} exhibition`
 
   return {
@@ -157,15 +177,17 @@ export async function generateStaticParams() {
 }
 
 export default async function ExhibitionDetailPage({ params }: Props) {
-  const { slug } = await params
+  const { slug, locale } = await params
   const result = await getExhibitionBySlug(slug)
 
   if (!result) {
     notFound()
   }
 
-  const { exhibition, artworks } = result
+  const { exhibition, artworks, press } = result
   const t = await getTranslations('exhibitions')
+
+  const exhibitionsHref = locale === 'en' ? '/exhibitions' : `/${locale}/exhibitions`
 
   // Schema.org structured data for ExhibitionEvent
   const jsonLd = {
@@ -212,20 +234,101 @@ export default async function ExhibitionDetailPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Main Exhibition Detail */}
-      <ExhibitionDetail exhibition={exhibition} />
+      <article className="container-page section-spacing">
+        {/* Back Navigation */}
+        <Link
+          href={exhibitionsHref}
+          className="inline-flex items-center gap-2 text-body text-gray-warm dark:text-[#A0A0A0] hover:text-black dark:hover:text-[#F0F0F0] transition-colors duration-fast mb-6"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          {t('detail.backToExhibitions')}
+        </Link>
 
-      {/* Featured Works Section */}
-      {artworks.length > 0 && (
-        <section className="container-page section-spacing border-t border-gray-light dark:border-[#333333] pt-12">
-          <h2 className="section-title-museum mb-8">{t('detail.featuredWorks')}</h2>
-          <ArtworkGrid
-            artworks={artworks}
-            showMetadata
-            className="lg:grid-cols-3"
-          />
-        </section>
-      )}
+        <div className="section-divider mb-8" />
+
+        {/* 2-Column Layout */}
+        <div className="flex flex-col md:flex-row gap-8 md:gap-12">
+          {/* Left Column - 62% */}
+          <div className="md:w-[62%]">
+            <ExhibitionDetail exhibition={exhibition} />
+
+            {/* Featured Works */}
+            {artworks.length > 0 && (
+              <section className="mt-12">
+                <div className="section-divider mb-8" />
+                <h2 className="section-title-museum mb-8">{t('detail.featuredWorks')}</h2>
+                <ArtworkGrid
+                  artworks={artworks}
+                  showMetadata
+                  className="lg:grid-cols-3"
+                />
+              </section>
+            )}
+
+            {/* Press Coverage */}
+            {press.length > 0 && (
+              <section className="mt-12">
+                <div className="section-divider mb-8" />
+                <ExhibitionPressLinks pressArticles={press} locale={locale} />
+              </section>
+            )}
+          </div>
+
+          {/* Right Column - 38% Sticky */}
+          <aside className="md:w-[38%] flex-shrink-0">
+            <div className="sticky top-24 self-start">
+              <VenueCard
+                venue={exhibition.venue}
+                venueDescription={exhibition.venue_description}
+                venueUrl={exhibition.venue_url}
+                streetAddress={exhibition.street_address}
+                city={exhibition.city}
+                stateRegion={exhibition.state_region}
+                postalCode={exhibition.postal_code}
+                country={exhibition.country}
+                locationLat={exhibition.location_lat}
+                locationLng={exhibition.location_lng}
+                exhibitionId={exhibition.id}
+                exhibitionTitle={exhibition.title}
+                exhibitionSlug={exhibition.slug}
+                startDate={exhibition.start_date}
+                endDate={exhibition.end_date}
+                exhibitionType={exhibition.exhibition_type}
+                imageUrl={exhibition.image_url}
+              />
+            </div>
+
+            {/* Newsletter CTA */}
+            <div className="mt-6 p-5 border border-gray-light dark:border-[#333] text-center">
+              <h3 className="text-[11px] tracking-[0.15em] uppercase text-gray-warm dark:text-[#A0A0A0] font-normal mb-2">
+                Stay Updated
+              </h3>
+              <p className="text-[13px] text-[#666] dark:text-[#888] mb-4">
+                Get notified about upcoming exhibitions and events.
+              </p>
+              <a
+                href="#newsletter"
+                className="block py-2.5 bg-gold dark:bg-[#C9A870] text-white dark:text-[#121212] text-[11px] tracking-[0.12em] uppercase text-center hover:opacity-90 transition-opacity"
+              >
+                Subscribe to Newsletter
+              </a>
+            </div>
+          </aside>
+        </div>
+      </article>
     </>
   )
 }

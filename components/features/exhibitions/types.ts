@@ -41,6 +41,15 @@ export interface MapMetadata {
   zoom: number
 }
 
+// Press article linked to an exhibition (public API response)
+export interface ExhibitionPressArticle {
+  id: string
+  title: string
+  slug: string
+  publication: string | null
+  publish_date: string | null
+}
+
 // Reminder form data
 export interface ReminderFormData {
   name: string

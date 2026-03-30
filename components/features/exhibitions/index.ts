@@ -4,6 +4,10 @@ export type { Exhibition } from './ExhibitionCard'
 export { ExhibitionDetail } from './ExhibitionDetail'
 export type { DetailedExhibition } from './ExhibitionDetail'
 
+// Exhibition Detail Components
+export { VenueCard } from './VenueCard'
+export { ExhibitionPressLinks } from './ExhibitionPressLinks'
+
 // Map View Components
 export { ExhibitionsMapView } from './ExhibitionsMapView'
 export { ViewToggle } from './ViewToggle'
