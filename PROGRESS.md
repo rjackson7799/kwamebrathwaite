@@ -1,7 +1,47 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 29, 2026 (Works Page Image Loading & Lazy Scroll)
+**Last Updated:** March 30, 2026
+
+---
+
+## Hero Slide Vertical Repositioning (March 30, 2026)
+
+### Completed
+- [x] Added `image_position_y` field (0–100, default 50) to `hero_slides` table
+  - Admin form shows a **Vertical Position** slider after an image is uploaded
+  - Slider shows live preview in real time (Top / Upper / Center / Lower / Bottom labels)
+  - Public `HeroRotator` applies `object-position: center {Y}%` per slide
+  - Files modified: `lib/supabase/types.ts`, `lib/api/validation.ts`, `lib/hero.ts`, `components/admin/HeroSlideForm.tsx`, `components/HeroRotator.tsx`
+  - **Requires Supabase migration:** `ALTER TABLE hero_slides ADD COLUMN IF NOT EXISTS image_position_y INTEGER NOT NULL DEFAULT 50 CHECK (image_position_y >= 0 AND image_position_y <= 100);`
+
+---
+
+## Exhibition URL + Auto-Generate Exhibition Description (March 30, 2026)
+
+### Completed
+- [x] Added `exhibition_url` field to exhibitions (URL for this specific show, separate from `venue_url`)
+- [x] Added "✨ Generate from exhibition URL" button on the Description card in the admin form
+  - Scrapes the exhibition page and generates 2–4 sentence description via GPT-4o-mini
+  - Mirrors existing venue description generation pattern
+- [x] `VenueCard` on public exhibition detail page now shows **"View Exhibition Page →"** (gold/primary) when `exhibition_url` is set; "Visit Venue Website →" demoted to secondary styling
+  - Files modified: `lib/supabase/types.ts`, `lib/api/validation.ts`, `components/admin/ExhibitionForm.tsx`, `components/features/exhibitions/ExhibitionDetail.tsx`, `components/features/exhibitions/VenueCard.tsx`, `app/[locale]/exhibitions/[slug]/page.tsx`
+  - Files created: `app/api/admin/exhibitions/generate-exhibition-description/route.ts`
+  - **Requires Supabase migration:** `ALTER TABLE exhibitions ADD COLUMN IF NOT EXISTS exhibition_url TEXT;`
+
+---
+
+## Exhibition Detail Page 500 Fix (March 30, 2026)
+
+### Completed
+- [x] Fixed 500 Internal Server Error on all exhibition detail pages (e.g. `/exhibitions/black-photojournalism`)
+  - **Root cause 1:** `getExhibitionBySlug()` used `createClient()` which calls `await cookies()` from `next/headers`. During Vercel's ISR static generation, `cookies()` is unavailable and throws — same bug previously fixed for press detail pages in commit `08c8fe3`.
+    - Fix: switched to `createPublicClient()` (cookie-free anon-key client) in `app/[locale]/exhibitions/[slug]/page.tsx`
+  - **Root cause 2:** An empty `generateStaticParams() { return [] }` was marking the page as `●` (SSG/ISR) on Vercel, causing static generation attempts where the locale layout's `getContentFontScale()` → `createClient()` → `cookies()` chain would fail unrecoverably.
+    - Fix: removed the empty `generateStaticParams` entirely — page is now `ƒ` (Dynamic, server-rendered on demand), matching the working press detail page behavior. `revalidate = 3600` is preserved for CDN caching.
+  - Files modified: `app/[locale]/exhibitions/[slug]/page.tsx`
+  - Commits: `a48bdef` (createPublicClient fix), `3af1839` (remove generateStaticParams)
+  - Confirmed working: `https://kwamebrathwaite.vercel.app/exhibitions/black-photojournalism` returns 200
 
 ---
 
