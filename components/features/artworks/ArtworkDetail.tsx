@@ -189,7 +189,7 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [], 
         {/* Main Content: centered two-column layout */}
         <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* Left Column: Hero Image */}
-          <div className="relative">
+          <div className="relative -mx-6 md:mx-0">
             <button
               type="button"
               onClick={() => setIsLightboxOpen(true)}
