@@ -497,6 +497,7 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
             <ArtworkPicker
               value={linkedArtworkIds}
               onChange={setLinkedArtworkIds}
+              max={8}
             />
           </div>
 

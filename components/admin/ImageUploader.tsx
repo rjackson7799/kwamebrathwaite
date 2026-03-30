@@ -55,28 +55,30 @@ export function ImageUploader({
         throw new Error(`File size must be less than ${maxSizeMB}MB`)
       }
 
-      // Upload via server-side API to bypass storage RLS
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('bucket', bucket)
-
-      const response = await fetch('/api/admin/media/upload', {
+      // Step 1: Get a signed upload URL (tiny JSON request — no Vercel body limit)
+      const urlRes = await fetch('/api/admin/media/upload-url', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bucket, filename: file.name, contentType: file.type }),
       })
-
-      const result = await response.json()
-
-      if (!result.success) {
-        throw new Error(result.error?.message || 'Failed to upload image')
+      const urlData = await urlRes.json()
+      if (!urlData.success) {
+        throw new Error(urlData.error?.message || 'Failed to get upload URL')
       }
 
-      onChange(result.data.publicUrl)
+      const { signedUrl, publicUrl } = urlData.data
 
-      // Handle thumbnail if callback provided
-      if (onThumbnailChange && result.data.thumbnailUrl) {
-        onThumbnailChange(result.data.thumbnailUrl)
+      // Step 2: Upload directly to Supabase Storage (bypasses Vercel body size limit)
+      const uploadRes = await fetch(signedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      })
+      if (!uploadRes.ok) {
+        throw new Error('Failed to upload image')
       }
+
+      onChange(publicUrl)
     } catch (err) {
       console.error('Upload error:', err)
       setError(err instanceof Error ? err.message : 'Failed to upload image')
