@@ -212,7 +212,7 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [], 
                     height={0}
                     sizes="(max-width: 1024px) 100vw, 60vw"
                     className={`
-                      w-auto h-auto max-w-full
+                      w-full h-auto
                       transition-all
                       duration-slow
                       group-hover:scale-[1.02]
