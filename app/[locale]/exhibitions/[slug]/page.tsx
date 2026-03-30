@@ -281,7 +281,7 @@ export default async function ExhibitionDetailPage({ params }: Props) {
 
           {/* Right Column - 38% Sticky */}
           <aside className="md:w-[38%] flex-shrink-0">
-            <div className="sticky top-24 self-start">
+            <div className="sticky top-24 space-y-6">
               <VenueCard
                 venue={exhibition.venue}
                 venueDescription={exhibition.venue_description}
@@ -301,22 +301,20 @@ export default async function ExhibitionDetailPage({ params }: Props) {
                 exhibitionType={exhibition.exhibition_type}
                 imageUrl={exhibition.image_url}
               />
-            </div>
 
-            {/* Newsletter CTA */}
-            <div className="mt-6 p-5 border border-gray-light dark:border-[#333] text-center">
-              <h3 className="text-[11px] tracking-[0.15em] uppercase text-gray-warm dark:text-[#A0A0A0] font-normal mb-2">
-                Stay Updated
-              </h3>
-              <p className="text-[13px] text-[#666] dark:text-[#888] mb-4">
-                Get notified about upcoming exhibitions and events.
-              </p>
-              <a
-                href="#newsletter"
-                className="block py-2.5 bg-gold dark:bg-[#C9A870] text-white dark:text-[#121212] text-[11px] tracking-[0.12em] uppercase text-center hover:opacity-90 transition-opacity"
-              >
-                Subscribe to Newsletter
-              </a>
+              {/* Newsletter CTA */}
+              <div className="p-5 border border-gray-light dark:border-[#333] text-center">
+                <p className="section-title-museum mb-2">Stay Updated</p>
+                <p className="text-[13px] text-[#666] dark:text-[#888] mb-4">
+                  Get notified about upcoming exhibitions and events.
+                </p>
+                <a
+                  href="#newsletter"
+                  className="block py-2.5 bg-gold dark:bg-[#C9A870] text-white dark:text-[#121212] text-[11px] tracking-[0.12em] uppercase text-center hover:opacity-90 transition-opacity"
+                >
+                  Subscribe to Newsletter
+                </a>
+              </div>
             </div>
           </aside>
         </div>

@@ -1,6 +1,9 @@
 'use client'
 
+import { useState } from 'react'
+import Image from 'next/image'
 import { useLocale, useTranslations } from 'next-intl'
+import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder'
 
 export interface DetailedExhibition {
   id: string
@@ -32,6 +35,8 @@ interface ExhibitionDetailProps {
 export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
   const locale = useLocale()
   const t = useTranslations('exhibitions')
+  const [isLoading, setIsLoading] = useState(true)
+  const [hasError, setHasError] = useState(false)
 
   // Status badge styles per DESIGN_SYSTEM.md
   const statusStyles: Record<string, string> = {
@@ -59,20 +64,37 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
 
   return (
     <div>
-      {/* Status Badge */}
-      <span
-        className={`
-          inline-block
-          px-3 py-1.5
-          text-caption
-          font-medium
-          rounded-sm
-          mb-4
-          ${statusStyles[exhibition.exhibition_type]}
-        `}
-      >
-        {t(`status.${exhibition.exhibition_type}`)}
-      </span>
+      {/* Hero Image */}
+      <div className="relative w-full aspect-video overflow-hidden bg-gray-light dark:bg-[#2A2A2A] mb-6">
+        {!exhibition.image_url || hasError ? (
+          <ImagePlaceholder aspectRatio="16:9" showIcon />
+        ) : (
+          <>
+            {isLoading && (
+              <div className="absolute inset-0">
+                <ImagePlaceholder aspectRatio="16:9" />
+              </div>
+            )}
+            <Image
+              src={exhibition.image_url}
+              alt={exhibition.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 62vw"
+              className={`object-cover transition-opacity duration-slow ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+              priority
+              onLoad={() => setIsLoading(false)}
+              onError={() => { setIsLoading(false); setHasError(true) }}
+            />
+          </>
+        )}
+
+        {/* Status Badge — overlaid on image */}
+        <span
+          className={`absolute top-3 left-3 px-3 py-1.5 text-caption font-medium rounded-sm ${statusStyles[exhibition.exhibition_type]}`}
+        >
+          {t(`status.${exhibition.exhibition_type}`)}
+        </span>
+      </div>
 
       {/* Venue Name - Museum Style */}
       {exhibition.venue && (
