@@ -56,12 +56,14 @@ export function ExhibitionsListPanel({
         <div className="p-4 border-b border-gray-200 dark:border-[#333333]">
           <div className="h-6 bg-gray-200 dark:bg-[#333333] rounded animate-pulse w-32" />
         </div>
-        <div className="p-4 space-y-4">
+        <div className="p-3 grid grid-cols-2 gap-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="animate-pulse">
-              <div className="aspect-[3/2] bg-gray-200 dark:bg-[#333333] rounded mb-3" />
-              <div className="h-4 bg-gray-200 dark:bg-[#333333] rounded w-3/4 mb-2" />
-              <div className="h-3 bg-gray-200 dark:bg-[#333333] rounded w-1/2" />
+            <div key={i} className="animate-pulse rounded border border-gray-100 dark:border-[#333333] overflow-hidden">
+              <div className="aspect-[4/3] bg-gray-200 dark:bg-[#333333]" />
+              <div className="p-2 space-y-1.5">
+                <div className="h-3 bg-gray-200 dark:bg-[#333333] rounded w-3/4" />
+                <div className="h-3 bg-gray-200 dark:bg-[#333333] rounded w-1/2" />
+              </div>
             </div>
           ))}
         </div>
@@ -90,7 +92,7 @@ export function ExhibitionsListPanel({
             <p>{t('map.noExhibitions')}</p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-100 dark:divide-[#333333]">
+          <div className="p-3 grid grid-cols-2 gap-2">
             {exhibitions.map((exhibition) => {
               const isSelected = selectedExhibition?.id === exhibition.id
               const status = STATUS_CONFIG[exhibition.exhibition_type]
@@ -101,8 +103,10 @@ export function ExhibitionsListPanel({
                   ref={isSelected ? selectedItemRef : undefined}
                   onClick={() => onExhibitionSelect(exhibition)}
                   className={`
-                    p-4 cursor-pointer transition-colors
-                    ${isSelected ? 'bg-gray-100 dark:bg-[#2A2A2A]' : 'hover:bg-gray-50 dark:hover:bg-[#2A2A2A]'}
+                    cursor-pointer transition-colors rounded overflow-hidden border
+                    ${isSelected
+                      ? 'border-gold dark:border-[#C9A870] bg-gray-50 dark:bg-[#2A2A2A]'
+                      : 'border-gray-100 dark:border-[#333333] hover:border-gray-300 dark:hover:border-[#555555]'}
                   `}
                   role="listitem"
                   aria-selected={isSelected}
@@ -116,49 +120,36 @@ export function ExhibitionsListPanel({
                 >
                   {/* Image */}
                   {exhibition.image_url && (
-                    <div className="relative aspect-[3/2] rounded overflow-hidden mb-3">
+                    <div className="relative aspect-[4/3] overflow-hidden">
                       <Image
                         src={exhibition.image_url}
                         fill
                         className="object-cover"
                         alt={exhibition.title}
-                        sizes="(max-width: 450px) 100vw, 400px"
+                        sizes="220px"
                       />
-                      {/* Status Badge Overlay */}
-                      <div
-                        className={`
-                          absolute top-2 left-2 px-2 py-1 text-[10px] font-medium uppercase tracking-wider
-                          ${status.bgColor} ${status.color}
-                        `}
-                      >
-                        {status.label}
-                      </div>
                     </div>
                   )}
 
-                  {/* Title */}
-                  <h4 className="font-medium text-gray-900 dark:text-[#F0F0F0] mb-1 line-clamp-2">
-                    {exhibition.title}
-                  </h4>
+                  {/* Content */}
+                  <div className="p-2">
+                    {/* Status Badge */}
+                    <div className={`inline-block mb-1 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider rounded-sm ${status.bgColor} ${status.color}`}>
+                      {status.label}
+                    </div>
 
-                  {/* Venue */}
-                  {exhibition.venue && (
-                    <p className="text-sm text-gray-600 dark:text-[#A0A0A0] mb-1">{exhibition.venue}</p>
-                  )}
+                    {/* Title */}
+                    <h4 className="text-xs font-medium text-gray-900 dark:text-[#F0F0F0] line-clamp-2 leading-snug">
+                      {exhibition.title}
+                    </h4>
 
-                  {/* Location */}
-                  {(exhibition.city || exhibition.country) && (
-                    <p className="text-sm text-gray-500 dark:text-[#A0A0A0] mb-2">
-                      {[exhibition.city, exhibition.country].filter(Boolean).join(', ')}
-                    </p>
-                  )}
-
-                  {/* Dates */}
-                  {formatDateRange(exhibition.start_date, exhibition.end_date) && (
-                    <p className="text-xs text-gray-400 dark:text-[#666666]">
-                      {formatDateRange(exhibition.start_date, exhibition.end_date)}
-                    </p>
-                  )}
+                    {/* Location */}
+                    {(exhibition.city || exhibition.country) && (
+                      <p className="mt-0.5 text-[11px] text-gray-500 dark:text-[#A0A0A0] line-clamp-1">
+                        {[exhibition.city, exhibition.country].filter(Boolean).join(', ')}
+                      </p>
+                    )}
+                  </div>
                 </div>
               )
             })}
