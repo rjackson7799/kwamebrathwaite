@@ -101,23 +101,23 @@ export function ExhibitionCard({
         <div
           className={`
             relative overflow-hidden bg-gray-light dark:bg-[#2A2A2A]
-            ${isHorizontal ? 'w-1/3 flex-shrink-0 aspect-[4/3]' : 'aspect-video'}
+            ${isHorizontal ? 'w-1/2 flex-shrink-0 min-h-[200px]' : 'aspect-video'}
           `}
         >
           {!exhibition.image_url || hasError ? (
-            <ImagePlaceholder aspectRatio={isHorizontal ? '4:3' : '16:9'} showIcon />
+            <ImagePlaceholder aspectRatio="16:9" showIcon />
           ) : (
             <>
               {isLoading && (
                 <div className="absolute inset-0">
-                  <ImagePlaceholder aspectRatio={isHorizontal ? '4:3' : '16:9'} />
+                  <ImagePlaceholder aspectRatio="16:9" />
                 </div>
               )}
               <Image
                 src={exhibition.image_url}
                 alt={exhibition.title}
                 fill
-                sizes={isHorizontal ? '33vw' : '(max-width: 768px) 100vw, 50vw'}
+                sizes={isHorizontal ? '50vw' : '(max-width: 768px) 100vw, 50vw'}
                 className={`
                   object-cover
                   transition-all
@@ -135,25 +135,16 @@ export function ExhibitionCard({
             </>
           )}
 
-          {/* Status Badge */}
-          {showStatus && (
-            <div
-              className={`
-                absolute top-3 left-3
-                px-2 py-1
-                text-caption
-                font-medium
-                rounded-sm
-                ${statusStyles[exhibition.exhibition_type]}
-              `}
-            >
-              {statusLabels[exhibition.exhibition_type]}
-            </div>
-          )}
         </div>
 
         {/* Content */}
         <div className={`p-4 ${isHorizontal ? 'flex flex-col justify-center' : ''}`}>
+          {/* Status Badge */}
+          {showStatus && (
+            <div className={`inline-block mb-2 px-2 py-0.5 text-caption font-medium rounded-sm ${statusStyles[exhibition.exhibition_type]}`}>
+              {statusLabels[exhibition.exhibition_type]}
+            </div>
+          )}
           <h3 className="text-h4 font-medium text-black dark:text-[#F0F0F0]">
             {exhibition.title}
           </h3>

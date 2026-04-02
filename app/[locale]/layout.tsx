@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { locales, type Locale } from '@/i18n/request'
 import { Header } from '@/components/layout'
 import { Footer } from '@/components/layout'
+import { GoogleMapsProvider } from '@/components/providers/GoogleMapsProvider'
 import { getContentFontScale } from '@/lib/page-settings'
 import type { Metadata } from 'next'
 
@@ -46,6 +47,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider messages={messages}>
+      <GoogleMapsProvider>
       <div className="min-h-screen flex flex-col">
         {/* Skip link for accessibility */}
         <a
@@ -60,6 +62,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         </main>
         <Footer />
       </div>
+      </GoogleMapsProvider>
     </NextIntlClientProvider>
   )
 }
