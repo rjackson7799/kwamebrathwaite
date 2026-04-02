@@ -93,6 +93,7 @@ export async function POST(request: NextRequest) {
     const cleanedData = {
       ...result.data,
       image_url: result.data.image_url || null,
+      thumbnail_image_url: result.data.thumbnail_image_url || null,
       venue_url: result.data.venue_url || null,
     }
 

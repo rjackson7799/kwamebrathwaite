@@ -122,6 +122,7 @@ export type Database = {
           end_date: string | null
           description: string | null
           image_url: string | null
+          thumbnail_image_url: string | null
           exhibition_type: ExhibitionType | null
           location_lat: number | null
           location_lng: number | null
@@ -149,6 +150,7 @@ export type Database = {
           end_date?: string | null
           description?: string | null
           image_url?: string | null
+          thumbnail_image_url?: string | null
           exhibition_type?: ExhibitionType | null
           location_lat?: number | null
           location_lng?: number | null
@@ -176,6 +178,7 @@ export type Database = {
           end_date?: string | null
           description?: string | null
           image_url?: string | null
+          thumbnail_image_url?: string | null
           exhibition_type?: ExhibitionType | null
           location_lat?: number | null
           location_lng?: number | null

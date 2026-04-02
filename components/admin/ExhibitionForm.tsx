@@ -23,6 +23,7 @@ interface ExhibitionFormData {
   end_date?: string | null
   description?: string | null
   image_url?: string | null
+  thumbnail_image_url?: string | null
   exhibition_type?: 'past' | 'current' | 'upcoming' | null
   location_lat?: number | null
   location_lng?: number | null
@@ -67,6 +68,7 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
       end_date: null,
       description: null,
       image_url: null,
+      thumbnail_image_url: null,
       exhibition_type: null,
       location_lat: null,
       location_lng: null,
@@ -528,6 +530,24 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
                   bucket="exhibitions"
                   value={field.value || ''}
                   onChange={field.onChange}
+                />
+              )}
+            />
+          </div>
+
+          {/* Thumbnail Image Card */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-1">Thumbnail Image</h3>
+            <p className="text-sm text-gray-500 mb-4">Square crop for listing cards. Falls back to main image if not set.</p>
+            <Controller
+              name="thumbnail_image_url"
+              control={control}
+              render={({ field }) => (
+                <ImageUploader
+                  bucket="exhibitions"
+                  value={field.value || ''}
+                  onChange={field.onChange}
+                  aspectRatio="1/1"
                 />
               )}
             />

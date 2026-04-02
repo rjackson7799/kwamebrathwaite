@@ -122,7 +122,7 @@ export function ExhibitionsListPanel({
                   {exhibition.image_url && (
                     <div className="relative aspect-[4/3] overflow-hidden">
                       <Image
-                        src={exhibition.image_url}
+                        src={exhibition.thumbnail_image_url || exhibition.image_url}
                         fill
                         className="object-cover"
                         alt={exhibition.title}

@@ -87,6 +87,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       end_date: result.data.end_date,
       description: result.data.description,
       image_url: result.data.image_url || null,
+      thumbnail_image_url: result.data.thumbnail_image_url || null,
       exhibition_type: result.data.exhibition_type,
       location_lat: result.data.location_lat,
       location_lng: result.data.location_lng,

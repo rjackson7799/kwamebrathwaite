@@ -167,6 +167,7 @@ export const adminExhibitionSchema = z.object({
   end_date: z.string().optional().nullable(),
   description: z.string().optional().nullable(),
   image_url: z.string().url().optional().nullable().or(z.literal('')),
+  thumbnail_image_url: z.string().url().optional().nullable().or(z.literal('')),
   exhibition_type: z.enum(['past', 'current', 'upcoming']).optional().nullable(),
   location_lat: z.coerce.number().optional().nullable(),
   location_lng: z.coerce.number().optional().nullable(),

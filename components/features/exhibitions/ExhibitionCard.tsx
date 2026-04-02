@@ -16,6 +16,7 @@ export interface Exhibition {
   start_date?: string | null
   end_date?: string | null
   image_url?: string | null
+  thumbnail_image_url?: string | null
   exhibition_type: 'past' | 'current' | 'upcoming'
 }
 
@@ -104,7 +105,7 @@ export function ExhibitionCard({
             ${isHorizontal ? 'w-2/5 flex-shrink-0 aspect-[3/4]' : 'aspect-square'}
           `}
         >
-          {!exhibition.image_url || hasError ? (
+          {!(exhibition.thumbnail_image_url || exhibition.image_url) || hasError ? (
             <ImagePlaceholder aspectRatio="16:9" showIcon />
           ) : (
             <>
@@ -114,7 +115,7 @@ export function ExhibitionCard({
                 </div>
               )}
               <Image
-                src={exhibition.image_url}
+                src={exhibition.thumbnail_image_url || exhibition.image_url}
                 alt={exhibition.title}
                 fill
                 sizes={isHorizontal ? '50vw' : '(max-width: 768px) 100vw, 50vw'}
