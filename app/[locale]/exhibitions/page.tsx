@@ -136,12 +136,12 @@ export default function ExhibitionsPage() {
               No {activeTab} exhibitions at this time.
             </p>
           ) : (
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {exhibitions.map((exhibition, index) => (
                 <ExhibitionCard
                   key={exhibition.id}
                   exhibition={exhibition}
-                  orientation="horizontal"
+                  orientation="vertical"
                   priority={index < 2}
                 />
               ))}

@@ -101,7 +101,7 @@ export function ExhibitionCard({
         <div
           className={`
             relative overflow-hidden bg-gray-light dark:bg-[#2A2A2A]
-            ${isHorizontal ? 'w-2/5 flex-shrink-0 aspect-[3/4]' : 'aspect-video'}
+            ${isHorizontal ? 'w-2/5 flex-shrink-0 aspect-[3/4]' : 'aspect-square'}
           `}
         >
           {!exhibition.image_url || hasError ? (
