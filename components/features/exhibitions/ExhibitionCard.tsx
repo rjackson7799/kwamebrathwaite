@@ -101,7 +101,7 @@ export function ExhibitionCard({
         <div
           className={`
             relative overflow-hidden bg-gray-light dark:bg-[#2A2A2A]
-            ${isHorizontal ? 'w-1/2 flex-shrink-0 min-h-[200px]' : 'aspect-video'}
+            ${isHorizontal ? 'w-2/5 flex-shrink-0 aspect-[3/4]' : 'aspect-video'}
           `}
         >
           {!exhibition.image_url || hasError ? (
@@ -141,7 +141,7 @@ export function ExhibitionCard({
         <div className={`p-4 ${isHorizontal ? 'flex flex-col justify-center' : ''}`}>
           {/* Status Badge */}
           {showStatus && (
-            <div className={`inline-block mb-2 px-2 py-0.5 text-caption font-medium rounded-sm ${statusStyles[exhibition.exhibition_type]}`}>
+            <div className={`self-start inline-block mb-2 px-2 py-0.5 text-caption font-medium rounded-sm ${statusStyles[exhibition.exhibition_type]}`}>
               {statusLabels[exhibition.exhibition_type]}
             </div>
           )}
