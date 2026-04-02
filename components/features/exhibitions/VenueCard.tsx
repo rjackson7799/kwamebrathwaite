@@ -59,7 +59,7 @@ export function VenueCard({
   exhibitionType,
   imageUrl,
 }: VenueCardProps) {
-  const { isLoaded } = useGoogleMaps()
+  const { isLoaded, loadError } = useGoogleMaps()
   const [showReminder, setShowReminder] = useState(false)
 
   const hasCoordinates = locationLat !== null && locationLng !== null
@@ -125,9 +125,14 @@ export function VenueCard({
           </GoogleMap>
         </div>
       )}
-      {hasCoordinates && !isLoaded && (
+      {hasCoordinates && !isLoaded && !loadError && (
         <div className="w-full h-[220px] bg-gray-light dark:bg-[#1A1A1A] flex items-center justify-center">
           <div className="w-6 h-6 border-2 border-gray-warm border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      {hasCoordinates && loadError && (
+        <div className="w-full h-[220px] bg-gray-light dark:bg-[#1A1A1A] flex items-center justify-center">
+          <p className="text-xs text-gray-warm dark:text-[#888]">Map unavailable</p>
         </div>
       )}
 

@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { GoogleMap, useLoadScript } from '@react-google-maps/api'
+import { GoogleMap } from '@react-google-maps/api'
 import { MarkerClusterer } from '@googlemaps/markerclusterer'
 import { useTranslations } from 'next-intl'
 import { useMediaQuery } from '@/lib/hooks'
 import { getUserLocation, type GeolocationError } from '@/lib/geolocation'
+import { useGoogleMaps } from '@/components/providers/GoogleMapsProvider'
 import { GeographicFilters } from './GeographicFilters'
 import { MapMarker } from './MapMarker'
 import { MarkerInfoPopup } from './MarkerInfoPopup'
@@ -21,8 +22,6 @@ const mapContainerStyle = {
   width: '100%',
   height: '100%',
 }
-
-const libraries: ('places' | 'geometry')[] = ['places', 'geometry']
 
 // Default map options with subtle grayscale styling
 const defaultMapOptions: google.maps.MapOptions = {
@@ -93,6 +92,7 @@ const defaultMapOptions: google.maps.MapOptions = {
 export function ExhibitionsMapView({ filter }: ExhibitionsMapViewProps) {
   const t = useTranslations('exhibitions.map')
   const isMobile = useMediaQuery('(max-width: 768px)')
+  const { isLoaded, loadError } = useGoogleMaps()
 
   // State
   const [geoFilter, setGeoFilter] = useState<GeoFilter>('global')
@@ -110,12 +110,6 @@ export function ExhibitionsMapView({ filter }: ExhibitionsMapViewProps) {
   const [exhibitions, setExhibitions] = useState<MapExhibition[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
-  // Load Google Maps
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-    libraries,
-  })
 
   // Fetch exhibitions from API
   const fetchExhibitions = useCallback(async () => {

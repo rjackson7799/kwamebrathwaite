@@ -4,7 +4,7 @@ import { createContext, useContext, ReactNode } from 'react'
 import { useLoadScript, Libraries } from '@react-google-maps/api'
 
 // Define libraries outside component to prevent re-renders
-const libraries: Libraries = ['places']
+const libraries: Libraries = ['places', 'geometry']
 
 interface GoogleMapsContextValue {
   isLoaded: boolean
