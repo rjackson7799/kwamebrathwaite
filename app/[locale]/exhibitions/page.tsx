@@ -8,6 +8,7 @@ import {
   ExhibitionsMapView,
   ViewToggle,
 } from '@/components/features/exhibitions'
+import { ScrollFadeItem } from '@/components/ui/ScrollFadeItem'
 import type { Exhibition, ViewMode, FilterType } from '@/components/features/exhibitions'
 
 type TabType = 'current' | 'upcoming' | 'past'
@@ -136,14 +137,15 @@ export default function ExhibitionsPage() {
               No {activeTab} exhibitions at this time.
             </p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {exhibitions.map((exhibition, index) => (
-                <ExhibitionCard
-                  key={exhibition.id}
-                  exhibition={exhibition}
-                  orientation="vertical"
-                  priority={index < 2}
-                />
+                <ScrollFadeItem key={exhibition.id} index={index}>
+                  <ExhibitionCard
+                    exhibition={exhibition}
+                    orientation="vertical"
+                    priority={index < 4}
+                  />
+                </ScrollFadeItem>
               ))}
             </div>
           )}

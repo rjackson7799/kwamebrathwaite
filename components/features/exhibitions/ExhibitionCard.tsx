@@ -89,79 +89,97 @@ export function ExhibitionCard({
   // Add gold accent for current exhibitions
   const isCurrent = exhibition.exhibition_type === 'current'
 
-  return (
-    <Link href={href} className={`group block ${className}`}>
-      <article
-        className={`
-          card-bordered rounded-sm overflow-hidden
-          ${isHorizontal ? 'flex gap-6' : ''}
-          ${isCurrent ? 'border-l-2 border-l-gold' : ''}
-        `}
-      >
-        {/* Image Container */}
-        <div
+  const imageUrl = exhibition.thumbnail_image_url || exhibition.image_url
+
+  if (isHorizontal) {
+    return (
+      <Link href={href} className={`group block ${className}`}>
+        <article
           className={`
-            relative overflow-hidden bg-gray-light dark:bg-[#2A2A2A]
-            ${isHorizontal ? 'w-2/5 flex-shrink-0 aspect-[3/4]' : 'aspect-square'}
+            card-bordered rounded-sm overflow-hidden flex gap-6
+            ${isCurrent ? 'border-l-2 border-l-gold' : ''}
           `}
         >
-          {!(exhibition.thumbnail_image_url || exhibition.image_url) || hasError ? (
-            <ImagePlaceholder aspectRatio="16:9" showIcon />
+          {/* Image */}
+          <div className="relative w-2/5 flex-shrink-0 aspect-[3/4] overflow-hidden bg-gray-light dark:bg-[#2A2A2A]">
+            {!imageUrl || hasError ? (
+              <ImagePlaceholder aspectRatio="4:3" showIcon />
+            ) : (
+              <>
+                {isLoading && <div className="absolute inset-0"><ImagePlaceholder aspectRatio="4:3" /></div>}
+                <Image
+                  src={imageUrl}
+                  alt={exhibition.title}
+                  fill
+                  sizes="40vw"
+                  className={`object-cover transition-all duration-slow group-hover:scale-105 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                  priority={priority}
+                  onLoad={() => setIsLoading(false)}
+                  onError={() => { setIsLoading(false); setHasError(true) }}
+                />
+              </>
+            )}
+          </div>
+
+          {/* Content */}
+          <div className="p-4 flex flex-col justify-center">
+            {showStatus && (
+              <div className={`self-start inline-block mb-2 px-2 py-0.5 text-caption font-medium rounded-sm ${statusStyles[exhibition.exhibition_type]}`}>
+                {statusLabels[exhibition.exhibition_type]}
+              </div>
+            )}
+            <h3 className="text-h4 font-medium text-black dark:text-[#F0F0F0]">{exhibition.title}</h3>
+            {formatLocation() && <p className="mt-1 text-body-sm text-gray-warm">{formatLocation()}</p>}
+            {formatDateRange() && <p className="mt-1 text-caption text-gray-warm">{formatDateRange()}</p>}
+          </div>
+        </article>
+      </Link>
+    )
+  }
+
+  // Vertical — museum grid style matching Works/Press pages
+  return (
+    <Link href={href} className={`group block h-full ${className}`} aria-label={exhibition.title}>
+      <article className="h-full">
+        {/* Image */}
+        <div className="relative aspect-[4/5] overflow-hidden mb-4 bg-gray-light dark:bg-[#2A2A2A]">
+          {!imageUrl || hasError ? (
+            <ImagePlaceholder aspectRatio="4:5" showIcon />
           ) : (
             <>
-              {isLoading && (
-                <div className="absolute inset-0">
-                  <ImagePlaceholder aspectRatio="16:9" />
-                </div>
-              )}
+              {isLoading && <div className="absolute inset-0 bg-gray-light dark:bg-[#2A2A2A]" />}
               <Image
-                src={exhibition.thumbnail_image_url || exhibition.image_url}
+                src={imageUrl}
                 alt={exhibition.title}
                 fill
-                sizes={isHorizontal ? '50vw' : '(max-width: 768px) 100vw, 50vw'}
-                className={`
-                  object-cover
-                  transition-all
-                  duration-slow
-                  group-hover:scale-105
-                  ${isLoading ? 'opacity-0' : 'opacity-100'}
-                `}
+                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className={`object-cover transition-all duration-slow group-hover:scale-105 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
                 priority={priority}
                 onLoad={() => setIsLoading(false)}
-                onError={() => {
-                  setIsLoading(false)
-                  setHasError(true)
-                }}
+                onError={() => { setIsLoading(false); setHasError(true) }}
               />
             </>
           )}
-
         </div>
 
-        {/* Content */}
-        <div className={`p-4 ${isHorizontal ? 'flex flex-col justify-center' : ''}`}>
-          {/* Status Badge */}
-          {showStatus && (
-            <div className={`self-start inline-block mb-2 px-2 py-0.5 text-caption font-medium rounded-sm ${statusStyles[exhibition.exhibition_type]}`}>
-              {statusLabels[exhibition.exhibition_type]}
-            </div>
-          )}
-          <h3 className="text-h4 font-medium text-black dark:text-[#F0F0F0]">
-            {exhibition.title}
-          </h3>
+        {/* Venue */}
+        {exhibition.venue && (
+          <p className="text-[11px] uppercase tracking-[0.06em] text-gray-heading dark:text-[#777777] leading-relaxed">
+            {exhibition.venue}
+          </p>
+        )}
 
-          {formatLocation() && (
-            <p className="mt-1 text-body-sm text-gray-warm">
-              {formatLocation()}
-            </p>
-          )}
+        {/* Title */}
+        <h3 className="text-sm font-normal uppercase tracking-[0.08em] text-gray-body dark:text-[#E0E0E0] leading-snug mt-1">
+          {exhibition.title}
+        </h3>
 
-          {formatDateRange() && (
-            <p className="mt-1 text-caption text-gray-warm">
-              {formatDateRange()}
-            </p>
-          )}
-        </div>
+        {/* Dates */}
+        {formatDateRange() && (
+          <p className="mt-1 text-[11px] uppercase tracking-[0.06em] text-gray-heading dark:text-[#777777]">
+            {formatDateRange()}
+          </p>
+        )}
       </article>
     </Link>
   )
