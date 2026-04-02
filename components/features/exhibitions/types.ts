@@ -24,7 +24,7 @@ export interface MapExhibition {
   start_date: string | null
   end_date: string | null
   image_url: string | null
-  thumbnail_image_url: string | null
+  thumbnail_image_url?: string | null
   venue_url: string | null
 }
 
