@@ -164,19 +164,19 @@ export function ExhibitionCard({
 
         {/* Venue */}
         {exhibition.venue && (
-          <p className="text-[11px] uppercase tracking-[0.06em] text-gray-heading dark:text-[#777777] leading-relaxed">
+          <p className="text-[10px] uppercase tracking-[0.06em] text-gray-heading dark:text-[#777777] leading-relaxed">
             {exhibition.venue}
           </p>
         )}
 
         {/* Title */}
-        <h3 className="text-sm font-normal uppercase tracking-[0.08em] text-gray-body dark:text-[#E0E0E0] leading-snug mt-1">
+        <h3 className="text-[13px] font-normal uppercase tracking-[0.07em] text-gray-body dark:text-[#E0E0E0] leading-snug mt-1">
           {exhibition.title}
         </h3>
 
         {/* Dates */}
         {formatDateRange() && (
-          <p className="mt-1 text-[11px] uppercase tracking-[0.06em] text-gray-heading dark:text-[#777777]">
+          <p className="mt-1 text-[10px] uppercase tracking-[0.06em] text-gray-heading dark:text-[#777777]">
             {formatDateRange()}
           </p>
         )}
