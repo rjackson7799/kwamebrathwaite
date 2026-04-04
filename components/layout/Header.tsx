@@ -56,7 +56,7 @@ export function Header() {
         {/* Logo */}
         <Link
           href={getLocalizedHref('/')}
-          className="font-serif text-2xl md:text-[1.75rem] text-black dark:text-[#F0F0F0] hover:text-gray-warm dark:hover:text-[#A0A0A0] transition-colors duration-fast"
+          className="font-heading text-[1.15rem] md:text-[2.1rem] font-light uppercase tracking-[0.18em] whitespace-nowrap text-black dark:text-[#F0F0F0] hover:text-gray-warm dark:hover:text-[#A0A0A0] transition-colors duration-fast"
         >
           Kwame Brathwaite
         </Link>
