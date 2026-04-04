@@ -8,6 +8,11 @@ import { DataTable, Column, ThumbnailCell, ActionButtons } from '@/components/ad
 import { StatusBadge } from '@/components/admin/StatusBadge'
 import { ConfirmDialog } from '@/components/admin/ConfirmDialog'
 
+const ALL_PAGE_SIZE = 500
+const PAGE_SIZE_OPTIONS = ['20', '40', 'all'] as const
+
+type PageSizeOption = typeof PAGE_SIZE_OPTIONS[number]
+
 interface Exhibition {
   id: string
   title: string
@@ -45,12 +50,16 @@ function formatDateRange(startDate: string | null, endDate: string | null): stri
 export default function AdminExhibitionsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const initialPageSize = searchParams.get('pageSize')
+  const defaultPageSize: PageSizeOption = initialPageSize && PAGE_SIZE_OPTIONS.includes(initialPageSize as PageSizeOption)
+    ? initialPageSize as PageSizeOption
+    : '20'
 
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1)
   const [total, setTotal] = useState(0)
-  const [pageSize] = useState(20)
+  const [pageSize, setPageSize] = useState<PageSizeOption>(defaultPageSize)
 
   // Filters
   const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || '')
@@ -65,8 +74,10 @@ export default function AdminExhibitionsPage() {
     setLoading(true)
     try {
       const params = new URLSearchParams()
-      params.set('page', String(page))
-      params.set('limit', String(pageSize))
+      const limit = pageSize === 'all' ? ALL_PAGE_SIZE : Number(pageSize)
+
+      params.set('page', String(pageSize === 'all' ? 1 : page))
+      params.set('limit', String(limit))
       if (statusFilter) params.set('status', statusFilter)
       if (typeFilter) params.set('type', typeFilter)
       if (search) params.set('q', search)
@@ -92,14 +103,15 @@ export default function AdminExhibitionsPage() {
   // Update URL when filters change
   useEffect(() => {
     const params = new URLSearchParams()
-    if (page > 1) params.set('page', String(page))
+    if (pageSize !== 'all' && page > 1) params.set('page', String(page))
+    if (pageSize !== '20') params.set('pageSize', pageSize)
     if (statusFilter) params.set('status', statusFilter)
     if (typeFilter) params.set('type', typeFilter)
     if (search) params.set('q', search)
 
     const newUrl = params.toString() ? `?${params}` : '/admin/exhibitions'
     router.replace(newUrl, { scroll: false })
-  }, [page, statusFilter, typeFilter, search, router])
+  }, [page, pageSize, statusFilter, typeFilter, search, router])
 
   const handleDelete = async () => {
     if (!deleteTarget) return
@@ -252,6 +264,25 @@ export default function AdminExhibitionsPage() {
             <option value="past">Past</option>
           </select>
 
+          <div className="flex items-center gap-2">
+            <label htmlFor="page-size" className="text-sm text-gray-600">
+              Show
+            </label>
+            <select
+              id="page-size"
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(e.target.value as PageSizeOption)
+                setPage(1)
+              }}
+              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black"
+            >
+              <option value="20">20</option>
+              <option value="40">40</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+
           {(search || statusFilter || typeFilter) && (
             <button
               onClick={() => {
@@ -277,7 +308,7 @@ export default function AdminExhibitionsPage() {
           onRowClick={(row) => router.push(`/admin/exhibitions/${row.id}/edit`)}
           pagination={{
             page,
-            pageSize,
+            pageSize: pageSize === 'all' ? Math.max(total, exhibitions.length, 1) : Number(pageSize),
             total,
             onPageChange: setPage,
           }}

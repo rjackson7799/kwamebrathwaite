@@ -184,6 +184,7 @@ export type AdminExhibitionInput = z.infer<typeof adminExhibitionSchema>
 
 // Admin exhibition filters
 export const adminExhibitionFiltersSchema = paginationSchema.extend({
+  limit: z.coerce.number().int().min(1).max(500).default(20),
   type: z.enum(['past', 'current', 'upcoming']).optional(),
   status: z.enum(['draft', 'published', 'archived']).optional(),
   q: z.string().optional(),
