@@ -269,17 +269,17 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [], 
             )}
 
             {/* Action Links — text-only CTAs, museum style */}
-            <div className="space-y-4 mb-8">
+            <div className="flex flex-col items-start gap-4 mb-8">
               <button
                 type="button"
                 onClick={() => setIsInquiryOpen(true)}
-                className="cta-museum block"
+                className="cta-museum inline-flex w-auto max-w-full"
               >
                 {t('inquire')}
               </button>
               <Link
                 href={`${locale === 'en' ? '' : `/${locale}`}/licensing/request?artwork=${artwork.id}`}
-                className="cta-museum block"
+                className="cta-museum inline-flex w-auto max-w-full"
               >
                 {t('requestLicense')}
               </Link>
@@ -287,7 +287,7 @@ export function ArtworkDetail({ artwork, literature = [], relatedArtworks = [], 
                 <button
                   type="button"
                   onClick={() => setIsViewOnWallOpen(true)}
-                  className="cta-museum inline-flex items-center gap-2"
+                  className="cta-museum inline-flex w-auto max-w-full items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
