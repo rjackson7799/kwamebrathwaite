@@ -76,6 +76,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Update exhibition
     const updateData: ExhibitionUpdate = {
+      slug: result.data.slug,
       title: result.data.title,
       venue: result.data.venue,
       street_address: result.data.street_address,
@@ -92,6 +93,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       location_lat: result.data.location_lat,
       location_lng: result.data.location_lng,
       venue_url: result.data.venue_url || null,
+      exhibition_url: result.data.exhibition_url || null,
       venue_description: result.data.venue_description,
       display_order: result.data.display_order,
       status: result.data.status,

@@ -15,14 +15,18 @@ interface Exhibition {
   state_region: string | null
   postal_code: string | null
   country: string | null
+  formatted_address?: string | null
   start_date: string | null
   end_date: string | null
   description: string | null
   image_url: string | null
+  thumbnail_image_url?: string | null
   exhibition_type: 'past' | 'current' | 'upcoming' | null
   location_lat: number | null
   location_lng: number | null
   venue_url: string | null
+  venue_description?: string | null
+  exhibition_url?: string | null
   status: 'draft' | 'published' | 'archived'
   meta_title: string | null
   meta_description: string | null
