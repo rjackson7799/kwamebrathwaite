@@ -90,13 +90,13 @@ export function PressCard({
       )}
 
       {/* Title — uppercase, wide tracking, museum style */}
-      <h3 className="text-[13px] font-normal uppercase tracking-[0.07em] text-gray-body dark:text-[#E0E0E0] leading-snug">
+      <h3 className="text-[10px] font-normal uppercase tracking-[0.06em] text-gray-body dark:text-[#E0E0E0] leading-snug">
         {pressItem.title}
       </h3>
 
       {/* Meta line: author, publication, date */}
       {metaLine && (
-        <p className="mt-2 text-[10px] uppercase tracking-[0.06em] text-gray-heading dark:text-[#777777] leading-relaxed">
+        <p className="mt-2 text-[8px] uppercase tracking-[0.06em] text-gray-heading dark:text-[#777777] leading-relaxed">
           {metaLine}
         </p>
       )}

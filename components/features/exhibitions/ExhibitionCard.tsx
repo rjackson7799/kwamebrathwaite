@@ -25,6 +25,8 @@ interface ExhibitionCardProps {
   exhibition: Exhibition
   /** Layout orientation */
   orientation?: 'horizontal' | 'vertical'
+  /** Color treatment for card text */
+  tone?: 'default' | 'inverse'
   /** Show status badge */
   showStatus?: boolean
   /** Priority loading */
@@ -36,6 +38,7 @@ interface ExhibitionCardProps {
 export function ExhibitionCard({
   exhibition,
   orientation = 'vertical',
+  tone = 'default',
   showStatus = true,
   priority = false,
   className = '',
@@ -85,6 +88,7 @@ export function ExhibitionCard({
   }
 
   const isHorizontal = orientation === 'horizontal'
+  const isInverse = tone === 'inverse'
 
   // Add gold accent for current exhibitions
   const isCurrent = exhibition.exhibition_type === 'current'
@@ -164,19 +168,31 @@ export function ExhibitionCard({
 
         {/* Venue */}
         {exhibition.venue && (
-          <p className="text-[10px] uppercase tracking-[0.06em] text-gray-heading dark:text-[#777777] leading-relaxed">
+          <p className={`text-[8px] uppercase tracking-[0.06em] leading-relaxed ${
+            isInverse
+              ? 'text-[#A9A39A]'
+              : 'text-gray-heading dark:text-[#777777]'
+          }`}>
             {exhibition.venue}
           </p>
         )}
 
         {/* Title */}
-        <h3 className="text-[13px] font-normal uppercase tracking-[0.07em] text-gray-body dark:text-[#E0E0E0] leading-snug mt-1">
+        <h3 className={`text-[10px] font-normal uppercase tracking-[0.06em] leading-snug mt-1 ${
+          isInverse
+            ? 'text-[#D9D2C8]'
+            : 'text-gray-body dark:text-[#E0E0E0]'
+        }`}>
           {exhibition.title}
         </h3>
 
         {/* Dates */}
         {formatDateRange() && (
-          <p className="mt-1 text-[10px] uppercase tracking-[0.06em] text-gray-heading dark:text-[#777777]">
+          <p className={`mt-1 text-[8px] uppercase tracking-[0.06em] ${
+            isInverse
+              ? 'text-[#B8B0A4]'
+              : 'text-gray-heading dark:text-[#777777]'
+          }`}>
             {formatDateRange()}
           </p>
         )}

@@ -103,6 +103,7 @@ export default async function HomePage() {
                   key={exhibition.id}
                   exhibition={exhibition}
                   orientation="vertical"
+                  tone="inverse"
                   priority
                 />
               ))}
