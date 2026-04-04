@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
+import { Barlow, Playfair_Display } from 'next/font/google'
 import './globals.css'
 import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo'
 import { ThemeProvider } from '@/components/ui/ThemeProvider'
 
-const inter = Inter({
+const barlow = Barlow({
   subsets: ['latin'],
+  weight: ['200', '300', '400', '500', '600'],
   variable: '--font-sans',
   display: 'swap',
 })
@@ -55,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${barlow.variable} ${playfair.variable}`} suppressHydrationWarning>
       <head>
         {/* Preconnect to Google Fonts (used by next/font) */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />

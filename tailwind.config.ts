@@ -31,9 +31,9 @@ const config: Config = {
         info: '#1A4D7A',
       },
       fontFamily: {
-        sans: ['Inter', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+        sans: ['var(--font-sans)', 'Barlow', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
         serif: ['Playfair Display', 'Georgia', 'serif'],
-        heading: ['Helvetica Neue', 'Helvetica', 'Inter', 'Arial', 'sans-serif'],
+        heading: ['var(--font-sans)', 'Barlow', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
         mono: ['SF Mono', 'Monaco', 'Inconsolata', 'monospace'],
       },
       fontSize: {

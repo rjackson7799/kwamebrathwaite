@@ -57,7 +57,7 @@
   }
 
   html {
-    font-family: 'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    font-family: var(--font-sans), 'Barlow', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition-property: color, background-color, border-color;
@@ -67,23 +67,24 @@
 
   body {
     @apply bg-white text-black dark:bg-[#121212] dark:text-[#F0F0F0];
+    font-weight: 300;
   }
 
   /* Typography base styles */
   h1 {
-    @apply text-h1;
+    @apply text-h1 font-heading font-light;
   }
 
   h2 {
-    @apply text-h2;
+    @apply text-h2 font-heading font-light;
   }
 
   h3 {
-    @apply text-h3;
+    @apply text-h3 font-heading font-light;
   }
 
   h4 {
-    @apply text-h4;
+    @apply text-h4 font-heading font-light;
   }
 
   p {
