@@ -112,7 +112,32 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     if (error) {
       console.error('Database error:', error)
-      return errorResponse(ErrorCodes.DB_ERROR, 'Failed to update exhibition', 500)
+      const errMsg = typeof error.message === 'string' ? error.message : ''
+      const details = {
+        code: error.code,
+        hint: 'hint' in error && typeof error.hint === 'string' ? error.hint : undefined,
+      }
+
+      if (error.code === '23505') {
+        const slugConflict =
+          errMsg.toLowerCase().includes('slug') ||
+          errMsg.toLowerCase().includes('exhibitions_slug')
+        return errorResponse(
+          ErrorCodes.DUPLICATE_ENTRY,
+          slugConflict
+            ? 'That URL slug is already used by another exhibition.'
+            : 'This record conflicts with an existing one.',
+          409,
+          { ...details, message: errMsg }
+        )
+      }
+
+      return errorResponse(
+        ErrorCodes.DB_ERROR,
+        errMsg || 'Failed to update exhibition',
+        500,
+        details
+      )
     }
 
     // Log activity

@@ -212,7 +212,15 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
       const result = await response.json()
 
       if (!result.success) {
-        setError(result.error?.message || 'Failed to save exhibition')
+        const base = result.error?.message || 'Failed to save exhibition'
+        const det = result.error?.details
+        const extras: string[] = []
+        if (det && typeof det === 'object' && det !== null) {
+          const o = det as Record<string, unknown>
+          if (typeof o.hint === 'string' && o.hint) extras.push(o.hint)
+          if (typeof o.code === 'string' && o.code) extras.push(`Code: ${o.code}`)
+        }
+        setError(extras.length ? `${base} — ${extras.join(' · ')}` : base)
         setSaving(false)
         return
       }
