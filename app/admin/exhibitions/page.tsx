@@ -19,6 +19,7 @@ interface Exhibition {
   exhibition_type: string | null
   status: string
   image_url: string | null
+  thumbnail_image_url: string | null
   created_at: string
   [key: string]: unknown
 }
@@ -127,7 +128,7 @@ export default function AdminExhibitionsPage() {
       className: 'w-16',
       render: (row) => (
         <ThumbnailCell
-          src={row.image_url}
+          src={row.thumbnail_image_url || row.image_url}
           alt={row.title}
         />
       ),
