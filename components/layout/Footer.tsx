@@ -63,7 +63,7 @@ export function Footer() {
         <div className="mb-6">
           <label
             htmlFor="footer-email"
-            className="block mb-3 text-[11px] uppercase tracking-[0.12em] text-white/50"
+            className="block mb-3 text-[11px] uppercase tracking-[0.12em] text-white/65"
           >
             Subscribe to updates
           </label>
@@ -76,17 +76,17 @@ export function Footer() {
               placeholder={t('newsletter.placeholder')}
               required
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2.5 bg-transparent border border-white/15
-                         text-white/80 text-sm placeholder:text-white/30
-                         focus:outline-none focus:border-white/30
+              className="flex-1 px-4 py-2.5 bg-transparent border border-white/20
+                         text-white/90 text-sm placeholder:text-white/45
+                         focus:outline-none focus:border-white/40
                          transition-colors"
             />
             <button
               type="submit"
               disabled={isSubmitting}
               className="px-5 py-2.5 text-[11px] uppercase tracking-[0.1em]
-                         bg-white/10 text-white/70 border border-white/15
-                         hover:bg-white/15 hover:text-white/90 transition-colors
+                         bg-white/12 text-white/85 border border-white/20
+                         hover:bg-white/18 hover:text-white transition-colors
                          disabled:opacity-50 disabled:cursor-not-allowed
                          sm:w-auto w-full"
             >
@@ -117,27 +117,27 @@ export function Footer() {
 
         {/* Minimal copyright + links */}
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <p className="text-[11px] uppercase tracking-[0.15em] text-white/40">
+          <p className="text-[11px] uppercase tracking-[0.15em] text-white/55">
             &copy; {currentYear} Kwame Brathwaite Archive
           </p>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
-            <div className="flex items-center gap-4 text-[11px] uppercase tracking-[0.1em] text-white/30">
+            <div className="flex items-center gap-4 text-[11px] uppercase tracking-[0.1em] text-white/50">
               <Link
                 href={getLocalizedHref('/privacy')}
-                className="hover:text-white/60 transition-colors"
+                className="hover:text-white/80 transition-colors"
               >
                 {t('links.privacy')}
               </Link>
               <Link
                 href={getLocalizedHref('/terms')}
-                className="hover:text-white/60 transition-colors"
+                className="hover:text-white/80 transition-colors"
               >
                 {t('links.terms')}
               </Link>
               <Link
                 href={getLocalizedHref('/licensing')}
-                className="hover:text-white/60 transition-colors"
+                className="hover:text-white/80 transition-colors"
               >
                 {t('links.licensing')}
               </Link>
@@ -145,13 +145,13 @@ export function Footer() {
                 href="https://instagram.com/kwamebrathwaitearchive"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-white/60 transition-colors"
+                className="hover:text-white/80 transition-colors"
               >
                 Instagram
               </a>
             </div>
 
-            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.1em] text-white/35">
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.1em] text-white/55">
               <span>Theme</span>
               <ThemeToggle variant="inverse" />
             </div>
