@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { MobileMenu } from './MobileMenu'
-import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
 const navLinks = [
   { href: '/', key: 'home' },
@@ -77,17 +76,15 @@ export function Header() {
             </Link>
           ))}
 
-          {/* Language Switcher + Theme Toggle */}
+          {/* Language Switcher */}
           <div className="ml-4 pl-4 border-l border-gray-light dark:border-[#333333] flex items-center gap-2">
             <LanguageSwitcher variant="light" />
-            <ThemeToggle />
           </div>
         </nav>
 
-        {/* Mobile: Language Switcher + Theme Toggle + Menu Button */}
+        {/* Mobile: Language Switcher + Menu Button */}
         <div className="flex items-center gap-1 md:hidden">
           <LanguageSwitcher variant="light" />
-          <ThemeToggle />
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(true)}

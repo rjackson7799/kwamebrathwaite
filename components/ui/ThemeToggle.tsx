@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react'
  *
  * Touch target: ~36x36px (matches header utility button sizing)
  */
-export function ThemeToggle() {
+export function ThemeToggle({ variant = 'default' }: { variant?: 'default' | 'inverse' }) {
   const [mounted, setMounted] = useState(false)
   const { resolvedTheme, setTheme } = useTheme()
 
@@ -23,13 +23,16 @@ export function ThemeToggle() {
   }
 
   const isDark = resolvedTheme === 'dark'
+  const buttonClassName = variant === 'inverse'
+    ? 'p-2 rounded-md transition-colors duration-200 text-white/65 hover:bg-white/10 hover:text-white'
+    : 'p-2 rounded-md transition-colors duration-200 text-black hover:bg-gray-100 dark:text-[#F0F0F0] dark:hover:bg-white/10'
 
   return (
     <button
       type="button"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="p-2 rounded-md transition-colors duration-200 text-black hover:bg-gray-100 dark:text-[#F0F0F0] dark:hover:bg-white/10"
+      className={buttonClassName}
     >
       {isDark ? (
         <svg

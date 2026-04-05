@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import Link from 'next/link'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
 export function Footer() {
   const [email, setEmail] = useState('')
@@ -115,38 +116,45 @@ export function Footer() {
         </div>
 
         {/* Minimal copyright + links */}
-        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <p className="text-[11px] uppercase tracking-[0.15em] text-white/40">
             &copy; {currentYear} Kwame Brathwaite Archive
           </p>
 
-          <div className="flex items-center gap-4 text-[11px] uppercase tracking-[0.1em] text-white/30">
-            <Link
-              href={getLocalizedHref('/privacy')}
-              className="hover:text-white/60 transition-colors"
-            >
-              {t('links.privacy')}
-            </Link>
-            <Link
-              href={getLocalizedHref('/terms')}
-              className="hover:text-white/60 transition-colors"
-            >
-              {t('links.terms')}
-            </Link>
-            <Link
-              href={getLocalizedHref('/licensing')}
-              className="hover:text-white/60 transition-colors"
-            >
-              {t('links.licensing')}
-            </Link>
-            <a
-              href="https://instagram.com/kwamebrathwaitearchive"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white/60 transition-colors"
-            >
-              Instagram
-            </a>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+            <div className="flex items-center gap-4 text-[11px] uppercase tracking-[0.1em] text-white/30">
+              <Link
+                href={getLocalizedHref('/privacy')}
+                className="hover:text-white/60 transition-colors"
+              >
+                {t('links.privacy')}
+              </Link>
+              <Link
+                href={getLocalizedHref('/terms')}
+                className="hover:text-white/60 transition-colors"
+              >
+                {t('links.terms')}
+              </Link>
+              <Link
+                href={getLocalizedHref('/licensing')}
+                className="hover:text-white/60 transition-colors"
+              >
+                {t('links.licensing')}
+              </Link>
+              <a
+                href="https://instagram.com/kwamebrathwaitearchive"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white/60 transition-colors"
+              >
+                Instagram
+              </a>
+            </div>
+
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.1em] text-white/35">
+              <span>Theme</span>
+              <ThemeToggle variant="inverse" />
+            </div>
           </div>
         </div>
       </div>
