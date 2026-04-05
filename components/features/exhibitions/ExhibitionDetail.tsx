@@ -105,7 +105,7 @@ export function ExhibitionDetail({ exhibition }: ExhibitionDetailProps) {
       )}
 
       {/* Exhibition Title */}
-      <h1 className="font-serif text-[28px] font-light tracking-[0.02em] leading-tight text-black dark:text-[#F0F0F0] mb-2">
+      <h1 className="page-title-museum mb-2">
         {exhibition.title}
       </h1>
 
