@@ -29,6 +29,7 @@ export const artworkFiltersSchema = paginationSchema.extend({
 // Exhibition filters
 export const exhibitionFiltersSchema = z.object({
   type: z.enum(['past', 'current', 'upcoming']).optional(),
+  q: z.string().optional(),
 })
 
 // Press filters

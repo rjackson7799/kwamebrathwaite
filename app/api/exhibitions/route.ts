@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const { type } = validationResult.data
+    const { type, q } = validationResult.data
     const today = new Date().toISOString().split('T')[0]
 
     // Build query
@@ -45,6 +45,11 @@ export async function GET(request: NextRequest) {
       query = query.lte('start_date', today).gte('end_date', today)
     } else if (type === 'upcoming') {
       query = query.gt('start_date', today)
+    }
+
+    // Apply search filter
+    if (q) {
+      query = query.or(`title.ilike.%${q}%,venue.ilike.%${q}%,city.ilike.%${q}%`)
     }
 
     // Apply pagination

@@ -9,6 +9,8 @@ import {
   ViewToggle,
 } from '@/components/features/exhibitions'
 import { ScrollFadeItem } from '@/components/ui/ScrollFadeItem'
+import { SearchBar } from '@/components/ui/SearchBar'
+import { useDebounce } from '@/lib/hooks'
 import type { Exhibition, ViewMode, FilterType } from '@/components/features/exhibitions'
 
 type TabType = 'current' | 'upcoming' | 'past'
@@ -31,6 +33,10 @@ export default function ExhibitionsPage() {
       : 'current'
   })
 
+  // Search
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') ?? '')
+  const debouncedQuery = useDebounce(searchQuery, 400)
+
   // Page title visibility
   const [showTitle, setShowTitle] = useState(true)
 
@@ -50,10 +56,12 @@ export default function ExhibitionsPage() {
   const [loading, setLoading] = useState(true)
 
   // Fetch exhibitions from API
-  const fetchExhibitions = useCallback(async (type: TabType) => {
+  const fetchExhibitions = useCallback(async (type: TabType, q?: string) => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/exhibitions?type=${type}`)
+      const params = new URLSearchParams({ type })
+      if (q) params.set('q', q)
+      const response = await fetch(`/api/exhibitions?${params}`)
       const data = await response.json()
       if (data.success) {
         setExhibitions(data.data || [])
@@ -69,10 +77,10 @@ export default function ExhibitionsPage() {
     }
   }, [])
 
-  // Fetch exhibitions when tab changes
+  // Fetch exhibitions when tab or search changes
   useEffect(() => {
-    fetchExhibitions(activeTab)
-  }, [activeTab, fetchExhibitions])
+    fetchExhibitions(activeTab, debouncedQuery || undefined)
+  }, [activeTab, debouncedQuery, fetchExhibitions])
 
   // Update URL when view or filter changes
   useEffect(() => {
@@ -84,13 +92,16 @@ export default function ExhibitionsPage() {
     if (activeTab !== 'current') {
       params.set('filter', activeTab)
     }
+    if (debouncedQuery) {
+      params.set('q', debouncedQuery)
+    }
 
     const newUrl = params.toString()
       ? `?${params.toString()}`
       : window.location.pathname
 
     router.replace(newUrl, { scroll: false })
-  }, [viewMode, activeTab, router])
+  }, [viewMode, activeTab, debouncedQuery, router])
 
   const tabs: { key: TabType; label: string }[] = [
     { key: 'current', label: t('current') },
@@ -104,6 +115,16 @@ export default function ExhibitionsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         {showTitle && <h1 className="page-title-museum">{t('title')}</h1>}
         <ViewToggle viewMode={viewMode} onViewChange={setViewMode} />
+      </div>
+
+      {/* Search */}
+      <div className="mb-6">
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder={t('searchPlaceholder')}
+          ariaLabel={t('searchPlaceholder')}
+        />
       </div>
 
       {/* Filter tabs */}
