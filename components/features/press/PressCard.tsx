@@ -59,7 +59,7 @@ export function PressCard({
     <article className="h-full">
       {/* Image — only shown if image_url exists (mixed layout) */}
       {pressItem.image_url && (
-        <div className="relative aspect-[4/3] overflow-hidden mb-4 bg-gray-light dark:bg-[#2A2A2A]">
+        <div className="relative aspect-square overflow-hidden mb-4 bg-gray-light dark:bg-[#2A2A2A]">
           {hasError ? null : (
             <>
               {isLoading && (
