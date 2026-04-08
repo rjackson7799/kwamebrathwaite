@@ -1,7 +1,40 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** March 30, 2026
+**Last Updated:** April 4, 2026
+
+---
+
+## Frontend Typography & UI Polish (April 4, 2026)
+
+### Completed
+- [x] **Global typography updated to better match the original site**
+  - Swapped the core sans/heading system to **Barlow**
+  - Updated shared typography styles in the app shell and global CSS
+- [x] **Header logo refined to match the original live-text wordmark**
+  - Converted to uppercase Barlow styling with tighter sizing/tracking
+  - Final desktop logo size set to feel more proportional to the nav
+- [x] **Header/footer cleanup**
+  - Moved the light/dark theme toggle from the header to the footer
+  - Site now defaults to **Light mode** on first visit
+  - Increased footer text/control contrast for easier readability on black
+- [x] **Homepage card presentation tuned**
+  - Reduced Featured Exhibitions card size to better match Featured Works
+  - Improved dark-section caption contrast on the homepage
+- [x] **Public listing/detail typography aligned**
+  - Tightened and unified caption sizing across Exhibitions and Press listing cards
+  - Updated exhibition detail page title to use the same site-wide title system instead of the older serif treatment
+- [x] **Public CTA/layout polish**
+  - Tightened artwork detail action button widths for desktop/mobile balance
+
+---
+
+## Production DB: `exhibitions.exhibition_url` (April 4, 2026)
+
+### Completed
+- [x] **`exhibition_url` applied on production Supabase** — fixes PostgREST **PGRST204** ("Could not find the 'exhibition_url' column") and failed admin exhibition saves
+- [x] Migration file in repo: [`docs/migrations/2026-04-04-exhibition-url.sql`](docs/migrations/2026-04-04-exhibition-url.sql)
+- [x] Admin API UX (already on main): PUT returns real Supabase/Postgres error messages; duplicate slug (**23505**) → **409** with clear copy; form banner can show `details` hint/code
 
 ---
 
@@ -27,7 +60,7 @@
 - [x] `VenueCard` on public exhibition detail page now shows **"View Exhibition Page →"** (gold/primary) when `exhibition_url` is set; "Visit Venue Website →" demoted to secondary styling
   - Files modified: `lib/supabase/types.ts`, `lib/api/validation.ts`, `components/admin/ExhibitionForm.tsx`, `components/features/exhibitions/ExhibitionDetail.tsx`, `components/features/exhibitions/VenueCard.tsx`, `app/[locale]/exhibitions/[slug]/page.tsx`
   - Files created: `app/api/admin/exhibitions/generate-exhibition-description/route.ts`
-  - **Requires Supabase migration:** `ALTER TABLE exhibitions ADD COLUMN IF NOT EXISTS exhibition_url TEXT;`
+  - **Database:** `exhibition_url` column — migration tracked in `docs/migrations/2026-04-04-exhibition-url.sql`; **applied on production April 2026** (see section above)
 
 ---
 
@@ -291,6 +324,7 @@
 - [x] Created Admin Page Settings UI with toggle switches
 - [x] Added "Page Settings" to admin sidebar navigation
 - [x] Updated `DESIGN_SYSTEM.md` with museum heading typography specs
+- [x] Global typography updated to better match the original site: switched core sans/heading stack from Inter to Barlow in `app/layout.tsx`, `tailwind.config.ts`, and `app/globals.css`
 
 ---
 
@@ -463,6 +497,7 @@
 - [x] Exhibitions CRUD pages
   - [x] API routes (`app/api/admin/exhibitions/`)
   - [x] List page (`app/admin/exhibitions/page.tsx`)
+  - [x] Admin exhibitions list now prefers `thumbnail_image_url` over `image_url` for listing thumbnails
   - [x] Create page (`app/admin/exhibitions/new/page.tsx`)
   - [x] Edit page (`app/admin/exhibitions/[id]/edit/page.tsx`)
   - [x] ExhibitionForm component (`components/admin/ExhibitionForm.tsx`)

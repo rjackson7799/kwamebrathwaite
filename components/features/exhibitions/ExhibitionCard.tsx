@@ -146,9 +146,9 @@ export function ExhibitionCard({
     <Link href={href} className={`group block h-full ${className}`} aria-label={exhibition.title}>
       <article className="h-full">
         {/* Image */}
-        <div className="relative aspect-[4/5] overflow-hidden mb-4 bg-gray-light dark:bg-[#2A2A2A]">
+        <div className="relative aspect-square overflow-hidden mb-4 bg-gray-light dark:bg-[#2A2A2A]">
           {!imageUrl || hasError ? (
-            <ImagePlaceholder aspectRatio="4:5" showIcon />
+            <ImagePlaceholder aspectRatio="1:1" showIcon />
           ) : (
             <>
               {isLoading && <div className="absolute inset-0 bg-gray-light dark:bg-[#2A2A2A]" />}
