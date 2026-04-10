@@ -90,7 +90,7 @@ export default async function HomePage() {
 
         {/* Featured Exhibitions */}
         {exhibitions.length > 0 && (
-          <section className="section-spacing">
+          <section className="pb-12 md:pb-16 lg:pb-24">
             <div className="flex items-baseline justify-between mb-8">
               <h2 className="section-title-museum">{t('featuredExhibitions')}</h2>
               <Link href="/exhibitions" className="text-body hover:underline">
