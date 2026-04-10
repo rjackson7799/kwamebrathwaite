@@ -5,6 +5,90 @@
 
 ---
 
+## Post-Launch Privacy & Security Hardening (April 9, 2026)
+
+### Completed
+
+- [x] **Newsletter unsubscribe flow** — the privacy policy already promised "you can unsubscribe at any time" but no mechanism existed, which was a CAN-SPAM and GDPR gap
+  - New SQL migration `docs/migrations/2026-04-09-newsletter-unsubscribe.sql` adds `unsubscribe_token` (UUID, unique, auto-generated) and `unsubscribed_at` (soft-delete timestamp) to `newsletter_subscribers`. Safe to re-run.
+  - `app/api/newsletter/subscribe/route.ts` now uses the admin client (previous anon-client existence check was silently a no-op under RLS), reactivates previously-unsubscribed rows on resubscribe, and threads the per-subscriber token into the welcome email
+  - New `app/api/newsletter/unsubscribe/route.ts` POST handler — rate-limited 10/min/IP, accepts form-encoded or JSON body, soft-deletes via `unsubscribed_at`, redirects to localized confirmation
+  - New confirm page `app/[locale]/newsletter/unsubscribe/page.tsx` (click-to-confirm prevents email scanners from auto-unsubscribing users) and confirmation page `app/[locale]/newsletter/unsubscribed/page.tsx`. Both marked `noindex`
+  - `lib/email/templates/NewsletterWelcomeEmail.tsx` now accepts an `unsubscribeUrl` prop and renders the standard disclosure footer
+  - Localized strings added under `newsletterUnsubscribe` in all three locale files
+
+- [x] **Google Maps cookie consent control** — previously the Google Maps script ran on every public page via `GoogleMapsProvider` in the locale layout, with no way for a visitor to stop it setting cookies
+  - `components/providers/GoogleMapsProvider.tsx` now reads a `kb-maps-consent` localStorage key and only calls `useLoadScript` when the value is not `"revoked"`. Default behaviour is granted, so the map loads on first visit for everyone and consumers are not forced through a click-to-load placeholder. Consent state is event-broadcast so every consumer stays in sync across tabs
+  - New `CookieConsentBanner` (`components/features/privacy/CookieConsentBanner.tsx`) wired into the locale layout gives first-time visitors a subtle accept/decline control — a dismissable bar with localized copy under the `cookieBanner` namespace
+  - New `MapsConsentControl` (`components/features/privacy/MapsConsentControl.tsx`) is embedded inside the rewritten privacy policy so a visitor can flip their preference later without hunting through browser settings
+  - `ExhibitionsMapView.tsx` and `VenueCard.tsx` render a localized "blocked" state when consent has been revoked (strings under `exhibitions.map.blockedTitle` and `exhibitions.map.blockedBody`), pointing back at the privacy page's cookies section so the visitor can re-enable Maps
+  - `app/admin/layout.tsx` passes `autoGrant` to the provider so address autocomplete and location preview keep working for signed-in operators without any consent prompt — the gate is only for public visitors
+
+- [x] **Privacy policy rewritten and localized** — the previous page was hardcoded English with no cookies section, no GDPR/CCPA rights, no retention timelines, and no real contact method
+  - `app/[locale]/privacy/page.tsx` is now a server component reading from `getTranslations('privacyPolicy')`
+  - Thirteen sections: data controller, information we collect, use, legal basis, retention, third-party processors, cookies, GDPR rights, CCPA rights, children's privacy, international transfers, changes, contact
+  - Retention timelines stated explicitly: inquiries 3 years from last contact, newsletter until unsubscribe, server logs ~30 days
+  - Third-party processors disclosed: Vercel, Supabase, Resend, Google Maps (consent-gated), DeepL, OpenAI
+  - Embeds `MapsConsentControl` client component so visitors can view and change their Google Maps consent from the privacy page
+  - Translated to French and Japanese (first-pass manual translation — review recommended before final launch)
+  - Uses `info@kwamebrathwaite.com` as the privacy contact. **Action item:** swap for the real privacy address once available
+
+- [x] **security.txt published** per RFC 9116 at `public/.well-known/security.txt`
+  - Contact: `info@kwamebrathwaite.com`, Expires: 2027-04-09, Preferred-Languages: en, Canonical URL set
+  - **Action item:** update this file annually (or sooner if the contact email changes) — an expired `Expires` field invalidates the record
+
+- [x] **Rate-limiting gap audit** of all public POST endpoints
+  - Added 5/min per-IP rate limit to `app/api/exhibitions/reminders/route.ts` (previously unlimited)
+  - Added 60/min per-IP rate limit to `app/api/translate/route.ts` (previously unlimited — protects the paid DeepL API)
+  - Confirmed existing rate limits on inquiries (5/min), newsletter subscribe (3/min), licensing request (5/hour), generate-room (5/5min), generate-room register (5/min), not-found-log (30/min)
+
+### Manual action items before these changes are fully live
+
+1. Apply the migration in Supabase SQL editor: `docs/migrations/2026-04-09-newsletter-unsubscribe.sql` (backfill-safe, idempotent)
+2. Swap `info@kwamebrathwaite.com` for the real privacy-contact email in `messages/{en,fr,ja}.json` under `privacyPolicy` and in `public/.well-known/security.txt` once it is provisioned
+3. Send a test newsletter signup after deploy and verify the welcome email contains a working unsubscribe link
+4. Open the exhibitions map in incognito and verify the cookie consent banner appears on first visit, that clicking "Decline" blocks the Maps script and shows the "blocked" state on the map page, and that the preference persists across reloads
+
+### Explicitly deferred to a post-launch phase 2
+
+These were scoped out of this session as non-critical but should still happen:
+
+- [ ] Sentry / error monitoring / uptime pings
+- [ ] Upstash or Redis-backed persistent rate limiter (in-memory is acceptable while traffic is low but resets on every cold start)
+- [ ] Newsletter double opt-in
+- [ ] www→apex redirect (coordinate with the in-flight redirect-handling strategy)
+- [ ] Tighten CSP `'unsafe-inline'` for scripts once Google Maps' inline requirements can be audited
+- [ ] Incident response runbook
+- [ ] Accessibility audit
+- [ ] Dependabot / `npm audit` automation
+- [ ] Localize `app/[locale]/terms/page.tsx` the same way the privacy page was localized
+- [ ] Native French/Japanese review of the privacy policy copy
+
+---
+
+## Forms, Email Notifications & Spam Protection (April 9, 2026)
+
+### Completed
+- [x] **Contact Us form wired up** — converted the static placeholder on `/contact` into a working client form (`components/features/contact/ContactForm.tsx`) that submits to `/api/inquiries`, sends a branded user confirmation and an admin notification via Resend
+- [x] **Newsletter admin notifications** — admin now gets a branded email on every newsletter signup via new `NewsletterAdminEmail` template wired into `/api/newsletter/subscribe`
+- [x] **Spam protection added to newsletter form** — added honeypot field to footer newsletter form, validation schema, and server-side check in the subscribe route
+- [x] **Admin email default updated** — changed from `admin@kwamebrathwaite.com` to `info@kwamebrathwaite.com` in `lib/email/client.ts`
+- [x] **Build fix** — added `slug` to the `MapExhibition` type, Supabase select query, and `VenueCard` construction to resolve Vercel build failure on commit `c65b94c`
+
+### Forms & Email Status
+All public forms now have full email flows (user confirmation + admin notification to `info@kwamebrathwaite.com`) and spam protection (rate limiting + honeypot + Zod validation):
+- Contact Us (`/contact`) → `/api/inquiries`
+- Artwork Inquiry (modal) → `/api/inquiries`
+- Licensing Request (`/licensing`) → `/api/licensing/request`
+- Exhibition Reminder (map popup) → `/api/exhibitions/reminders`
+- Newsletter (footer) → `/api/newsletter/subscribe`
+
+### Notes
+- `RESEND_API_KEY` is configured in `.env.local`; domain will be verified on go-live
+- All emails currently send from `noreply@kwamebrathwaite.com` (configurable via `EMAIL_FROM` env var)
+
+---
+
 ## Pre-Launch Security Hardening (April 9, 2026)
 
 ### Completed

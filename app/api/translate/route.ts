@@ -1,6 +1,13 @@
 import { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { successResponse, errorResponse, ErrorCodes, translateSchema } from '@/lib/api'
+import {
+  successResponse,
+  errorResponse,
+  ErrorCodes,
+  translateSchema,
+  rateLimit,
+  getClientIP,
+} from '@/lib/api'
 import crypto from 'crypto'
 
 interface TranslationCacheInsert {
@@ -19,6 +26,19 @@ interface TranslationCacheRow {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting — prevents abuse of the paid DeepL API. Higher limit
+    // than form endpoints since legit clients may batch several translations
+    // per page view before the cache warms up.
+    const clientIP = getClientIP(request)
+    const rateLimitResult = rateLimit(`translate:${clientIP}`, 60, 60000)
+    if (!rateLimitResult.success) {
+      return errorResponse(
+        ErrorCodes.RATE_LIMIT,
+        'Too many translation requests. Please try again later.',
+        429
+      )
+    }
+
     // Parse body
     let body: unknown
     try {

@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { successResponse, errorResponse, ErrorCodes } from '@/lib/api/response'
 import { exhibitionReminderSchema } from '@/lib/api/validation'
+import { rateLimit, getClientIP } from '@/lib/api/rate-limit'
 import type { ExhibitionReminderInsert, ExhibitionReminder } from '@/lib/supabase/types'
 import { sendUserEmail, sendAdminEmail } from '@/lib/email/send'
 import {
@@ -11,6 +12,17 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting — 5 reminder requests per minute per IP
+    const clientIP = getClientIP(request)
+    const rateLimitResult = rateLimit(`reminder:${clientIP}`, 5, 60000)
+    if (!rateLimitResult.success) {
+      return errorResponse(
+        ErrorCodes.RATE_LIMIT,
+        'Too many requests. Please try again later.',
+        429
+      )
+    }
+
     const body = await request.json()
 
     // Validate input
