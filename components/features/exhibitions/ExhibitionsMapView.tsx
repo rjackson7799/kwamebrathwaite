@@ -92,7 +92,7 @@ const defaultMapOptions: google.maps.MapOptions = {
 export function ExhibitionsMapView({ filter }: ExhibitionsMapViewProps) {
   const t = useTranslations('exhibitions.map')
   const isMobile = useMediaQuery('(max-width: 768px)')
-  const { isLoaded, loadError } = useGoogleMaps()
+  const { isLoaded, loadError, consentGranted } = useGoogleMaps()
 
   // State
   const [geoFilter, setGeoFilter] = useState<GeoFilter>('global')
@@ -221,6 +221,27 @@ export function ExhibitionsMapView({ filter }: ExhibitionsMapViewProps) {
       map.setZoom(mapZoom)
     }
   }, [map, mapCenter, mapZoom])
+
+  // Revoked state — user has turned off Google Maps via the cookie banner
+  // or the privacy page. Point them at where to re-enable it.
+  if (!consentGranted) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-gray-light dark:bg-[#1A1A1A] border border-gray-light dark:border-[#333] p-8 text-center">
+        <p className="font-heading text-xl md:text-2xl text-black dark:text-[#F0F0F0] mb-2">
+          {t('blockedTitle')}
+        </p>
+        <p className="text-sm text-gray-warm dark:text-[#A0A0A0] max-w-md">
+          {t.rich('blockedBody', {
+            link: (chunks) => (
+              <a href="/privacy#cookies" className="underline hover:opacity-80">
+                {chunks}
+              </a>
+            ),
+          })}
+        </p>
+      </div>
+    )
+  }
 
   // Loading state
   if (loadError) {

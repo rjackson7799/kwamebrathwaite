@@ -59,7 +59,7 @@ export function VenueCard({
   exhibitionType,
   imageUrl,
 }: VenueCardProps) {
-  const { isLoaded, loadError } = useGoogleMaps()
+  const { isLoaded, loadError, consentGranted } = useGoogleMaps()
   const [showReminder, setShowReminder] = useState(false)
 
   const hasCoordinates = locationLat !== null && locationLng !== null
@@ -108,8 +108,8 @@ export function VenueCard({
 
   return (
     <div className="border border-gray-light dark:border-[#333] overflow-hidden">
-      {/* Embedded Google Map */}
-      {hasCoordinates && center && isLoaded && (
+      {/* Embedded Google Map — hidden entirely if the visitor has revoked consent */}
+      {hasCoordinates && consentGranted && center && isLoaded && (
         <div className="w-full h-[220px]">
           <GoogleMap
             mapContainerStyle={{ width: '100%', height: '100%' }}
@@ -126,12 +126,12 @@ export function VenueCard({
           </GoogleMap>
         </div>
       )}
-      {hasCoordinates && !isLoaded && !loadError && (
+      {hasCoordinates && consentGranted && !isLoaded && !loadError && (
         <div className="w-full h-[220px] bg-gray-light dark:bg-[#1A1A1A] flex items-center justify-center">
           <div className="w-6 h-6 border-2 border-gray-warm border-t-transparent rounded-full animate-spin" />
         </div>
       )}
-      {hasCoordinates && loadError && (
+      {hasCoordinates && consentGranted && loadError && (
         <div className="w-full h-[220px] bg-gray-light dark:bg-[#1A1A1A] flex items-center justify-center">
           <p className="text-xs text-gray-warm dark:text-[#888]">Map unavailable</p>
         </div>

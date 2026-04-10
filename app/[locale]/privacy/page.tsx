@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
+import { MapsConsentControl } from '@/components/features/privacy/MapsConsentControl'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -14,52 +15,54 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function PrivacyPage() {
+type Section = {
+  heading: string
+  paragraphs: string[]
+}
+
+export default async function PrivacyPage({ params }: Props) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'privacyPolicy' })
+
+  // next-intl doesn't expose a typed way to read array values from translations,
+  // so we look them up by key one at a time via t.raw() for prose blocks.
+  const readSection = (key: string): Section => ({
+    heading: t(`sections.${key}.heading`),
+    paragraphs: (t.raw(`sections.${key}.paragraphs`) as string[]) ?? [],
+  })
+
+  const sections: Array<{ key: string; section: Section }> = [
+    'controller',
+    'information',
+    'use',
+    'legalBasis',
+    'retention',
+    'processors',
+    'cookies',
+    'gdpr',
+    'ccpa',
+    'children',
+    'transfers',
+    'changes',
+    'contact',
+  ].map((key) => ({ key, section: readSection(key) }))
+
   return (
     <div className="container-page section-spacing">
       <div className="max-w-3xl mx-auto prose prose-lg dark:prose-invert">
-        <h1>Privacy Policy</h1>
+        <h1>{t('title')}</h1>
+        <p className="text-body-lg text-gray-warm">{t('lastUpdated')}</p>
+        <p>{t('intro')}</p>
 
-        <p className="text-body-lg text-gray-warm">
-          Last updated: January 2026
-        </p>
-
-        <h2>Information We Collect</h2>
-        <p>
-          When you submit an inquiry through our contact form, we collect:
-        </p>
-        <ul>
-          <li>Your name and email address</li>
-          <li>Phone number (if provided)</li>
-          <li>The content of your message</li>
-        </ul>
-
-        <h2>How We Use Your Information</h2>
-        <p>
-          We use the information you provide solely to respond to your inquiries
-          and communicate with you about potential acquisitions, exhibitions,
-          or press opportunities.
-        </p>
-
-        <h2>Newsletter</h2>
-        <p>
-          If you subscribe to our newsletter, we will use your email address
-          to send you updates about the archive, exhibitions, and events.
-          You can unsubscribe at any time.
-        </p>
-
-        <h2>Data Retention</h2>
-        <p>
-          We retain your inquiry information for as long as necessary to
-          fulfill the purpose for which it was collected and to comply with
-          legal obligations.
-        </p>
-
-        <h2>Contact Us</h2>
-        <p>
-          If you have questions about this privacy policy, please contact us
-          through our contact form.
-        </p>
+        {sections.map(({ key, section }) => (
+          <section key={key}>
+            <h2>{section.heading}</h2>
+            {section.paragraphs.map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+            {key === 'cookies' && <MapsConsentControl />}
+          </section>
+        ))}
       </div>
     </div>
   )

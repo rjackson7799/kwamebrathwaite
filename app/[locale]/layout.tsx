@@ -5,6 +5,7 @@ import { locales, type Locale } from '@/i18n/request'
 import { Header } from '@/components/layout'
 import { Footer } from '@/components/layout'
 import { GoogleMapsProvider } from '@/components/providers/GoogleMapsProvider'
+import { CookieConsentBanner } from '@/components/features/privacy/CookieConsentBanner'
 import { getContentFontScale } from '@/lib/page-settings'
 import type { Metadata } from 'next'
 
@@ -61,6 +62,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           {children}
         </main>
         <Footer />
+        <CookieConsentBanner />
       </div>
       </GoogleMapsProvider>
     </NextIntlClientProvider>

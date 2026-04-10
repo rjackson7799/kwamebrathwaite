@@ -88,7 +88,7 @@
       "title": "Expositions | Archives Kwame Brathwaite",
       "description": "Découvrez les expositions actuelles, à venir et passées présentant la photographie de Kwame Brathwaite dans les musées et galeries du monde entier."
     },
-    "searchPlaceholder": "Rechercher par titre, lieu ou ville…",
+    "searchPlaceholder": "Rechercher par titre, lieu ou ville\u2026",
     "current": "En cours",
     "upcoming": "À venir",
     "past": "Passées",
@@ -123,7 +123,9 @@
       "share": "Partager",
       "addToCalendar": "Ajouter au calendrier",
       "getDirections": "Obtenir l'itinéraire",
-      "viewDetails": "Voir les détails"
+      "viewDetails": "Voir les détails",
+      "blockedTitle": "Google Maps est bloqué",
+      "blockedBody": "Vous avez désactivé Google Maps interactif pour ce site. Vous pouvez le réactiver depuis les <link>paramètres de confidentialité</link>."
     },
     "reminder": {
       "title": "Recevoir un rappel",
@@ -329,6 +331,125 @@
     "lookingFor": "Vous cherchez peut-être :",
     "reportBrokenLink": "Signaler un lien brisé",
     "reportBrokenLinkSubject": "Signalement de lien brisé"
+  },
+  "privacyPolicy": {
+    "title": "Politique de confidentialité",
+    "lastUpdated": "Dernière mise à jour : 9 avril 2026",
+    "intro": "Cette Politique de confidentialité explique comment l'Archive Kwame Brathwaite (« nous », « notre ») collecte, utilise et protège les données personnelles des visiteurs de notre site web. Nous nous engageons à protéger votre vie privée et à traiter vos données personnelles de manière transparente, conformément aux lois applicables en matière de protection des données, notamment le Règlement général sur la protection des données (RGPD) de l'Union européenne et le California Consumer Privacy Act (CCPA).",
+    "sections": {
+      "controller": {
+        "heading": "Responsable du traitement",
+        "paragraphs": [
+          "Le responsable du traitement de vos données personnelles est l'Archive Kwame Brathwaite. Pour toute question concernant cette politique ou pour exercer vos droits, vous pouvez nous contacter à l'adresse info@kwamebrathwaite.com."
+        ]
+      },
+      "information": {
+        "heading": "Informations que nous collectons",
+        "paragraphs": [
+          "Nous ne collectons que les informations nécessaires pour répondre à vos demandes et exploiter ce site web.",
+          "Demandes et formulaires de contact : lorsque vous nous contactez, nous collectons votre nom, votre adresse e-mail, votre numéro de téléphone (si fourni), l'objet et le contenu de votre message.",
+          "Abonnements à la newsletter : lorsque vous vous abonnez à notre newsletter, nous collectons votre adresse e-mail et votre préférence de langue.",
+          "Demandes de rappel d'exposition : lorsque vous demandez un rappel, nous collectons votre nom, votre adresse e-mail et l'exposition qui vous intéresse.",
+          "Journaux du serveur : comme la plupart des sites web, notre hébergeur enregistre automatiquement des informations techniques de base telles que votre adresse IP, le type de navigateur, les URL demandées et les horodatages. Ces journaux sont utilisés à des fins de sécurité et d'exploitation et sont conservés pendant une courte période."
+        ]
+      },
+      "use": {
+        "heading": "Comment nous utilisons vos informations",
+        "paragraphs": [
+          "Nous utilisons vos informations personnelles uniquement pour répondre à vos demandes, envoyer les newsletters et rappels d'événements que vous avez demandés, exploiter et sécuriser le site web et respecter les obligations légales.",
+          "Nous ne vendons pas vos informations personnelles et ne les utilisons pas à des fins publicitaires ou de profilage."
+        ]
+      },
+      "legalBasis": {
+        "heading": "Base légale du traitement",
+        "paragraphs": [
+          "En vertu du RGPD, nous traitons vos données personnelles sur les bases légales suivantes : votre consentement (pour les abonnements à la newsletter et les rappels d'exposition), notre intérêt légitime à répondre aux demandes que vous nous envoyez et le respect des obligations légales."
+        ]
+      },
+      "retention": {
+        "heading": "Conservation des données",
+        "paragraphs": [
+          "Les dossiers de demandes sont conservés jusqu'à trois ans à compter du dernier contact, après quoi ils sont supprimés, sauf si la loi impose une période de conservation plus longue.",
+          "Les abonnements à la newsletter sont conservés jusqu'à votre désabonnement. Une fois désabonné, votre adresse e-mail est marquée comme inactive et n'est plus utilisée pour les communications.",
+          "Les journaux du serveur sont conservés environ trente jours à des fins de sécurité et de diagnostic."
+        ]
+      },
+      "processors": {
+        "heading": "Sous-traitants tiers",
+        "paragraphs": [
+          "Nous avons recours à un petit nombre de prestataires soigneusement sélectionnés pour exploiter ce site. Chaque sous-traitant agit sur nos instructions et est lié par des obligations contractuelles de confidentialité et de protection des données.",
+          "Hébergement et base de données : Vercel et Supabase hébergent le site et stockent des contenus tels que les œuvres, expositions, demandes et abonnés à la newsletter.",
+          "Envoi d'e-mails : Resend est utilisé pour envoyer en notre nom les e-mails transactionnels et les newsletters.",
+          "Cartes : Google Maps n'est chargé qu'après votre consentement explicite sur les pages contenant une carte. Lorsqu'il est chargé, Google peut traiter des informations techniques conformément à sa propre politique de confidentialité.",
+          "Traduction : DeepL est utilisé côté serveur pour traduire les contenus entre l'anglais, le français et le japonais. Aucune donnée identifiant un utilisateur n'est envoyée.",
+          "Outils d'IA : OpenAI est utilisé côté serveur par nos administrateurs pour rédiger des descriptions d'œuvres. Aucune donnée de visiteur n'est transmise à OpenAI."
+        ]
+      },
+      "cookies": {
+        "heading": "Cookies et stockage local",
+        "paragraphs": [
+          "Les pages publiques de ce site n'utilisent aucun cookie d'analyse, publicitaire ou de suivi.",
+          "Nous utilisons un seul élément de stockage local (« kb-maps-consent ») pour mémoriser votre préférence lorsque vous choisissez de charger la carte Google Maps interactive. Cette valeur ne quitte jamais votre navigateur.",
+          "La zone d'administration du site utilise des cookies de session pour l'authentification, mais ces cookies sont uniquement définis pour le personnel autorisé et ne sont jamais déposés pour les visiteurs publics.",
+          "Vous pouvez consulter ou réinitialiser votre préférence Google Maps ci-dessous."
+        ]
+      },
+      "gdpr": {
+        "heading": "Vos droits au titre du RGPD",
+        "paragraphs": [
+          "Si vous résidez dans l'Union européenne, au Royaume-Uni ou dans une autre juridiction reconnaissant ces droits, vous disposez du droit d'accéder aux données personnelles que nous détenons à votre sujet, de demander la rectification de données inexactes, de demander leur effacement, de vous opposer au traitement ou d'en demander la limitation, ainsi que du droit à la portabilité des données.",
+          "Vous avez également le droit de retirer votre consentement à tout moment lorsque le traitement est fondé sur le consentement, et de déposer une plainte auprès de votre autorité locale de protection des données.",
+          "Pour exercer ces droits, veuillez nous contacter à info@kwamebrathwaite.com. Nous vous répondrons dans les délais requis par la loi applicable."
+        ]
+      },
+      "ccpa": {
+        "heading": "Vos droits au titre du CCPA",
+        "paragraphs": [
+          "Si vous résidez en Californie, vous avez le droit de savoir quelles informations personnelles nous collectons à votre sujet, d'en demander la suppression et de refuser toute vente ou tout partage de vos informations personnelles.",
+          "Nous ne vendons pas d'informations personnelles et ne les partageons pas avec des tiers à des fins publicitaires ou de profilage.",
+          "Pour exercer vos droits en Californie, contactez-nous à info@kwamebrathwaite.com."
+        ]
+      },
+      "children": {
+        "heading": "Protection des mineurs",
+        "paragraphs": [
+          "Ce site n'est pas destiné aux enfants de moins de seize ans. Nous ne collectons pas sciemment d'informations personnelles auprès d'enfants. Si vous pensez que nous avons recueilli des informations concernant un enfant, veuillez nous contacter et nous les supprimerons rapidement."
+        ]
+      },
+      "transfers": {
+        "heading": "Transferts internationaux de données",
+        "paragraphs": [
+          "Nos prestataires peuvent stocker ou traiter les données en dehors de votre pays de résidence, notamment aux États-Unis. Lorsque de tels transferts ont lieu, ils sont encadrés par des garanties appropriées telles que les clauses contractuelles types de la Commission européenne."
+        ]
+      },
+      "changes": {
+        "heading": "Modifications de cette politique",
+        "paragraphs": [
+          "Nous pouvons mettre à jour cette Politique de confidentialité de temps à autre. En cas de modifications importantes, nous mettrons à jour la date « Dernière mise à jour » en haut de cette page et, le cas échéant, informerons les abonnés par e-mail."
+        ]
+      },
+      "contact": {
+        "heading": "Nous contacter",
+        "paragraphs": [
+          "Pour toute question concernant cette Politique de confidentialité ou la manière dont nous traitons vos informations personnelles, veuillez nous contacter à info@kwamebrathwaite.com ou utiliser le formulaire de contact de notre site."
+        ]
+      }
+    },
+    "mapsConsentControl": {
+      "heading": "Préférence Google Maps",
+      "statusGranted": "Vous avez autorisé le chargement de Google Maps interactif sur ce site.",
+      "statusDenied": "Google Maps interactif est actuellement bloqué. Les cartes ne se chargeront qu'après votre autorisation explicite.",
+      "grantButton": "Autoriser Google Maps",
+      "revokeButton": "Bloquer Google Maps",
+      "loading": "Chargement de votre préférence actuelle..."
+    }
+  },
+  "cookieBanner": {
+    "ariaLabel": "Avis concernant les cookies",
+    "message": "Ce site utilise Google Maps pour afficher les lieux des expositions, ce qui peut déposer des cookies.",
+    "learnMore": "En savoir plus",
+    "dismiss": "J'ai compris",
+    "block": "Bloquer Google Maps"
   },
   "newsletterUnsubscribe": {
     "confirm": {

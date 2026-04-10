@@ -19,7 +19,7 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   return (
-    <GoogleMapsProvider>
+    <GoogleMapsProvider autoGrant>
       <AuthGuard>{children}</AuthGuard>
     </GoogleMapsProvider>
   )

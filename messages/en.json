@@ -125,7 +125,7 @@
       "title": "Exhibitions | Kwame Brathwaite Archive",
       "description": "Discover current, upcoming, and past exhibitions featuring the photography of Kwame Brathwaite at museums and galleries worldwide."
     },
-    "searchPlaceholder": "Search by title, venue, or city…",
+    "searchPlaceholder": "Search by title, venue, or city\u2026",
     "current": "Current",
     "upcoming": "Upcoming",
     "past": "Past",
@@ -160,7 +160,9 @@
       "share": "Share",
       "addToCalendar": "Add to Calendar",
       "getDirections": "Get Directions",
-      "viewDetails": "View Details"
+      "viewDetails": "View Details",
+      "blockedTitle": "Google Maps is blocked",
+      "blockedBody": "You have turned off interactive Google Maps for this site. You can re-enable it from the <link>privacy settings</link>."
     },
     "reminder": {
       "title": "Get Reminded",
@@ -366,6 +368,125 @@
     "lookingFor": "You might be looking for:",
     "reportBrokenLink": "Report a broken link",
     "reportBrokenLinkSubject": "Broken link report"
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: April 9, 2026",
+    "intro": "This Privacy Policy explains how the Kwame Brathwaite Archive (\"we\", \"us\", \"our\") collects, uses, and protects the personal information of visitors to our website. We are committed to protecting your privacy and handling your personal data transparently and in compliance with applicable data protection laws, including the EU General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA).",
+    "sections": {
+      "controller": {
+        "heading": "Data Controller",
+        "paragraphs": [
+          "The data controller responsible for the processing of your personal data is the Kwame Brathwaite Archive. If you have questions about this policy or wish to exercise any of your rights, you can contact us at info@kwamebrathwaite.com."
+        ]
+      },
+      "information": {
+        "heading": "Information We Collect",
+        "paragraphs": [
+          "We collect only the information necessary to respond to your inquiries and operate this website.",
+          "Inquiries and contact form submissions: when you contact us, we collect your name, email address, phone number (if provided), subject, and the content of your message.",
+          "Newsletter subscriptions: when you subscribe to our newsletter, we collect your email address and language preference.",
+          "Exhibition reminder requests: when you sign up for reminders, we collect your name, email address, and the exhibition you are interested in.",
+          "Server logs: like most websites, our hosting provider automatically records basic technical information such as your IP address, browser type, requested URLs, and timestamps. These logs are used for security and operational purposes and are retained for a short period."
+        ]
+      },
+      "use": {
+        "heading": "How We Use Your Information",
+        "paragraphs": [
+          "We use your personal information solely to respond to your inquiries, deliver newsletters and event reminders you have requested, operate and secure the website, and comply with legal obligations.",
+          "We do not sell your personal information, and we do not use it for advertising or profiling."
+        ]
+      },
+      "legalBasis": {
+        "heading": "Legal Basis for Processing",
+        "paragraphs": [
+          "Under the GDPR, we process your personal data on the following legal bases: your consent (for newsletter subscriptions and exhibition reminders), our legitimate interest in responding to inquiries you send us, and compliance with legal obligations."
+        ]
+      },
+      "retention": {
+        "heading": "Data Retention",
+        "paragraphs": [
+          "Inquiry records are retained for up to three years from the date of last contact, after which they are deleted unless a longer retention period is required by law.",
+          "Newsletter subscriptions are retained until you unsubscribe. Once you unsubscribe, your email address is marked inactive and is no longer used for communications.",
+          "Server logs are retained for approximately thirty days for security and diagnostic purposes."
+        ]
+      },
+      "processors": {
+        "heading": "Third-Party Processors",
+        "paragraphs": [
+          "We use a small number of carefully selected service providers to operate this website. Each processor acts on our instructions and is bound by contractual confidentiality and data protection obligations.",
+          "Hosting and database: Vercel and Supabase host the website and store content such as artwork records, exhibitions, inquiries, and newsletter subscribers.",
+          "Email delivery: Resend is used to send transactional and newsletter emails on our behalf.",
+          "Maps: Google Maps is loaded only after you explicitly consent on pages that display a map. When loaded, Google may process technical information in accordance with its own privacy policy.",
+          "Translation: DeepL is used server-side to translate content between English, French, and Japanese. No user-identifying data is sent.",
+          "AI tools: OpenAI is used server-side by our administrators to generate draft descriptions of artworks. No visitor data is sent to OpenAI."
+        ]
+      },
+      "cookies": {
+        "heading": "Cookies and Local Storage",
+        "paragraphs": [
+          "The public pages of this website do not use any analytics, advertising, or tracking cookies.",
+          "We use a single local storage item (\"kb-maps-consent\") to remember your preference when you choose to load the interactive Google Maps component. This value never leaves your browser.",
+          "The administrative area of the website uses session cookies for authentication, but those cookies are set only for authorised staff members and are never set for public visitors.",
+          "You can review or reset your Google Maps preference below."
+        ]
+      },
+      "gdpr": {
+        "heading": "Your Rights Under the GDPR",
+        "paragraphs": [
+          "If you are located in the European Union, the United Kingdom, or another jurisdiction that recognises these rights, you have the right to access the personal data we hold about you, to request correction of inaccurate data, to request erasure of your data, to object to or restrict processing, and to data portability.",
+          "You also have the right to withdraw consent at any time where processing is based on consent, and to lodge a complaint with your local data protection authority.",
+          "To exercise any of these rights, please contact us at info@kwamebrathwaite.com. We will respond within the timeframes required by applicable law."
+        ]
+      },
+      "ccpa": {
+        "heading": "Your Rights Under the CCPA",
+        "paragraphs": [
+          "If you are a California resident, you have the right to know what personal information we collect about you, to request deletion of that information, and to opt out of any sale or sharing of your personal information.",
+          "We do not sell personal information, and we do not share personal information with third parties for advertising or profiling purposes.",
+          "To exercise your California rights, contact us at info@kwamebrathwaite.com."
+        ]
+      },
+      "children": {
+        "heading": "Children's Privacy",
+        "paragraphs": [
+          "This website is not directed at children under the age of sixteen. We do not knowingly collect personal information from children. If you believe we have collected information from a child, please contact us and we will delete it promptly."
+        ]
+      },
+      "transfers": {
+        "heading": "International Data Transfers",
+        "paragraphs": [
+          "Our service providers may store or process data outside of your country of residence, including in the United States. Where such transfers occur, they are protected by appropriate safeguards such as the European Commission's Standard Contractual Clauses."
+        ]
+      },
+      "changes": {
+        "heading": "Changes to This Policy",
+        "paragraphs": [
+          "We may update this Privacy Policy from time to time. When we make material changes, we will update the \"Last updated\" date at the top of this page and, where appropriate, notify subscribers by email."
+        ]
+      },
+      "contact": {
+        "heading": "Contact Us",
+        "paragraphs": [
+          "If you have any questions about this Privacy Policy or how we handle your personal information, please contact us at info@kwamebrathwaite.com, or use the contact form on our website."
+        ]
+      }
+    },
+    "mapsConsentControl": {
+      "heading": "Google Maps preference",
+      "statusGranted": "You have allowed interactive Google Maps to load on this site.",
+      "statusDenied": "Interactive Google Maps are currently blocked. Maps will only load after you click to allow them.",
+      "grantButton": "Allow Google Maps",
+      "revokeButton": "Block Google Maps",
+      "loading": "Loading your current preference..."
+    }
+  },
+  "cookieBanner": {
+    "ariaLabel": "Cookie notice",
+    "message": "This site uses Google Maps to show exhibition locations, which may set cookies.",
+    "learnMore": "Learn more",
+    "dismiss": "Got it",
+    "block": "Block Google Maps"
   },
   "newsletterUnsubscribe": {
     "confirm": {
