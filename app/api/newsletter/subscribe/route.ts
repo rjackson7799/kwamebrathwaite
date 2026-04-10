@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import {
   successResponse,
   errorResponse,
@@ -60,17 +60,42 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // Check if already subscribed
     const { data: existing } = await supabase
       .from('newsletter_subscribers')
-      .select('id')
+      .select('id, unsubscribed_at, unsubscribe_token')
       .eq('email', email.toLowerCase())
       .single()
 
     if (existing) {
-      // Already subscribed - return success without error
+      const existingRow = existing as {
+        id: string
+        unsubscribed_at: string | null
+        unsubscribe_token: string
+      }
+
+      // Previously unsubscribed — reactivate the subscription
+      if (existingRow.unsubscribed_at) {
+        const { error: reactivateError } = await supabase
+          .from('newsletter_subscribers')
+          .update({ unsubscribed_at: null, locale } as never)
+          .eq('id', existingRow.id)
+
+        if (reactivateError) {
+          console.error('Reactivation error:', reactivateError)
+          return errorResponse(ErrorCodes.DB_ERROR, 'Failed to subscribe', 500)
+        }
+
+        return successResponse({
+          id: existingRow.id,
+          message: 'Welcome back — your subscription has been reactivated.',
+          alreadySubscribed: false,
+        })
+      }
+
+      // Still actively subscribed - return success without error
       return successResponse({
         message: 'You are already subscribed to our newsletter.',
         alreadySubscribed: true,
@@ -86,7 +111,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('newsletter_subscribers')
       .insert(insertData as never)
-      .select('id')
+      .select('id, unsubscribe_token')
       .single()
 
     if (error) {
@@ -101,13 +126,20 @@ export async function POST(request: NextRequest) {
       return errorResponse(ErrorCodes.DB_ERROR, 'Failed to subscribe', 500)
     }
 
-    const result = data as { id: string } | null
+    const result = data as { id: string; unsubscribe_token: string } | null
+
+    // Build localized unsubscribe URL for the welcome email footer
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kwamebrathwaite.com'
+    const localePrefix = locale === 'en' ? '' : `/${locale}`
+    const unsubscribeUrl = result
+      ? `${siteUrl}${localePrefix}/newsletter/unsubscribe?token=${result.unsubscribe_token}`
+      : `${siteUrl}${localePrefix}/newsletter/unsubscribe`
 
     // Send welcome email (non-blocking)
     sendUserEmail(
       email,
       'Welcome to the Kwame Brathwaite Archive Newsletter',
-      NewsletterWelcomeEmail()
+      NewsletterWelcomeEmail({ unsubscribeUrl })
     )
 
     // Notify admin of new subscriber (non-blocking)

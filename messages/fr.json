@@ -88,7 +88,7 @@
       "title": "Expositions | Archives Kwame Brathwaite",
       "description": "Découvrez les expositions actuelles, à venir et passées présentant la photographie de Kwame Brathwaite dans les musées et galeries du monde entier."
     },
-    "searchPlaceholder": "Rechercher par titre, lieu ou ville\u2026",
+    "searchPlaceholder": "Rechercher par titre, lieu ou ville…",
     "current": "En cours",
     "upcoming": "À venir",
     "past": "Passées",
@@ -329,6 +329,25 @@
     "lookingFor": "Vous cherchez peut-être :",
     "reportBrokenLink": "Signaler un lien brisé",
     "reportBrokenLinkSubject": "Signalement de lien brisé"
+  },
+  "newsletterUnsubscribe": {
+    "confirm": {
+      "overline": "Newsletter",
+      "title": "Se désabonner de notre newsletter",
+      "body": "Veuillez confirmer que vous souhaitez ne plus recevoir d'actualités de l'Archive Kwame Brathwaite. Vous pourrez vous réabonner à tout moment.",
+      "button": "Confirmer le désabonnement",
+      "cancel": "Annuler",
+      "missingTokenTitle": "Lien de désabonnement invalide",
+      "missingTokenBody": "Ce lien de désabonnement est manquant ou incorrect. Si vous souhaitez vous désabonner, veuillez utiliser le lien figurant dans votre dernier e-mail ou nous contacter pour obtenir de l'aide.",
+      "returnHome": "Retour à l'accueil"
+    },
+    "done": {
+      "overline": "Newsletter",
+      "title": "Vous êtes désabonné(e)",
+      "body": "Vous ne recevrez plus les e-mails de l'Archive Kwame Brathwaite. Merci de l'intérêt que vous portez à ce travail — vous pouvez vous réabonner à tout moment depuis notre site.",
+      "returnHome": "Retour à l'accueil",
+      "contactUs": "Nous contacter"
+    }
   },
   "footer": {
     "newsletter": {

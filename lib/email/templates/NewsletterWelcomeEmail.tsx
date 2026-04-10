@@ -1,7 +1,11 @@
-import { Text } from '@react-email/components'
+import { Text, Link } from '@react-email/components'
 import { BaseLayout } from './BaseLayout'
 
-export function NewsletterWelcomeEmail() {
+interface NewsletterWelcomeEmailProps {
+  unsubscribeUrl?: string
+}
+
+export function NewsletterWelcomeEmail({ unsubscribeUrl }: NewsletterWelcomeEmailProps = {}) {
   return (
     <BaseLayout previewText="Welcome to the Kwame Brathwaite Archive newsletter">
       <Text style={heading}>Welcome</Text>
@@ -27,6 +31,18 @@ export function NewsletterWelcomeEmail() {
         <br />
         Kwame Brathwaite Archive
       </Text>
+
+      {unsubscribeUrl && (
+        <Text style={unsubscribeText}>
+          You are receiving this email because you subscribed to the Kwame
+          Brathwaite Archive newsletter. If you no longer wish to receive these
+          updates, you can{' '}
+          <Link href={unsubscribeUrl} style={unsubscribeLink}>
+            unsubscribe here
+          </Link>
+          .
+        </Text>
+      )}
     </BaseLayout>
   )
 }
@@ -44,4 +60,18 @@ const paragraph = {
   lineHeight: '24px',
   color: '#000000',
   margin: '16px 0',
+}
+
+const unsubscribeText = {
+  fontSize: '12px',
+  lineHeight: '18px',
+  color: '#6B6B6B',
+  marginTop: '32px',
+  paddingTop: '16px',
+  borderTop: '1px solid #E5E5E5',
+}
+
+const unsubscribeLink = {
+  color: '#6B6B6B',
+  textDecoration: 'underline',
 }

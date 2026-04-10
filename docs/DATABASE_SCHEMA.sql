@@ -175,12 +175,16 @@ CREATE TABLE newsletter_subscribers (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   email VARCHAR(255) UNIQUE NOT NULL,
   locale VARCHAR(5) DEFAULT 'en',
-  subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  unsubscribe_token UUID UNIQUE NOT NULL DEFAULT uuid_generate_v4(),
+  unsubscribed_at TIMESTAMP WITH TIME ZONE
 );
 
 -- Newsletter indexes
 CREATE INDEX idx_newsletter_email ON newsletter_subscribers(email);
 CREATE INDEX idx_newsletter_subscribed ON newsletter_subscribers(subscribed_at DESC);
+CREATE UNIQUE INDEX idx_newsletter_unsubscribe_token ON newsletter_subscribers(unsubscribe_token);
+CREATE INDEX idx_newsletter_unsubscribed_at ON newsletter_subscribers(unsubscribed_at);
 
 -- ============================================
 -- TRANSLATION CACHE

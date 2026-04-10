@@ -433,18 +433,24 @@ export type Database = {
           email: string
           locale: string
           subscribed_at: string
+          unsubscribe_token: string
+          unsubscribed_at: string | null
         }
         Insert: {
           id?: string
           email: string
           locale?: string
           subscribed_at?: string
+          unsubscribe_token?: string
+          unsubscribed_at?: string | null
         }
         Update: {
           id?: string
           email?: string
           locale?: string
           subscribed_at?: string
+          unsubscribe_token?: string
+          unsubscribed_at?: string | null
         }
       }
       translation_cache: {
