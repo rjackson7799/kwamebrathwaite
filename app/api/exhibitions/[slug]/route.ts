@@ -52,7 +52,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         return errorResponse(ErrorCodes.NOT_FOUND, 'Exhibition not found', 404)
       }
       console.error('Database error:', error)
-      return errorResponse(ErrorCodes.DB_ERROR, error.message, 500)
+      return errorResponse(ErrorCodes.DB_ERROR, 'Failed to fetch data', 500)
     }
 
     // Cast to our known type
@@ -81,7 +81,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     console.error('API error:', error)
     return errorResponse(
       ErrorCodes.INTERNAL_ERROR,
-      error instanceof Error ? error.message : 'An unexpected error occurred',
+      'An unexpected error occurred',
       500
     )
   }

@@ -1,13 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { errorResponse, ErrorCodes } from '@/lib/api/response'
-import { requireAuth } from '@/lib/api/admin'
+import { requireAuth, logActivity } from '@/lib/api/admin'
+import { rateLimit, getClientIP } from '@/lib/api/rate-limit'
 
 // GET /api/admin/newsletter/export - Export all subscribers as CSV
 export async function GET(request: NextRequest) {
   // Check authentication
   const { user, errorResponse: authError } = await requireAuth(request)
   if (authError) return authError
+
+  // Rate limit exports: 5 per hour per authenticated user
+  const limitKey = `export:newsletter:${user?.id ?? getClientIP(request)}`
+  const limitResult = rateLimit(limitKey, 5, 60 * 60 * 1000)
+  if (!limitResult.success) {
+    return errorResponse(
+      ErrorCodes.RATE_LIMIT,
+      'Too many export requests. Please try again later.',
+      429
+    )
+  }
 
   try {
     const supabase = await createClient()
@@ -45,6 +57,17 @@ export async function GET(request: NextRequest) {
     const csvContent = csvRows.join('\n')
     const timestamp = new Date().toISOString().split('T')[0]
     const filename = `newsletter-subscribers-${timestamp}.csv`
+
+    // Audit log the export
+    if (user?.email) {
+      await logActivity(
+        user.email,
+        'update',
+        'newsletter_subscriber',
+        undefined,
+        `CSV export (${(data || []).length} subscribers)`
+      )
+    }
 
     return new NextResponse(csvContent, {
       status: 200,

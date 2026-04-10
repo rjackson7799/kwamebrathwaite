@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
     console.error('API error:', error)
     return errorResponse(
       ErrorCodes.INTERNAL_ERROR,
-      error instanceof Error ? error.message : 'An unexpected error occurred',
+      'An unexpected error occurred',
       500
     )
   }

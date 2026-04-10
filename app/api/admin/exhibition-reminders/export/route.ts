@@ -1,13 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { errorResponse, ErrorCodes } from '@/lib/api/response'
-import { requireAuth } from '@/lib/api/admin'
+import { requireAuth, logActivity } from '@/lib/api/admin'
+import { rateLimit, getClientIP } from '@/lib/api/rate-limit'
 import type { ExhibitionReminder } from '@/lib/supabase/types'
 
 export async function GET(request: NextRequest) {
   // Check authentication
-  const { errorResponse: authError } = await requireAuth(request)
+  const { user, errorResponse: authError } = await requireAuth(request)
   if (authError) return authError
+
+  // Rate limit exports: 5 per hour per authenticated user
+  const limitKey = `export:reminders:${user?.id ?? getClientIP(request)}`
+  const limitResult = rateLimit(limitKey, 5, 60 * 60 * 1000)
+  if (!limitResult.success) {
+    return errorResponse(
+      ErrorCodes.RATE_LIMIT,
+      'Too many export requests. Please try again later.',
+      429
+    )
+  }
 
   try {
     const supabase = await createClient()
@@ -86,6 +98,17 @@ export async function GET(request: NextRequest) {
     const today = new Date().toISOString().split('T')[0]
     const filename = `exhibition-reminders-${today}.csv`
 
+    // Audit log the export
+    if (user?.email) {
+      await logActivity(
+        user.email,
+        'update',
+        'exhibition',
+        undefined,
+        `CSV reminder export (${reminders.length} reminders)`
+      )
+    }
+
     return new NextResponse(csv, {
       status: 200,
       headers: {
@@ -97,7 +120,7 @@ export async function GET(request: NextRequest) {
     console.error('Export error:', error)
     return errorResponse(
       ErrorCodes.INTERNAL_ERROR,
-      error instanceof Error ? error.message : 'Failed to export reminders',
+      'Failed to export reminders',
       500
     )
   }

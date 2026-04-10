@@ -5,6 +5,7 @@ import { getPageSettings } from '@/lib/page-settings'
 import { PageTitle } from '@/components/ui/PageTitle'
 import { getPageContent } from '@/lib/supabase/queries/content'
 import { translatePageContent } from '@/lib/ai/translation-service'
+import { sanitizeHtml } from '@/lib/utils/sanitize-html'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -64,13 +65,13 @@ export default async function ArchivePage({ params }: Props) {
         <div className="flex flex-col md:flex-row gap-8 md:gap-12">
           <div className="md:w-[62%] prose prose-lg dark:prose-invert max-w-none text-gray-body dark:text-[#C0C0C0] leading-[1.8]">
             {translatedMission ? (
-              <div dangerouslySetInnerHTML={{ __html: translatedMission }} />
+              <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translatedMission) }} />
             ) : (
               <p className="text-gray-meta">Content coming soon.</p>
             )}
 
             {translatedDescription && (
-              <div dangerouslySetInnerHTML={{ __html: translatedDescription }} />
+              <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translatedDescription) }} />
             )}
           </div>
 

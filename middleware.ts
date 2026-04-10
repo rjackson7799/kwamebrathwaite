@@ -10,46 +10,60 @@ const intlMiddleware = createIntlMiddleware({
   localePrefix: 'as-needed',
 })
 
+function createSupabaseMiddlewareClient(request: NextRequest, response: NextResponse) {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set(name, value)
+            response.cookies.set(name, value, options)
+          })
+        },
+      },
+    }
+  )
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Handle admin routes - check authentication
-  if (pathname.startsWith('/admin')) {
-    // Skip auth check for login page and API routes
-    if (pathname === '/admin/login' || pathname.startsWith('/api/')) {
+  // Protect admin API routes (defense-in-depth; individual routes also call requireAuth)
+  if (pathname.startsWith('/api/admin')) {
+    // Allow the auth endpoints themselves (login/logout/session)
+    if (pathname.startsWith('/api/admin/auth/')) {
       return NextResponse.next()
     }
 
-    // Create Supabase client for middleware
-    let response = NextResponse.next({
-      request: {
-        headers: request.headers,
-      },
-    })
-
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return request.cookies.getAll()
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              request.cookies.set(name, value)
-              response.cookies.set(name, value, options)
-            })
-          },
-        },
-      }
-    )
-
-    // Check if user is authenticated
+    const response = NextResponse.next({ request: { headers: request.headers } })
+    const supabase = createSupabaseMiddlewareClient(request, response)
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-      // Redirect to login if not authenticated
+      return NextResponse.json(
+        { error: { code: 'UNAUTHORIZED', message: 'Authentication required' } },
+        { status: 401 }
+      )
+    }
+    return response
+  }
+
+  // Handle admin page routes - check authentication
+  if (pathname.startsWith('/admin')) {
+    if (pathname === '/admin/login') {
+      return NextResponse.next()
+    }
+
+    const response = NextResponse.next({ request: { headers: request.headers } })
+    const supabase = createSupabaseMiddlewareClient(request, response)
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
       const loginUrl = new URL('/admin/login', request.url)
       return NextResponse.redirect(loginUrl)
     }
@@ -63,7 +77,10 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   // Match all pathnames except for:
-  // - API routes (/api/...)
+  // - Public API routes (we explicitly include /api/admin below)
   // - Static files (_next/static, _next/image, favicon.ico, etc.)
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
+  matcher: [
+    '/((?!api|_next|_vercel|.*\\..*).*)',
+    '/api/admin/:path*',
+  ],
 }

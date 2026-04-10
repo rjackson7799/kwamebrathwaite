@@ -1,7 +1,50 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** April 4, 2026
+**Last Updated:** April 9, 2026
+
+---
+
+## Pre-Launch Security Hardening (April 9, 2026)
+
+### Completed
+- [x] **Security audit performed** across auth, API routes, forms, data handling, and env. Full plan at `C:\Users\HCI\.claude\plans\dapper-petting-starfish.md`
+- [x] **Security headers added** in `next.config.mjs` — CSP, X-Frame-Options, HSTS, Referrer-Policy, Permissions-Policy, X-Content-Type-Options. CSP allows Supabase, Google Maps, DeepL, OpenAI, Resend domains
+- [x] **Middleware admin API auth gap closed** — `middleware.ts` now matches `/api/admin/:path*` and verifies session before the request reaches the route handler (defense-in-depth on top of existing `requireAuth()`). `/api/admin/auth/*` endpoints excluded
+- [x] **XSS vulnerability fixed** on about/archive pages
+  - Installed `isomorphic-dompurify`
+  - Created `lib/utils/sanitize-html.ts` with a tag/attribute allow-list
+  - Applied `sanitizeHtml()` to all `dangerouslySetInnerHTML` calls in `app/[locale]/about/page.tsx` and `app/[locale]/archive/page.tsx`
+- [x] **Database error messages sanitized** across 20 API routes — clients now receive generic messages ("Failed to fetch data", "An unexpected error occurred"), full error details still logged server-side via `console.error`
+- [x] **Export endpoints rate-limited & audit-logged**
+  - `/api/admin/newsletter/export` and `/api/admin/exhibition-reminders/export` now capped at 5 exports/hour per authenticated user
+  - Each export writes an entry to `activity_log` with user email and record count
+- [x] **Verified `.env.local` was never committed** to git history (`git log --all --full-history -- .env.local` is empty)
+- [x] **Production build verified** — `npm run build` passes with all security changes in place
+
+### Still Required Before Launch
+- [ ] **CRITICAL: Rotate all API keys** if they were ever shared outside the local machine (Supabase service role, OpenAI, Resend, DeepL, Google Maps). Move production secrets to Vercel environment variables, never commit to files
+- [ ] **HIGH: Replace in-memory rate limiter with Upstash Redis** — current `lib/api/rate-limit.ts` uses a `Map` that resets on every serverless cold start. Rate limits are unreliable under load. Install `@upstash/ratelimit` + `@upstash/redis`
+- [ ] **MEDIUM: Supabase RLS policy audit** — verify Row Level Security is enabled on all tables in the Supabase dashboard and export policies as SQL migrations to `supabase/migrations/` for version control
+- [ ] **MEDIUM: Restrict `select('*')` in public API routes** to explicit field lists — prevents future schema additions from accidentally leaking fields
+- [ ] **MEDIUM: CSRF Origin/Referer check** for state-changing admin endpoints (POST/PUT/DELETE). Supabase Auth's `SameSite=Lax` cookies provide baseline protection but header validation is better
+
+### Files Modified
+- `next.config.mjs` — added `headers()` config with security headers
+- `middleware.ts` — extended matcher to cover `/api/admin/:path*` with session check
+- `lib/utils/sanitize-html.ts` — new file
+- `app/[locale]/about/page.tsx`, `app/[locale]/archive/page.tsx` — XSS sanitization
+- 20 API routes under `app/api/**/route.ts` — error message sanitization
+- `app/api/admin/newsletter/export/route.ts`, `app/api/admin/exhibition-reminders/export/route.ts` — rate limiting + audit logging
+- `package.json` — added `isomorphic-dompurify` dependency
+
+---
+
+## Grid Layout Polish (April 7, 2026)
+
+### Completed
+- [x] **Exhibitions grid switched to square aspect ratio** — changed `aspect-[4/5]` to `aspect-square` in `ExhibitionCard.tsx` to match the live reference site and reduce image cropping
+- [x] **Press grid switched to square aspect ratio** — changed `aspect-[4/3]` to `aspect-square` in `PressCard.tsx` to match exhibitions grid for visual consistency
 
 ---
 

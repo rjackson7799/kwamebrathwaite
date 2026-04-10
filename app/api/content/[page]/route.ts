@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     if (error) {
       console.error('Database error:', error)
-      return errorResponse(ErrorCodes.DB_ERROR, error.message, 500)
+      return errorResponse(ErrorCodes.DB_ERROR, 'Failed to fetch data', 500)
     }
 
     if (!data || data.length === 0) {
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     console.error('API error:', error)
     return errorResponse(
       ErrorCodes.INTERNAL_ERROR,
-      error instanceof Error ? error.message : 'An unexpected error occurred',
+      'An unexpected error occurred',
       500
     )
   }
