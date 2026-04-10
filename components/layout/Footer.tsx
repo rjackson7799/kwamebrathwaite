@@ -25,10 +25,11 @@ export function Footer() {
     setSubmitStatus('idle')
 
     try {
+      const honeypot = (document.getElementById('footer-website') as HTMLInputElement)?.value || ''
       const response = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, locale }),
+        body: JSON.stringify({ email, locale, website: honeypot }),
       })
 
       if (response.status === 429) {
@@ -80,6 +81,15 @@ export function Footer() {
                          text-white/90 text-sm placeholder:text-white/45
                          focus:outline-none focus:border-white/40
                          transition-colors"
+            />
+            {/* Honeypot field for spam protection */}
+            <input
+              type="text"
+              name="website"
+              id="footer-website"
+              tabIndex={-1}
+              autoComplete="off"
+              style={{ display: 'none' }}
             />
             <button
               type="submit"

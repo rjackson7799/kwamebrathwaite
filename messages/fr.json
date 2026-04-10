@@ -238,7 +238,8 @@
       "press": "Demande de presse"
     },
     "success": "Merci pour votre demande. Nous vous répondrons dans les 24 heures.",
-    "error": "Une erreur s'est produite. Veuillez réessayer."
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "sendAnother": "Envoyer une autre demande"
   },
   "licensing": {
     "title": "Licences d'images",

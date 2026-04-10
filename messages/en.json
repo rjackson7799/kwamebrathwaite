@@ -275,7 +275,8 @@
       "press": "Press Inquiry"
     },
     "success": "Thank you for your inquiry. We will respond within 24 hours.",
-    "error": "There was an error submitting your inquiry. Please try again."
+    "error": "There was an error submitting your inquiry. Please try again.",
+    "sendAnother": "Send Another Inquiry"
   },
   "licensing": {
     "title": "Image Licensing",

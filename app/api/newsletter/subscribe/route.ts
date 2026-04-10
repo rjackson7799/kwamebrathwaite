@@ -8,8 +8,8 @@ import {
   getClientIP,
   newsletterSchema,
 } from '@/lib/api'
-import { sendUserEmail } from '@/lib/email/send'
-import { NewsletterWelcomeEmail } from '@/lib/email/templates'
+import { sendUserEmail, sendAdminEmail } from '@/lib/email/send'
+import { NewsletterWelcomeEmail, NewsletterAdminEmail } from '@/lib/email/templates'
 
 interface NewsletterInsert {
   email: string
@@ -49,7 +49,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { email, locale } = validationResult.data
+    const { website, ...subscribeData } = validationResult.data
+    const { email, locale } = subscribeData
+
+    // Honeypot check - if filled, it's likely a bot
+    if (website) {
+      return successResponse({
+        message: 'Thank you for subscribing to our newsletter!',
+        alreadySubscribed: false,
+      })
+    }
 
     const supabase = await createClient()
 
@@ -99,6 +108,12 @@ export async function POST(request: NextRequest) {
       email,
       'Welcome to the Kwame Brathwaite Archive Newsletter',
       NewsletterWelcomeEmail()
+    )
+
+    // Notify admin of new subscriber (non-blocking)
+    sendAdminEmail(
+      `New newsletter subscriber: ${email}`,
+      NewsletterAdminEmail({ email, locale })
     )
 
     return successResponse(

@@ -59,6 +59,8 @@ export const inquirySchema = z.object({
 export const newsletterSchema = z.object({
   email: z.string().email('Invalid email address').max(255),
   locale: z.enum(['en', 'fr', 'ja']).default('en'),
+  // Honeypot field - should be empty
+  website: z.string().optional(),
 })
 
 // Translation request
