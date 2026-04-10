@@ -43,7 +43,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<void> {
  */
 export async function sendAdminEmail(subject: string, react: ReactElement): Promise<void> {
   return sendEmail({
-    to: EMAIL_CONFIG.adminEmail,
+    to: [EMAIL_CONFIG.adminEmail, ...EMAIL_CONFIG.adminCc],
     subject: `[Admin] ${subject}`,
     react,
   })

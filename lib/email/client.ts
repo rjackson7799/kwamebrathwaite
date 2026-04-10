@@ -9,6 +9,10 @@ export const resend = new Resend(process.env.RESEND_API_KEY || '')
 export const EMAIL_CONFIG = {
   from: process.env.EMAIL_FROM || 'Kwame Brathwaite Archive <noreply@kwamebrathwaite.com>',
   adminEmail: process.env.ADMIN_EMAIL || 'info@kwamebrathwaite.com',
+  adminCc: (process.env.ADMIN_EMAIL_CC || 'ryan.jackson.2009@gmail.com')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
   siteName: 'Kwame Brathwaite Photo Archive',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://kwamebrathwaite.com',
 } as const
