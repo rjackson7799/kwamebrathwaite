@@ -322,6 +322,14 @@
     "previousImage": "前の画像",
     "nextImage": "次の画像"
   },
+  "notFound": {
+    "overline": "404",
+    "title": "ページが見つかりません",
+    "description": "このアーカイブは最近リニューアルされたため、お探しのページは移動または削除された可能性があります。ご不便をおかけし申し訳ございません。",
+    "lookingFor": "お探しのページはこちらかもしれません：",
+    "reportBrokenLink": "リンク切れを報告する",
+    "reportBrokenLinkSubject": "リンク切れの報告"
+  },
   "footer": {
     "newsletter": {
       "title": "最新情報を受け取る",

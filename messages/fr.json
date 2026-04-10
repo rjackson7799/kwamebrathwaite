@@ -322,6 +322,14 @@
     "previousImage": "Image précédente",
     "nextImage": "Image suivante"
   },
+  "notFound": {
+    "overline": "404",
+    "title": "Page introuvable",
+    "description": "Ces archives ont été récemment repensées, et la page que vous recherchez a peut-être été déplacée ou n'existe plus. Nous vous prions de nous excuser pour la gêne occasionnée.",
+    "lookingFor": "Vous cherchez peut-être :",
+    "reportBrokenLink": "Signaler un lien brisé",
+    "reportBrokenLinkSubject": "Signalement de lien brisé"
+  },
   "footer": {
     "newsletter": {
       "title": "Restez informé",

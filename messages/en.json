@@ -359,6 +359,14 @@
     "previousImage": "Previous image",
     "nextImage": "Next image"
   },
+  "notFound": {
+    "overline": "404",
+    "title": "Page Not Found",
+    "description": "This archive was recently redesigned, and the page you're looking for may have moved or no longer exists. We apologize for the inconvenience.",
+    "lookingFor": "You might be looking for:",
+    "reportBrokenLink": "Report a broken link",
+    "reportBrokenLinkSubject": "Broken link report"
+  },
   "footer": {
     "newsletter": {
       "title": "Stay Updated",
