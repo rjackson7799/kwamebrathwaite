@@ -14,6 +14,7 @@ export type GeoFilter = 'global' | 'us' | 'near_me'
 // Exhibition data for map display
 export interface MapExhibition {
   id: string
+  slug: string
   title: string
   venue: string | null
   city: string | null

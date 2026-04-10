@@ -5,6 +5,7 @@ import { exhibitionMapFiltersSchema, parseSearchParams } from '@/lib/api/validat
 
 export interface MapExhibition {
   id: string
+  slug: string
   title: string
   venue: string | null
   city: string | null
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from('exhibitions')
       .select(
-        'id, title, venue, city, country, location_lat, location_lng, exhibition_type, start_date, end_date, image_url, venue_url'
+        'id, slug, title, venue, city, country, location_lat, location_lng, exhibition_type, start_date, end_date, image_url, venue_url'
       )
       .eq('status', 'published')
       .not('location_lat', 'is', null)

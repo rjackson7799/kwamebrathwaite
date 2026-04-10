@@ -70,6 +70,7 @@ export function VenueCard({
 
   const mapExhibition: MapExhibition = useMemo(() => ({
     id: exhibitionId,
+    slug: exhibitionSlug,
     title: exhibitionTitle,
     venue: venue,
     city: city,
