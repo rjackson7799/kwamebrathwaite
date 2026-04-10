@@ -104,7 +104,7 @@ export function MarkerInfoPopup({ exhibition, onClose }: MarkerInfoPopupProps) {
           <div className="space-y-2">
             {/* Primary: View Details */}
             <a
-              href={`/${locale === 'en' ? '' : locale + '/'}exhibitions/${exhibition.id}`}
+              href={`/${locale === 'en' ? '' : locale + '/'}exhibitions/${exhibition.slug}`}
               className="block w-full py-2 px-4 bg-black text-white text-xs uppercase text-center tracking-widest hover:bg-gray-800 transition-colors"
             >
               {t('viewDetails')}
