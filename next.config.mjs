@@ -35,9 +35,6 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['isomorphic-dompurify', 'jsdom'],
-  },
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
