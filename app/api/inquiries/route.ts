@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import {
   successResponse,
   errorResponse,
@@ -55,8 +55,10 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Insert into database
-    const supabase = await createClient()
+    // Use service-role client to bypass RLS on the public inquiries insert.
+    // The route validates input via Zod and rate-limits per IP, so the trust
+    // boundary is enforced here rather than at the database policy layer.
+    const supabase = createAdminClient()
 
     const insertData: InquiryInsert = {
       name: inquiryData.name,

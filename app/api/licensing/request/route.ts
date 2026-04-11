@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import {
   successResponse,
   errorResponse,
@@ -17,7 +17,7 @@ import {
 /**
  * Generate a unique license request number: LIC-YYYY-NNN
  */
-async function generateRequestNumber(supabase: Awaited<ReturnType<typeof createClient>>): Promise<string> {
+async function generateRequestNumber(supabase: ReturnType<typeof createAdminClient>): Promise<string> {
   const year = new Date().getFullYear()
   const prefix = `LIC-${year}-`
 
@@ -82,7 +82,8 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    const supabase = await createClient()
+    // Service-role client to bypass RLS on public licensing request inserts.
+    const supabase = createAdminClient()
 
     // Generate request number
     const requestNumber = await generateRequestNumber(supabase)

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import OpenAI from 'openai'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import {
   successResponse,
   errorResponse,
@@ -78,7 +78,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = await createClient()
+    // Service-role client to bypass RLS on the public wall-view generation update.
+    const supabase = createAdminClient()
 
     // Verify email exists in wall_view_leads and check generation count
     const { data: leadData } = await supabase

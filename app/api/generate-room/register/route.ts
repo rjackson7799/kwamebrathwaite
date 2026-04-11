@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import {
   successResponse,
   errorResponse,
@@ -45,7 +45,8 @@ export async function POST(request: NextRequest) {
     }
 
     const { email, artwork_id } = validationResult.data
-    const supabase = await createClient()
+    // Service-role client to bypass RLS on public wall-view lead inserts.
+    const supabase = createAdminClient()
 
     // Check if already registered
     const { data: existing } = await supabase

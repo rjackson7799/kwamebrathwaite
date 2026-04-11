@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import {
   successResponse,
   errorResponse,
@@ -64,7 +64,8 @@ export async function POST(request: NextRequest) {
     // Generate hash of source content for cache lookup
     const sourceHash = crypto.createHash('md5').update(sourceContent).digest('hex')
 
-    const supabase = await createClient()
+    // Service-role client to bypass RLS on the public translation cache upsert.
+    const supabase = createAdminClient()
 
     // Check cache first
     const { data: cached } = await supabase

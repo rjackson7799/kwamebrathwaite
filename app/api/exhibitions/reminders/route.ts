@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import { successResponse, errorResponse, ErrorCodes } from '@/lib/api/response'
 import { exhibitionReminderSchema } from '@/lib/api/validation'
 import { rateLimit, getClientIP } from '@/lib/api/rate-limit'
@@ -49,7 +49,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = await createClient()
+    // Service-role client to bypass RLS on public exhibition reminder inserts.
+    const supabase = createAdminClient()
 
     // Fetch exhibition details for denormalization
     const { data: exhibitionData, error: fetchError } = await supabase
