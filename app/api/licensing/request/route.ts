@@ -88,7 +88,11 @@ export async function POST(request: NextRequest) {
     // Generate request number
     const requestNumber = await generateRequestNumber(supabase)
 
-    // Insert the license request
+    // If license_type_id isn't a UUID (e.g. fallback default like 'exhibition-museum'),
+    // set it to null for the DB insert and use the raw string as the display name later.
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    const isValidUuid = UUID_RE.test(requestData.license_type_id)
+
     const { data: licenseRequest, error: insertError } = await supabase
       .from('license_requests')
       .insert({
@@ -97,7 +101,7 @@ export async function POST(request: NextRequest) {
         email: requestData.email,
         company: requestData.company || null,
         phone: requestData.phone || null,
-        license_type_id: requestData.license_type_id,
+        license_type_id: isValidUuid ? requestData.license_type_id : null,
         territory: requestData.territory || null,
         duration: requestData.duration || null,
         print_run: requestData.print_run || null,
@@ -133,14 +137,20 @@ export async function POST(request: NextRequest) {
     }
 
     if (result) {
-      const { data: licenseTypeData } = await supabase
-        .from('license_types')
-        .select('name')
-        .eq('id', requestData.license_type_id)
-        .single()
-
-      const licenseTypeName =
-        (licenseTypeData as { name: string } | null)?.name || 'Standard'
+      let licenseTypeName = 'Standard'
+      if (isValidUuid) {
+        const { data: licenseTypeData } = await supabase
+          .from('license_types')
+          .select('name')
+          .eq('id', requestData.license_type_id)
+          .single()
+        licenseTypeName = (licenseTypeData as { name: string } | null)?.name || 'Standard'
+      } else {
+        licenseTypeName = requestData.license_type_id
+          .split('-')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ')
+      }
 
       const [userEmail, adminEmail] = await Promise.all([
         sendUserEmail(

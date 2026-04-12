@@ -458,7 +458,7 @@ export const licenseRequestSchema = z.object({
   email: z.string().email('Invalid email address').max(255),
   company: z.string().max(255).optional(),
   phone: z.string().max(50).optional(),
-  license_type_id: z.string().uuid('Invalid license type'),
+  license_type_id: z.string().min(1, 'License type is required'),
   territory: z.string().max(255).optional(),
   duration: z.string().max(100).optional(),
   print_run: z.string().max(100).optional(),
