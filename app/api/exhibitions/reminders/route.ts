@@ -106,34 +106,42 @@ export async function POST(request: NextRequest) {
 
     const result = data as Pick<ExhibitionReminder, 'id'>
 
-    // Send confirmation emails (non-blocking)
-    sendUserEmail(
-      email,
-      `Exhibition reminder set: ${exhibition.title}`,
-      ExhibitionReminderUserEmail({
-        name,
-        exhibitionTitle: exhibition.title,
-        exhibitionVenue: exhibition.venue,
-        exhibitionCity: exhibition.city,
-        exhibitionCountry: exhibition.country,
-        exhibitionStartDate: exhibition.start_date,
-        exhibitionEndDate: exhibition.end_date,
-        reminderType: reminder_type,
-      })
-    )
-
-    sendAdminEmail(
-      `New exhibition reminder: ${name}`,
-      ExhibitionReminderAdminEmail({
-        name,
+    const [userResult, adminResult] = await Promise.all([
+      sendUserEmail(
         email,
-        exhibitionTitle: exhibition.title,
-        exhibitionVenue: exhibition.venue,
-        reminderType: reminder_type,
-        locale,
-        source,
+        `Exhibition reminder set: ${exhibition.title}`,
+        ExhibitionReminderUserEmail({
+          name,
+          exhibitionTitle: exhibition.title,
+          exhibitionVenue: exhibition.venue,
+          exhibitionCity: exhibition.city,
+          exhibitionCountry: exhibition.country,
+          exhibitionStartDate: exhibition.start_date,
+          exhibitionEndDate: exhibition.end_date,
+          reminderType: reminder_type,
+        })
+      ),
+      sendAdminEmail(
+        `New exhibition reminder: ${name}`,
+        ExhibitionReminderAdminEmail({
+          name,
+          email,
+          exhibitionTitle: exhibition.title,
+          exhibitionVenue: exhibition.venue,
+          reminderType: reminder_type,
+          locale,
+          source,
+        })
+      ),
+    ])
+
+    if (!userResult.success || !adminResult.success) {
+      console.error('Exhibition reminder email send incomplete:', {
+        reminderId: result.id,
+        userEmail: userResult.success,
+        adminEmail: adminResult.success,
       })
-    )
+    }
 
     return successResponse(
       { id: result.id, message: 'Reminder request submitted successfully' },

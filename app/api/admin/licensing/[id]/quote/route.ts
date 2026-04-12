@@ -61,8 +61,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return errorResponse(ErrorCodes.DB_ERROR, 'Failed to send quote', 500)
     }
 
-    // Send quote email to user (non-blocking)
-    sendUserEmail(
+    const quoteEmailResult = await sendUserEmail(
       existing.email,
       `Quote for License Request ${existing.request_number}`,
       LicensingQuoteEmail({
@@ -72,6 +71,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         message: result.data.message,
       })
     )
+
+    if (!quoteEmailResult.success) {
+      console.error('Quote email failed:', {
+        requestNumber: existing.request_number,
+        error: quoteEmailResult.error,
+      })
+    }
 
     // Log activity
     const userEmail = await getCurrentUserEmail()

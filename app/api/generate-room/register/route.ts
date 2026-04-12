@@ -84,14 +84,17 @@ export async function POST(request: NextRequest) {
       return errorResponse(ErrorCodes.DB_ERROR, 'Failed to register email', 500)
     }
 
-    // Notify admin of new lead (non-blocking)
-    sendAdminEmail(
+    const adminResult = await sendAdminEmail(
       `New View on Wall lead: ${email}`,
       WallViewLeadEmail({
         email,
         artworkId: artwork_id || null,
       })
     )
+
+    if (!adminResult.success) {
+      console.error('Wall view lead email failed:', { email, error: adminResult.error })
+    }
 
     return successResponse(
       {

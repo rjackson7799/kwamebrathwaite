@@ -135,18 +135,25 @@ export async function POST(request: NextRequest) {
       ? `${siteUrl}${localePrefix}/newsletter/unsubscribe?token=${result.unsubscribe_token}`
       : `${siteUrl}${localePrefix}/newsletter/unsubscribe`
 
-    // Send welcome email (non-blocking)
-    sendUserEmail(
-      email,
-      'Welcome to the Kwame Brathwaite Archive Newsletter',
-      NewsletterWelcomeEmail({ unsubscribeUrl })
-    )
+    const [userResult, adminResult] = await Promise.all([
+      sendUserEmail(
+        email,
+        'Welcome to the Kwame Brathwaite Archive Newsletter',
+        NewsletterWelcomeEmail({ unsubscribeUrl })
+      ),
+      sendAdminEmail(
+        `New newsletter subscriber: ${email}`,
+        NewsletterAdminEmail({ email, locale })
+      ),
+    ])
 
-    // Notify admin of new subscriber (non-blocking)
-    sendAdminEmail(
-      `New newsletter subscriber: ${email}`,
-      NewsletterAdminEmail({ email, locale })
-    )
+    if (!userResult.success || !adminResult.success) {
+      console.error('Newsletter email send incomplete:', {
+        subscriberEmail: email,
+        userEmail: userResult.success,
+        adminEmail: adminResult.success,
+      })
+    }
 
     return successResponse(
       {

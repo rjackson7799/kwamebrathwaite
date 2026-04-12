@@ -132,7 +132,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Send confirmation emails (non-blocking)
     if (result) {
       const { data: licenseTypeData } = await supabase
         .from('license_types')
@@ -143,34 +142,43 @@ export async function POST(request: NextRequest) {
       const licenseTypeName =
         (licenseTypeData as { name: string } | null)?.name || 'Standard'
 
-      sendUserEmail(
-        requestData.email,
-        `Licensing Request ${result.request_number} Received`,
-        LicensingRequestUserEmail({
-          name: requestData.name,
-          requestNumber: result.request_number,
-          licenseType: licenseTypeName,
-          artworkCount: artwork_ids.length,
-        })
-      )
+      const [userEmail, adminEmail] = await Promise.all([
+        sendUserEmail(
+          requestData.email,
+          `Licensing Request ${result.request_number} Received`,
+          LicensingRequestUserEmail({
+            name: requestData.name,
+            requestNumber: result.request_number,
+            licenseType: licenseTypeName,
+            artworkCount: artwork_ids.length,
+          })
+        ),
+        sendAdminEmail(
+          `New Licensing Request: ${result.request_number}`,
+          LicensingRequestAdminEmail({
+            name: requestData.name,
+            email: requestData.email,
+            company: requestData.company || null,
+            phone: requestData.phone || null,
+            requestNumber: result.request_number,
+            licenseType: licenseTypeName,
+            territory: requestData.territory || null,
+            duration: requestData.duration || null,
+            printRun: requestData.print_run || null,
+            usageDescription: requestData.usage_description,
+            artworkCount: artwork_ids.length,
+            locale: requestData.locale,
+          })
+        ),
+      ])
 
-      sendAdminEmail(
-        `New Licensing Request: ${result.request_number}`,
-        LicensingRequestAdminEmail({
-          name: requestData.name,
-          email: requestData.email,
-          company: requestData.company || null,
-          phone: requestData.phone || null,
+      if (!userEmail.success || !adminEmail.success) {
+        console.error('Licensing email send incomplete:', {
           requestNumber: result.request_number,
-          licenseType: licenseTypeName,
-          territory: requestData.territory || null,
-          duration: requestData.duration || null,
-          printRun: requestData.print_run || null,
-          usageDescription: requestData.usage_description,
-          artworkCount: artwork_ids.length,
-          locale: requestData.locale,
+          userEmail: userEmail.success,
+          adminEmail: adminEmail.success,
         })
-      )
+      }
     }
 
     return successResponse(
