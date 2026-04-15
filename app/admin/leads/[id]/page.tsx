@@ -1,8 +1,8 @@
 'use client'
 
-import { use, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { PageHeader } from '@/components/admin/PageHeader'
 import {
   LEAD_CATEGORY_LABELS,
@@ -45,12 +45,9 @@ interface Lead {
 const INPUT_CLS =
   'w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black'
 
-export default function LeadDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const { id } = use(params)
+export default function LeadDetailPage() {
+  const params = useParams<{ id: string }>()
+  const id = params?.id as string
   const router = useRouter()
 
   const [lead, setLead] = useState<Lead | null>(null)
