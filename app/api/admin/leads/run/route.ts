@@ -34,20 +34,23 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  // Resolve budget cap: explicit override > settings table > default
+  // Resolve budget cap + deep_research toggle from settings (explicit override > settings > default).
   let budgetCap = parsed.data.budget_cap_usd
-  if (budgetCap === undefined) {
+  let deepResearchEnabled = DEFAULT_LEAD_SETTINGS.deep_research_enabled
+  {
     const supabase = createAdminClient()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data } = await (supabase as any)
       .from('lead_settings')
-      .select('value')
-      .eq('key', 'budget_cap_usd')
-      .single()
-    budgetCap =
-      typeof data?.value === 'number'
-        ? data.value
-        : DEFAULT_LEAD_SETTINGS.budget_cap_usd
+      .select('key, value')
+      .in('key', ['budget_cap_usd', 'deep_research_enabled'])
+    for (const row of (data as Array<{ key: string; value: unknown }>) || []) {
+      if (row.key === 'budget_cap_usd' && typeof row.value === 'number' && budgetCap === undefined) {
+        budgetCap = row.value
+      } else if (row.key === 'deep_research_enabled' && typeof row.value === 'boolean') {
+        deepResearchEnabled = row.value
+      }
+    }
   }
 
   try {
@@ -57,6 +60,7 @@ export async function POST(request: NextRequest) {
       categoryFilter: parsed.data.category as
         | (typeof LEAD_CATEGORIES)[number]
         | undefined,
+      deepResearchEnabled,
     })
     return successResponse(result)
   } catch (e) {
