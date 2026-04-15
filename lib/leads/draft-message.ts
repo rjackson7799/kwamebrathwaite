@@ -131,17 +131,10 @@ Draft the outreach email now.`
   return { subject: parsed.subject, body: parsed.body }
 }
 
-export async function translateToJapanese(
-  message: DraftedMessage
-): Promise<DraftedMessage> {
-  const openai = getClient()
+export type IntroLanguage = 'en' | 'ja' | 'fr'
 
-  const completion = await openai.chat.completions.create({
-    model: MODEL,
-    messages: [
-      {
-        role: 'system',
-        content: `Translate this English outreach email into natural, professional Japanese.
+const TRANSLATION_GUIDANCE: Record<'ja' | 'fr', string> = {
+  ja: `Translate this English outreach email into natural, professional Japanese.
 
 Apply Japanese business etiquette:
 - Use proper keigo (honorific language) appropriate for first-time outreach to a curator, collector, journalist, scholar, or brand partner.
@@ -151,7 +144,30 @@ Apply Japanese business etiquette:
 - Subject line in Japanese, kept under 50 characters.
 
 Return ONLY valid JSON: { "subject": "...", "body": "..." }. Body uses paragraph breaks (\\n\\n).`,
-      },
+
+  fr: `Translate this English outreach email into natural, professional French.
+
+Apply French business etiquette:
+- Use the formal vous form throughout — never tu.
+- Address the recipient by name with the appropriate title (e.g. "Madame Dupont," / "Monsieur Martin,") when the contact name is known. When unknown, use "Madame, Monsieur," — never "Cher/Chère" for cold outreach.
+- Keep the register polite but not stiff. Avoid overly formal openings like "J'ai l'honneur de…" unless the tone is clearly formal_museum.
+- Close with "Cordialement," for warmer tones or "Bien cordialement," / "Avec mes salutations distinguées," for formal tones, followed by the sender's name on the next line.
+- Subject line in French, kept under 60 characters, no period at the end.
+- Preserve any proper nouns and the source URL exactly.
+
+Return ONLY valid JSON: { "subject": "...", "body": "..." }. Body uses paragraph breaks (\\n\\n).`,
+}
+
+export async function translateMessage(
+  message: DraftedMessage,
+  language: 'ja' | 'fr'
+): Promise<DraftedMessage> {
+  const openai = getClient()
+
+  const completion = await openai.chat.completions.create({
+    model: MODEL,
+    messages: [
+      { role: 'system', content: TRANSLATION_GUIDANCE[language] },
       {
         role: 'user',
         content: `Subject: ${message.subject}\n\nBody:\n${message.body}`,

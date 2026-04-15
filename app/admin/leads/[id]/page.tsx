@@ -16,6 +16,7 @@ import {
   INTRO_TONES,
   INTRO_TONE_LABELS,
   IntroTone,
+  IntroLanguage,
 } from '@/lib/leads/draft-message'
 
 interface Lead {
@@ -256,7 +257,7 @@ export default function LeadDetailPage() {
 
 function DrafterCard({ leadId }: { leadId: string }) {
   const [tone, setTone] = useState<IntroTone>('formal_museum')
-  const [language, setLanguage] = useState<'en' | 'ja'>('en')
+  const [language, setLanguage] = useState<IntroLanguage>('en')
   const [senderName, setSenderName] = useState('')
   const [senderTitle, setSenderTitle] = useState('')
 
@@ -272,17 +273,18 @@ function DrafterCard({ leadId }: { leadId: string }) {
   const [sendError, setSendError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
 
-  const draft = async () => {
+  const generate = async (lang: IntroLanguage) => {
     setDrafting(true)
     setDraftError(null)
     setSendResult(null)
+    setLanguage(lang)
     try {
       const r = await fetch(`/api/admin/leads/${leadId}/draft-message`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           tone,
-          language,
+          language: lang,
           sender_name: senderName.trim() || undefined,
           sender_title: senderTitle.trim() || undefined,
         }),
@@ -290,37 +292,6 @@ function DrafterCard({ leadId }: { leadId: string }) {
       const j = await r.json()
       if (!j.success) {
         setDraftError(j.error?.message || 'Draft failed')
-      } else {
-        setSubject(j.data.subject)
-        setBody(j.data.body)
-      }
-    } finally {
-      setDrafting(false)
-    }
-  }
-
-  const translate = async () => {
-    if (!body) return
-    setDrafting(true)
-    setDraftError(null)
-    setLanguage('ja')
-    try {
-      // Re-draft with JA flag, but pass current edits via a fresh draft call.
-      // Simpler: just call draft endpoint with language=ja — it regenerates from lead context.
-      // For preserving edits, the user can copy then translate manually next time.
-      const r = await fetch(`/api/admin/leads/${leadId}/draft-message`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tone,
-          language: 'ja',
-          sender_name: senderName.trim() || undefined,
-          sender_title: senderTitle.trim() || undefined,
-        }),
-      })
-      const j = await r.json()
-      if (!j.success) {
-        setDraftError(j.error?.message || 'Translate failed')
       } else {
         setSubject(j.data.subject)
         setBody(j.data.body)
@@ -394,12 +365,23 @@ function DrafterCard({ leadId }: { leadId: string }) {
             className={INPUT_CLS}
           />
         </div>
-        <div className="flex items-end gap-2">
-          <button onClick={draft} disabled={drafting} className="btn-primary disabled:opacity-50">
+        <div className="flex flex-wrap items-end gap-2">
+          <button
+            onClick={() => generate('en')}
+            disabled={drafting}
+            className="btn-primary disabled:opacity-50"
+          >
             {drafting && language === 'en' ? 'Drafting…' : 'Generate (EN)'}
           </button>
           <button
-            onClick={translate}
+            onClick={() => generate('fr')}
+            disabled={drafting}
+            className="btn-secondary disabled:opacity-50"
+          >
+            {drafting && language === 'fr' ? 'Translating…' : 'Translate to FR'}
+          </button>
+          <button
+            onClick={() => generate('ja')}
             disabled={drafting}
             className="btn-secondary disabled:opacity-50"
           >

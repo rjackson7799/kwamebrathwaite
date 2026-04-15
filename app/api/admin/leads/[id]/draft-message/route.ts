@@ -5,7 +5,7 @@ import { requireAuth, getCurrentUserEmail } from '@/lib/api/admin'
 import { successResponse, errorResponse, ErrorCodes } from '@/lib/api/response'
 import {
   draftIntroMessage,
-  translateToJapanese,
+  translateMessage,
   INTRO_TONES,
   IntroTone,
 } from '@/lib/leads/draft-message'
@@ -14,7 +14,7 @@ export const maxDuration = 60
 
 const bodySchema = z.object({
   tone: z.enum(INTRO_TONES as [string, ...string[]]),
-  language: z.enum(['en', 'ja']).default('en'),
+  language: z.enum(['en', 'ja', 'fr']).default('en'),
   sender_name: z.string().min(1).max(200).optional(),
   sender_title: z.string().max(200).optional().nullable(),
 })
@@ -78,9 +78,9 @@ export async function POST(
       senderTitle: parsed.data.sender_title || undefined,
     })
 
-    if (parsed.data.language === 'ja') {
-      const ja = await translateToJapanese(draft)
-      return successResponse({ ...ja, language: 'ja' })
+    if (parsed.data.language === 'ja' || parsed.data.language === 'fr') {
+      const translated = await translateMessage(draft, parsed.data.language)
+      return successResponse({ ...translated, language: parsed.data.language })
     }
 
     return successResponse({ ...draft, language: 'en' })
