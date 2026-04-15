@@ -64,6 +64,8 @@ export default function AdminLeadsPage() {
   const [runResult, setRunResult] = useState<RunResult | null>(null)
   const [runError, setRunError] = useState<string | null>(null)
   const [spend, setSpend] = useState<SpendSummary | null>(null)
+  const [sendingDigest, setSendingDigest] = useState(false)
+  const [digestMsg, setDigestMsg] = useState<string | null>(null)
 
   const loadSpend = useCallback(async () => {
     const r = await fetch('/api/admin/leads/runs/summary')
@@ -94,6 +96,28 @@ export default function AdminLeadsPage() {
   useEffect(() => {
     load()
   }, [load])
+
+  const sendDigestNow = async () => {
+    setSendingDigest(true)
+    setDigestMsg(null)
+    try {
+      const r = await fetch('/api/admin/leads/digest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ window_days: 7 }),
+      })
+      const j = await r.json()
+      if (!j.success) {
+        setDigestMsg(`Error: ${j.error?.message || 'send failed'}`)
+      } else if (j.data.sent) {
+        setDigestMsg(`Digest sent to ${j.data.recipient} (${j.data.leadCount} lead${j.data.leadCount === 1 ? '' : 's'}).`)
+      } else {
+        setDigestMsg(`Skipped: ${j.data.skippedReason || 'unknown'}`)
+      }
+    } finally {
+      setSendingDigest(false)
+    }
+  }
 
   const runNow = async () => {
     setRunning(true)
@@ -135,6 +159,13 @@ export default function AdminLeadsPage() {
               Sources
             </Link>
             <button
+              onClick={sendDigestNow}
+              disabled={sendingDigest}
+              className="btn-secondary disabled:opacity-50"
+            >
+              {sendingDigest ? 'Sending…' : 'Send digest'}
+            </button>
+            <button
               onClick={runNow}
               disabled={running}
               className="btn-primary disabled:opacity-50"
@@ -166,6 +197,18 @@ export default function AdminLeadsPage() {
                   ))}
               </span>
             )}
+          </div>
+        )}
+
+        {digestMsg && (
+          <div
+            className={`mb-4 p-3 rounded-md border text-sm ${
+              digestMsg.startsWith('Error') || digestMsg.startsWith('Skipped')
+                ? 'bg-yellow-50 border-yellow-200 text-yellow-900'
+                : 'bg-green-50 border-green-200 text-green-900'
+            }`}
+          >
+            {digestMsg}
           </div>
         )}
 
