@@ -306,14 +306,12 @@ export default function AdminLeadsPage() {
                         <ScoreBadge score={l.score} />
                       </td>
                       <td className="px-4 py-3">
-                        <a
-                          href={l.source_url}
-                          target="_blank"
-                          rel="noreferrer"
+                        <Link
+                          href={`/admin/leads/${l.id}`}
                           className="font-medium text-gray-900 hover:underline"
                         >
                           {l.title}
-                        </a>
+                        </Link>
                         {l.organization && (
                           <div className="text-xs text-gray-500">{l.organization}</div>
                         )}
@@ -322,6 +320,14 @@ export default function AdminLeadsPage() {
                             {l.summary_en}
                           </div>
                         )}
+                        <a
+                          href={l.source_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[10px] text-blue-600 hover:underline"
+                        >
+                          source ↗
+                        </a>
                       </td>
                       <td className="px-4 py-3 text-gray-600">
                         {LEAD_CATEGORY_LABELS[l.category]}
