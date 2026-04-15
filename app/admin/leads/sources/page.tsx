@@ -796,16 +796,16 @@ function SettingsSection() {
 
       <Field
         label="Digest recipient email"
-        hint="Where the weekly summary email is sent."
+        hint="Where the weekly summary email is sent. Separate multiple recipients with commas."
       >
         <input
-          type="email"
+          type="text"
           value={settings.digest_recipient}
           onChange={(e) =>
             setSettings({ ...settings, digest_recipient: e.target.value })
           }
           className={INPUT_CLS}
-          placeholder="admin@kwamebrathwaite.com"
+          placeholder="admin@kwamebrathwaite.com, archivist@example.com"
         />
       </Field>
 

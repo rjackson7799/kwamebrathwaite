@@ -5,9 +5,23 @@ import { requireAuth } from '@/lib/api/admin'
 import { successResponse, errorResponse, ErrorCodes } from '@/lib/api/response'
 import { DEFAULT_LEAD_SETTINGS, LeadSettings } from '@/lib/leads/types'
 
+// digest_recipient may be a single email or a comma-separated list.
+const recipientListSchema = z
+  .string()
+  .max(1000)
+  .refine(
+    (s) => {
+      if (s === '') return true
+      const parts = s.split(',').map((p) => p.trim()).filter(Boolean)
+      if (parts.length === 0) return false
+      return parts.every((p) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p))
+    },
+    { message: 'Must be one email or a comma-separated list of emails' }
+  )
+
 const patchSchema = z.object({
   budget_cap_usd: z.number().min(0).max(1000).optional(),
-  digest_recipient: z.string().email().or(z.literal('')).optional(),
+  digest_recipient: recipientListSchema.optional(),
   top_n_per_category: z.number().int().min(1).max(50).optional(),
   deep_research_enabled: z.boolean().optional(),
 })

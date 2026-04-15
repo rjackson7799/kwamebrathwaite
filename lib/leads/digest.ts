@@ -49,6 +49,13 @@ export interface DigestResult {
   skippedReason?: string
 }
 
+function parseRecipients(s: string): string[] {
+  return s
+    .split(',')
+    .map((p) => p.trim())
+    .filter(Boolean)
+}
+
 export async function sendLeadDigest(opts: DigestOptions = {}): Promise<DigestResult> {
   const supabase = createAdminClient()
   const windowDays = opts.windowDays ?? 7
@@ -134,8 +141,18 @@ export async function sendLeadDigest(opts: DigestOptions = {}): Promise<DigestRe
       ? 'No new leads'
       : `${leads.length} new lead${leads.length === 1 ? '' : 's'}`
 
+  const recipients = parseRecipients(recipient)
+  if (recipients.length === 0) {
+    return {
+      sent: false,
+      recipient: null,
+      leadCount: leads.length,
+      skippedReason: 'no valid recipients',
+    }
+  }
+
   const result = await sendEmail({
-    to: recipient,
+    to: recipients,
     subject: `[KB Archive] ${subjectPrefix} this week`,
     react: LeadDigestEmail({
       leads,
@@ -147,10 +164,11 @@ export async function sendLeadDigest(opts: DigestOptions = {}): Promise<DigestRe
     }),
   })
 
+  const recipientLabel = recipients.join(', ')
   if (!result.success) {
     return {
       sent: false,
-      recipient,
+      recipient: recipientLabel,
       leadCount: leads.length,
       skippedReason: result.error || 'send failed',
     }
@@ -158,7 +176,7 @@ export async function sendLeadDigest(opts: DigestOptions = {}): Promise<DigestRe
 
   return {
     sent: true,
-    recipient,
+    recipient: recipientLabel,
     leadCount: leads.length,
     emailId: result.id,
   }

@@ -8,7 +8,20 @@ export const maxDuration = 60
 
 const bodySchema = z.object({
   window_days: z.number().int().min(1).max(90).optional(),
-  to: z.string().email().optional(),
+  to: z
+    .string()
+    .max(1000)
+    .refine(
+      (s) => {
+        const parts = s.split(',').map((p) => p.trim()).filter(Boolean)
+        return (
+          parts.length > 0 &&
+          parts.every((p) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p))
+        )
+      },
+      { message: 'Must be one email or a comma-separated list of emails' }
+    )
+    .optional(),
   run_id: z.string().uuid().optional(),
 })
 
