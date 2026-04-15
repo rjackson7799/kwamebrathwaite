@@ -51,6 +51,8 @@ export const inquirySchema = z.object({
   inquiry_type: z.enum(['general', 'purchase', 'exhibition', 'press']).optional(),
   artwork_id: z.string().uuid().optional(),
   locale: z.enum(['en', 'fr', 'ja']).default('en'),
+  // Client-side render timestamp (ms since epoch) for timing-trap heuristic.
+  renderedAt: z.number().int().optional(),
   // Honeypot field - should be empty
   website: z.string().optional(),
 })

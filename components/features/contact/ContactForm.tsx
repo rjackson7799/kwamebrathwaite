@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -26,6 +26,7 @@ export function ContactForm() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const renderedAtRef = useRef<number>(Date.now())
 
   const {
     register,
@@ -56,6 +57,7 @@ export function ContactForm() {
         body: JSON.stringify({
           ...data,
           locale,
+          renderedAt: renderedAtRef.current,
         }),
       })
 

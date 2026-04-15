@@ -11,6 +11,9 @@ import {
 import type { InquiryInsert } from '@/lib/supabase/types'
 import { sendUserEmail, sendAdminEmail } from '@/lib/email/send'
 import { InquiryUserEmail, InquiryAdminEmail } from '@/lib/email/templates'
+import { scoreInquiry } from '@/lib/api/spam'
+
+const SPAM_THRESHOLD = 3
 
 export async function POST(request: NextRequest) {
   try {
@@ -45,7 +48,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { website, ...inquiryData } = validationResult.data
+    const { website, renderedAt, ...inquiryData } = validationResult.data
 
     // Honeypot check - if filled, it's likely a bot
     // Return fake success to not alert the bot
@@ -60,6 +63,17 @@ export async function POST(request: NextRequest) {
     // boundary is enforced here rather than at the database policy layer.
     const supabase = createAdminClient()
 
+    const { score, reasons } = await scoreInquiry(
+      {
+        name: inquiryData.name,
+        email: inquiryData.email,
+        subject: inquiryData.subject,
+        message: inquiryData.message,
+      },
+      { renderedAt, now: Date.now(), supabase }
+    )
+    const isSpam = score >= SPAM_THRESHOLD
+
     const insertData: InquiryInsert = {
       name: inquiryData.name,
       email: inquiryData.email,
@@ -69,7 +83,8 @@ export async function POST(request: NextRequest) {
       inquiry_type: inquiryData.inquiry_type || null,
       artwork_id: inquiryData.artwork_id || null,
       locale: inquiryData.locale,
-      status: 'new',
+      status: isSpam ? 'archived' : 'new',
+      admin_notes: isSpam ? `SPAM (score ${score}): ${reasons.join(', ')}` : null,
     }
 
     const { data, error } = await supabase
@@ -86,7 +101,7 @@ export async function POST(request: NextRequest) {
     const result = data as { id: string } | null
 
     if (result) {
-      const [userEmail, adminEmail] = await Promise.all([
+      const emailTasks: Array<Promise<{ success: boolean }>> = [
         sendUserEmail(
           inquiryData.email,
           'Your inquiry has been received',
@@ -96,26 +111,37 @@ export async function POST(request: NextRequest) {
             subject: inquiryData.subject || null,
           })
         ),
-        sendAdminEmail(
-          `New ${inquiryData.inquiry_type || 'general'} inquiry from ${inquiryData.name}`,
-          InquiryAdminEmail({
-            name: inquiryData.name,
-            email: inquiryData.email,
-            phone: inquiryData.phone || null,
-            subject: inquiryData.subject || null,
-            message: inquiryData.message,
-            inquiryType: inquiryData.inquiry_type || null,
-            artworkId: inquiryData.artwork_id || null,
-            locale: inquiryData.locale,
-          })
-        ),
-      ])
+      ]
 
-      if (!userEmail.success || !adminEmail.success) {
+      if (!isSpam) {
+        emailTasks.push(
+          sendAdminEmail(
+            `New ${inquiryData.inquiry_type || 'general'} inquiry from ${inquiryData.name}`,
+            InquiryAdminEmail({
+              name: inquiryData.name,
+              email: inquiryData.email,
+              phone: inquiryData.phone || null,
+              subject: inquiryData.subject || null,
+              message: inquiryData.message,
+              inquiryType: inquiryData.inquiry_type || null,
+              artworkId: inquiryData.artwork_id || null,
+              locale: inquiryData.locale,
+            })
+          )
+        )
+      } else {
+        console.warn('Inquiry flagged as spam; admin email skipped', {
+          inquiryId: result.id,
+          score,
+          reasons,
+        })
+      }
+
+      const results = await Promise.all(emailTasks)
+      if (results.some((r) => !r.success)) {
         console.error('Inquiry email send incomplete:', {
           inquiryId: result.id,
-          userEmail: userEmail.success,
-          adminEmail: adminEmail.success,
+          results: results.map((r) => r.success),
         })
       }
     }
