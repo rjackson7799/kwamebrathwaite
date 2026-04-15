@@ -32,9 +32,19 @@ interface RunResult {
   runId: string
   status: 'completed' | 'cap_reached' | 'failed'
   costUsd: number
+  costBreakdown?: Record<string, number>
   leadsFound: number
   leadsNew: number
   errors: Array<{ stage: string; message: string }>
+}
+
+interface SpendSummary {
+  days: number
+  runs: number
+  cap_reached: number
+  failed: number
+  total_usd: number
+  breakdown: Record<string, number>
 }
 
 const SELECT_CLS =
@@ -53,6 +63,17 @@ export default function AdminLeadsPage() {
   const [running, setRunning] = useState(false)
   const [runResult, setRunResult] = useState<RunResult | null>(null)
   const [runError, setRunError] = useState<string | null>(null)
+  const [spend, setSpend] = useState<SpendSummary | null>(null)
+
+  const loadSpend = useCallback(async () => {
+    const r = await fetch('/api/admin/leads/runs/summary')
+    const j = await r.json()
+    if (j.success) setSpend(j.data)
+  }, [])
+
+  useEffect(() => {
+    loadSpend()
+  }, [loadSpend])
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -90,6 +111,7 @@ export default function AdminLeadsPage() {
       } else {
         setRunResult(j.data)
         load()
+        loadSpend()
       }
     } catch (e) {
       setRunError(e instanceof Error ? e.message : 'Run failed')
@@ -124,6 +146,29 @@ export default function AdminLeadsPage() {
       />
 
       <div className="p-8">
+        {spend && spend.runs > 0 && (
+          <div className="mb-4 text-xs text-gray-500 flex flex-wrap items-center gap-2">
+            <span>
+              Last 30 days: <span className="font-medium text-gray-700">${spend.total_usd.toFixed(2)}</span> across {spend.runs} run{spend.runs === 1 ? '' : 's'}
+            </span>
+            {spend.cap_reached > 0 && (
+              <span className="text-yellow-700">· {spend.cap_reached} cap-stopped</span>
+            )}
+            {spend.failed > 0 && (
+              <span className="text-red-700">· {spend.failed} failed</span>
+            )}
+            {Object.keys(spend.breakdown).length > 0 && (
+              <span className="flex flex-wrap gap-1 ml-1">
+                {Object.entries(spend.breakdown)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([k, v]) => (
+                    <CostChip key={k} provider={k} usd={v} />
+                  ))}
+              </span>
+            )}
+          </div>
+        )}
+
         {(runResult || runError) && (
           <div
             className={`mb-6 p-4 rounded-md border text-sm ${
@@ -152,6 +197,14 @@ export default function AdminLeadsPage() {
                   {runResult.errors.length > 0 &&
                     ` · ${runResult.errors.length} error${runResult.errors.length === 1 ? '' : 's'}`}
                 </div>
+                {runResult.costBreakdown &&
+                  Object.keys(runResult.costBreakdown).length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {Object.entries(runResult.costBreakdown).map(([k, v]) => (
+                        <CostChip key={k} provider={k} usd={v} />
+                      ))}
+                    </div>
+                  )}
               </>
             ) : null}
           </div>
@@ -293,6 +346,15 @@ export default function AdminLeadsPage() {
         )}
       </div>
     </>
+  )
+}
+
+function CostChip({ provider, usd }: { provider: string; usd: number }) {
+  return (
+    <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wide bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded">
+      <span className="font-medium">{provider}</span>
+      <span className="text-gray-500">${usd.toFixed(4)}</span>
+    </span>
   )
 }
 
