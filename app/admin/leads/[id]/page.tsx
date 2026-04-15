@@ -369,21 +369,21 @@ function DrafterCard({ leadId }: { leadId: string }) {
           <button
             onClick={() => generate('en')}
             disabled={drafting}
-            className="btn-primary disabled:opacity-50"
+            className="px-3 py-1.5 text-sm font-medium bg-black text-white rounded hover:bg-gray-800 disabled:opacity-50"
           >
             {drafting && language === 'en' ? 'Drafting…' : 'Generate (EN)'}
           </button>
           <button
             onClick={() => generate('fr')}
             disabled={drafting}
-            className="btn-secondary disabled:opacity-50"
+            className="px-3 py-1.5 text-sm font-medium bg-white text-black border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
           >
             {drafting && language === 'fr' ? 'Translating…' : 'Translate to FR'}
           </button>
           <button
             onClick={() => generate('ja')}
             disabled={drafting}
-            className="btn-secondary disabled:opacity-50"
+            className="px-3 py-1.5 text-sm font-medium bg-white text-black border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
           >
             {drafting && language === 'ja' ? 'Translating…' : 'Translate to JA'}
           </button>
@@ -426,13 +426,16 @@ function DrafterCard({ leadId }: { leadId: string }) {
                 className={INPUT_CLS}
               />
             </div>
-            <button onClick={copy} className="btn-secondary">
+            <button
+              onClick={copy}
+              className="px-3 py-1.5 text-sm font-medium bg-white text-black border border-gray-300 rounded hover:bg-gray-50"
+            >
               {copied ? 'Copied' : 'Copy'}
             </button>
             <button
               onClick={send}
               disabled={sending || !to || !subject || !body}
-              className="btn-primary disabled:opacity-50"
+              className="px-3 py-1.5 text-sm font-medium bg-black text-white rounded hover:bg-gray-800 disabled:opacity-50"
             >
               {sending ? 'Sending…' : 'Send via Resend'}
             </button>
