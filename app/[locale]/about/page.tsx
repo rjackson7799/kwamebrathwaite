@@ -102,7 +102,7 @@ export default async function AboutPage({ params }: Props) {
               <p className="text-gray-meta">Biography content coming soon.</p>
             )}
           </div>
-          <div className="md:w-[38%] flex-shrink-0 sticky top-24 self-start">
+          <div className="w-full md:w-[38%] flex-shrink-0 sticky top-24 self-start">
             <div className="relative aspect-square rounded-sm overflow-hidden">
               <Image
                 src={portraitSrc}
