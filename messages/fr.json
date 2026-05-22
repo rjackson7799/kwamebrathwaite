@@ -470,12 +470,38 @@
       "contactUs": "Nous contacter"
     }
   },
+  "newsletterConfirm": {
+    "confirm": {
+      "overline": "Newsletter",
+      "title": "Confirmez votre abonnement",
+      "body": "Veuillez confirmer que vous souhaitez recevoir les actualités de l'Archive Kwame Brathwaite.",
+      "button": "Confirmer l'abonnement",
+      "cancel": "Annuler",
+      "missingTokenTitle": "Lien de confirmation invalide",
+      "missingTokenBody": "Ce lien de confirmation est manquant ou incorrect. Si vous souhaitez confirmer votre abonnement, veuillez utiliser le lien figurant dans votre dernier e-mail de confirmation ou vous réabonner depuis notre site.",
+      "returnHome": "Retour à l'accueil"
+    }
+  },
+  "newsletterConfirmed": {
+    "done": {
+      "overline": "Newsletter",
+      "title": "Abonnement confirmé",
+      "body": "Merci d'avoir confirmé votre abonnement. Vous recevrez désormais des actualités occasionnelles sur les expositions, la couverture médiatique et les découvertes d'archives de l'Archive Kwame Brathwaite.",
+      "returnHome": "Retour à l'accueil",
+      "contactUs": "Nous contacter"
+    },
+    "invalid": {
+      "overline": "Newsletter",
+      "title": "Lien de confirmation invalide",
+      "body": "Ce lien de confirmation est manquant, incorrect ou a déjà été utilisé. Si vous souhaitez confirmer votre abonnement, veuillez utiliser le dernier e-mail de confirmation ou vous réabonner depuis notre site."
+    }
+  },
   "footer": {
     "newsletter": {
       "title": "Restez informé",
       "placeholder": "Entrez votre e-mail",
       "subscribe": "S'abonner",
-      "success": "Merci de vous être abonné!",
+      "success": "Merci — vérifiez votre boîte de réception pour confirmer votre abonnement.",
       "alreadySubscribed": "Vous êtes déjà abonné!",
       "error": "Impossible de s'abonner. Veuillez réessayer.",
       "rateLimited": "Trop de tentatives. Veuillez patienter."

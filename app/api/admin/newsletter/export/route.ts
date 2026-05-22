@@ -24,10 +24,14 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
 
-    // Fetch all subscribers ordered by subscription date
+    // Active subscribers only: confirmed double opt-in AND not unsubscribed.
+    // Pending rows are mostly bot signups; unsubscribed rows shouldn't show
+    // up in an export of mailable subscribers.
     const { data, error } = await supabase
       .from('newsletter_subscribers')
       .select('email, locale, subscribed_at')
+      .not('confirmed_at', 'is', null)
+      .is('unsubscribed_at', null)
       .order('subscribed_at', { ascending: false })
 
     if (error) {

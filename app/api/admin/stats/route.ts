@@ -35,10 +35,12 @@ export async function GET(request: NextRequest) {
         .select('*', { count: 'exact', head: true })
         .eq('status', 'new'),
 
-      // Total newsletter subscribers
+      // Active newsletter subscribers: confirmed double opt-in AND not unsubscribed.
       supabase
         .from('newsletter_subscribers')
-        .select('*', { count: 'exact', head: true }),
+        .select('*', { count: 'exact', head: true })
+        .not('confirmed_at', 'is', null)
+        .is('unsubscribed_at', null),
     ])
 
     // Check for errors

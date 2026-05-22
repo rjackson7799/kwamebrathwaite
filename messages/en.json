@@ -507,12 +507,38 @@
       "contactUs": "Contact us"
     }
   },
+  "newsletterConfirm": {
+    "confirm": {
+      "overline": "Newsletter",
+      "title": "Confirm your subscription",
+      "body": "Please confirm that you would like to receive updates from the Kwame Brathwaite Archive.",
+      "button": "Confirm subscription",
+      "cancel": "Cancel",
+      "missingTokenTitle": "Confirmation link invalid",
+      "missingTokenBody": "This confirmation link is missing or malformed. If you were trying to confirm your subscription, please use the link from your most recent confirmation email or subscribe again from our website.",
+      "returnHome": "Return home"
+    }
+  },
+  "newsletterConfirmed": {
+    "done": {
+      "overline": "Newsletter",
+      "title": "Subscription confirmed",
+      "body": "Thank you for confirming your subscription. You will now receive occasional updates about new exhibitions, press coverage, and archival discoveries from the Kwame Brathwaite Archive.",
+      "returnHome": "Return home",
+      "contactUs": "Contact us"
+    },
+    "invalid": {
+      "overline": "Newsletter",
+      "title": "Confirmation link invalid",
+      "body": "This confirmation link is missing, malformed, or has already been used. If you were trying to confirm your subscription, please use the most recent confirmation email or subscribe again from our website."
+    }
+  },
   "footer": {
     "newsletter": {
       "title": "Stay Updated",
       "placeholder": "Enter your email",
       "subscribe": "Subscribe",
-      "success": "Thank you for subscribing!",
+      "success": "Thanks — check your inbox to confirm your subscription.",
       "alreadySubscribed": "You are already subscribed!",
       "error": "Unable to subscribe. Please try again.",
       "rateLimited": "Too many attempts. Please wait a moment."

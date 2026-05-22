@@ -30,10 +30,14 @@ export async function GET(request: NextRequest) {
 
     const supabase = await createClient()
 
-    // Build query
+    // Build query — only show currently active subscribers (confirmed +
+    // not unsubscribed). Pending rows are mostly bots; unsubscribed rows
+    // were backfilled as confirmed by the double opt-in migration.
     let query = supabase
       .from('newsletter_subscribers')
       .select('*', { count: 'exact' })
+      .not('confirmed_at', 'is', null)
+      .is('unsubscribed_at', null)
 
     // Apply filters
     if (locale) query = query.eq('locale', locale)

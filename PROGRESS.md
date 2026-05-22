@@ -1,7 +1,185 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** April 9, 2026
+**Last Updated:** May 21, 2026
+
+---
+
+## Newsletter Double Opt-In + Hardening (May 21, 2026)
+
+### Problem
+
+Bot-driven newsletter signups were flooding the admin inbox with `[Admin] New newsletter subscriber: ...` emails and filling `newsletter_subscribers` with rows from unrelated domains. The honeypot field on the footer form and the 3/min IP rate limit on `/api/newsletter/subscribe` were ineffective — bots POST directly to the API and rotate IPs, then never engage further.
+
+### Architecture
+
+Double opt-in with scanner-safe confirmation:
+
+1. POST `/api/newsletter/subscribe` → insert pending row, send confirmation email.
+2. Email link → `/[locale]/newsletter/confirm?token=...` (page, GET, **read-only**).
+3. User clicks button → form POST → `/api/newsletter/confirm` (atomic update + sends welcome + admin email).
+4. Redirect → `/[locale]/newsletter/confirmed`.
+
+The page-in-the-middle pattern matches the existing unsubscribe flow exactly. Email scanners (Defender / Outlook Safe Links / Proofpoint / Mimecast) that prefetch the link hit only the page, never the mutating API.
+
+### What Was Fixed
+
+- [x] **Migration** [docs/migrations/2026-05-21-newsletter-double-opt-in.sql](docs/migrations/2026-05-21-newsletter-double-opt-in.sql) adds `confirmed_at`, `confirmation_token`, `confirmation_sent_at`, `confirmation_send_count` to `newsletter_subscribers`. Existing rows are grandfathered (`confirmed_at = subscribed_at`). **Must be run against Supabase prod before the deploy is useful.**
+- [x] **Subscribe route** [app/api/newsletter/subscribe/route.ts](app/api/newsletter/subscribe/route.ts) now inserts a pending row and sends a confirmation email only — no admin notification, no welcome email. Includes per-email resend throttle (15-minute cooldown, hard cap of 5 sends) using optimistic compare-and-swap on `confirmation_send_count` to close the email-bomb vector. Unsubscribed re-signups rotate `confirmation_token` so any previously emitted link is invalidated.
+- [x] **Confirm page** [app/[locale]/newsletter/confirm/page.tsx](app/%5Blocale%5D/newsletter/confirm/page.tsx) shows a button that form-POSTs the token. Read-only GET — safe for email scanners. Strings under `newsletterConfirm` in all three locales.
+- [x] **Confirm API** [app/api/newsletter/confirm/route.ts](app/api/newsletter/confirm/route.ts) is POST-only. Uses an atomic `UPDATE ... WHERE confirmation_token = ? AND confirmed_at IS NULL RETURNING ...` so concurrent requests can't double-fire the welcome/admin emails.
+- [x] **New email template** [lib/email/templates/NewsletterConfirmEmail.tsx](lib/email/templates/NewsletterConfirmEmail.tsx).
+- [x] **Confirmation landing page** [app/[locale]/newsletter/confirmed/page.tsx](app/%5Blocale%5D/newsletter/confirmed/page.tsx) with `?status=invalid` variant. Strings under `newsletterConfirmed`.
+- [x] **Footer success copy** updated in all three locales to "check your inbox to confirm".
+- [x] **Active-subscriber filter** in [app/api/admin/newsletter/route.ts](app/api/admin/newsletter/route.ts), [app/api/admin/newsletter/export/route.ts](app/api/admin/newsletter/export/route.ts), and [app/api/admin/stats/route.ts](app/api/admin/stats/route.ts) is now `confirmed_at IS NOT NULL AND unsubscribed_at IS NULL`. Previously confirmed-only, which leaked backfilled unsubscribed rows.
+- [x] **Daily cleanup cron** [app/api/cron/newsletter-cleanup/route.ts](app/api/cron/newsletter-cleanup/route.ts) at `0 3 * * *` UTC ([vercel.json](vercel.json)) deletes pending rows older than 7 days. Authed via `CRON_SECRET` like the existing `leads-weekly` cron.
+- [x] **Types + canonical schema** updated ([lib/supabase/types.ts](lib/supabase/types.ts), [docs/DATABASE_SCHEMA.sql](docs/DATABASE_SCHEMA.sql)).
+
+### Threats Addressed
+
+| Threat | Mitigation |
+|---|---|
+| Bot signups spam admin inbox | Admin email deferred until double opt-in confirmation |
+| Email scanners auto-confirm bot signups | Confirm is POST-only behind a page button; GET is read-only |
+| Email-bomb attack (rotate IPs, hammer victim with confirmation emails) | Per-email cooldown (15 min) + hard cap (5 sends) + token rotation on reactivation |
+| Race condition double-fires admin email on rapid clicks | Atomic conditional UPDATE in confirm route |
+| Backfilled unsubscribed rows leak into admin views | Active filter includes `unsubscribed_at IS NULL` |
+| Pending bot rows accumulate forever | Daily cleanup cron deletes pending > 7 days |
+
+### Deployment Checklist
+
+1. Run the migration in the Supabase SQL editor.
+2. Verify `SELECT count(*) FROM newsletter_subscribers WHERE confirmed_at IS NULL` returns 0 immediately after the migration.
+3. Confirm `CRON_SECRET` is set in Vercel project env (already used by `leads-weekly`).
+4. Deploy the branch. Test happy path with a real address (expect a single confirmation email, no admin email until the page button is clicked).
+5. Vercel Cron auto-registers `newsletter-cleanup` on next deploy.
+
+### Known Limitations / Out of Scope
+
+- Per-IP rate limiting on the subscribe endpoint is still in-memory ([lib/api/rate-limit.ts](lib/api/rate-limit.ts)) — not durable across serverless instances. The per-email throttle (in the DB) closes the higher-impact email-bomb vector; durable IP limiting is a separate workstream.
+- Other public forms (inquiries, licensing, exhibition reminders, wall-view) are not in scope for this change. Inquiries already has heuristic spam scoring; the others may need similar treatment in a follow-up.
+- No metrics dashboard yet (pending count, confirmation rate, top domains, rate-limit blocks). Single SQL queries against the table are enough at current volume.
+
+---
+
+## Public Form Submissions Fix — RLS Policy Gap (April 11, 2026)
+
+### Problem
+
+The public contact form at `/contact` was returning "There was an error submitting your inquiry. Please try again." on production for every submission. `/api/inquiries` was responding `500 DB_ERROR`. Leads were being silently dropped.
+
+The same root cause affected five other public write endpoints that were not yet reported as broken because they see less traffic, but which were almost certainly losing submissions too (licensing requests, wall-view lead capture, exhibition reminders, and the translation cache).
+
+### Root Causes
+
+1. **Missing RLS policy on `inquiries` table.** [docs/DATABASE_SCHEMA.sql:321](docs/DATABASE_SCHEMA.sql#L321) defines `"Public can submit inquiries" ... WITH CHECK (true)` but this file is a documented schema, not an auto-applied migration. The policy was never run against the production Supabase database, so anon inserts were rejected with Postgres error `42501 / new row violates row-level security policy`. The same gap likely affects `newsletter_subscribers` and `translation_cache` where similar documented policies were never applied.
+
+2. **Unresolved Postgres behavior after the policy was recreated.** Even after dropping the old policies and creating an explicit `CREATE POLICY ... FOR INSERT TO anon WITH CHECK (true)`, the policy still did not match `anon`-role inserts, either through PostgREST or via direct `SET LOCAL ROLE anon` in the Supabase SQL editor. Diagnostics confirmed: RLS enabled but not forced, no triggers, no check constraints, no restrictive policies, `anon` role exists with standard flags, `current_user` correctly switches to `anon`, and direct `postgres`-role inserts succeed. By documented Postgres semantics the `TO anon` policy should have matched and the insert should have been allowed. It did not. **Root cause never identified** — deferred in favor of shipping a workaround.
+
+### What Was Fixed
+
+- [x] **Six public write routes switched from the anon-key `createClient()` to the service-role `createAdminClient()`.** The trust boundary moves fully to the route layer, which was already enforcing strict Zod validation, per-IP rate limiting, and honeypot checks on all of these endpoints. No new attack surface; RLS was supposed to be a second line of defense but was actually a primary point of failure.
+
+  | File | Form / operation |
+  |---|---|
+  | [app/api/inquiries/route.ts](app/api/inquiries/route.ts) | Contact form (the originally reported bug) |
+  | [app/api/licensing/request/route.ts](app/api/licensing/request/route.ts) | Licensing request form |
+  | [app/api/generate-room/register/route.ts](app/api/generate-room/register/route.ts) | Wall-view email capture |
+  | [app/api/generate-room/route.ts](app/api/generate-room/route.ts) | Wall-view AI room generation |
+  | [app/api/exhibitions/reminders/route.ts](app/api/exhibitions/reminders/route.ts) | Exhibition reminder signup |
+  | [app/api/translate/route.ts](app/api/translate/route.ts) | Translation cache upsert |
+
+  Commit: `ec3a84b` — "Use service-role client for public form submissions to bypass RLS". Pushed to `main`, auto-deployed via Vercel. Production verified: contact form submits successfully and shows the "Thank you for your inquiry" success state.
+
+### Not Broken (verified during audit)
+
+- `app/api/newsletter/subscribe/route.ts` and `app/api/newsletter/unsubscribe/route.ts` were already on `createAdminClient()` from the April 9 newsletter work. Newsletter submissions were never affected.
+
+### Diagnostic Path (for reference if a similar issue happens again)
+
+1. **Reproduce locally before guessing.** `npm run dev` + `curl -X POST http://localhost:3000/api/inquiries ...` surfaced the real Supabase error (`42501 new row violates row-level security policy`) in the dev server terminal within seconds. Logs at [app/api/inquiries/route.ts:80](app/api/inquiries/route.ts#L80) were enough to pinpoint the layer, though they don't currently include the full Postgres error object — see follow-ups below.
+2. **Isolate with direct PostgREST calls.** `curl` against `${NEXT_PUBLIC_SUPABASE_URL}/rest/v1/inquiries` with the anon key reproduces the same 42501, proving the failure is at the Supabase layer, not Next.js.
+3. **Inspect policy state with `pg_policy` / `pg_trigger` / `pg_constraint`.** Single-statement JSON queries against those catalog tables return the full picture. Note that Supabase's SQL editor only displays the last statement's result when multiple run together — run each inspection query separately.
+4. **Test role impersonation in a helper function, not in plain SQL.** `SET LOCAL ROLE` + INSERT in the editor works, but `RAISE NOTICE` output is hidden in the editor UI. Use `CREATE OR REPLACE FUNCTION pg_temp.test(...) RETURNS TABLE(step text, value text)` so the diagnostic rows come back as a normal result set.
+
+### Still Open / Follow-Ups
+
+- [ ] **Root cause of the `TO anon WITH CHECK (true)` non-match is unexplained.** The workaround is shipping; the mystery is not. When time permits, consider opening a Supabase support ticket with the catalog dumps we already captured, or test the same policy shape on a fresh Supabase project to see if the behavior reproduces.
+- [ ] **React error #185 console spam on `/contact`.** Separate issue, noticed during initial debugging of this bug. Form renders and now submits correctly, but the production console shows 50+ "Minified React error #185" (maximum update depth exceeded) entries. Root cause not identified — will need a dev-mode repro to see the non-minified stack. Purely cosmetic, not blocking.
+- [ ] **Migration hygiene.** `docs/DATABASE_SCHEMA.sql` is currently spec, not an applied artifact — there is no tool ensuring the live database matches it, which is how this bug reached production. The `docs/migrations/` folder started during the April 9 newsletter work (`2026-04-09-newsletter-unsubscribe.sql`) is the right direction. Finish the transition: every schema change goes in `docs/migrations/` with an `YYYY-MM-DD-...sql` prefix, run in order against every environment, and `DATABASE_SCHEMA.sql` becomes a generated snapshot rather than a source of truth.
+- [ ] **Improve API error logging.** [app/api/inquiries/route.ts:80](app/api/inquiries/route.ts#L80) logs `'Database error:', error` which works locally but is opaque in Vercel logs when you need to diagnose production fast. Consider structured logging: `console.error('Database error inserting inquiry:', { code: error.code, message: error.message, details: error.details, hint: error.hint })`. Applies to the other five routes in this fix as well.
+- [ ] **Clean up test rows.** During diagnosis, several test rows were inserted into the production `inquiries` table (emails: `servicerole@example.com`, `pg-direct@example.com`, `diag-*@example.com`, etc.). These were removed at the end of the session via a `DELETE ... WHERE email IN (...)` statement. Verify they are gone, and avoid reproducing bugs against the production database in future — point local dev at a separate Supabase project or branch.
+
+---
+
+## Email Send Fix — `@react-email/render` Hoisting (April 11, 2026)
+
+### Problem
+
+Immediately after shipping the RLS workaround above, the contact form was submitting successfully and rows were landing in the `inquiries` table, but **no admin notification or user confirmation emails were arriving** at `ryan.jackson.2009@gmail.com`. The Resend dashboard showed zero send activity for the `kwamebrathwaite.com` domain even though the domain was verified at April 11 1:00 AM. Every other public write path worked, but every email send was silently failing.
+
+### Root Cause
+
+The local dev server log surfaced the real error the moment we looked for it:
+
+```
+Failed to send email: TypeError: render is not a function
+  at Emails.create (resend/dist/index.mjs:665:37)
+  at sendEmail (lib/email/send.ts:18:33)
+```
+
+The `resend` SDK (v6.9.2) uses `await import('@react-email/render')` internally to convert email templates to HTML before making the HTTP call. It declares `@react-email/render: *` as a **peer dependency** — meaning the application, not resend, is responsible for installing it at the top level of `node_modules` where Node's module resolution can find it from `resend`'s location.
+
+`package.json` did not declare `@react-email/render` directly. It was only being pulled in transitively by `@react-email/components@1.0.7`, which bundles `@react-email/render@2.0.4` in a nested `node_modules/@react-email/components/node_modules/@react-email/render/` folder. Node's resolution walks up from `resend`'s location to the top-level `node_modules/` but never dives sideways into other packages' private nested folders, so the import at runtime returned an empty/malformed module, `render` destructured to `undefined`, and calling `undefined(element)` threw the `TypeError` before any HTTP request to Resend was made.
+
+This explains every observed symptom:
+- **Emails silently failed** — the fire-and-forget `sendEmail` wrapper in [lib/email/send.ts:36](lib/email/send.ts#L36) catches all exceptions and only logs a warning, so the API route always returned 201 even though the email never went out.
+- **Zero Resend API activity** — the request never left the Node process, so there was nothing for Resend to log.
+- **Domain verification was a red herring** — the domain was correctly set up and would have worked if the request had ever reached Resend's servers.
+
+### What Was Fixed
+
+- [x] **`@react-email/render@2.0.4` installed as a direct top-level dependency** via `npm install @react-email/render@2.0.4`. This forces npm to hoist it to `node_modules/@react-email/render/` where `resend`'s dynamic import can find it. Same version as the nested copy already in use, so no behavior change for existing consumers. `package-lock.json` deduplicated the nested copy automatically.
+- [x] **Verified end-to-end** — a local `curl` to `/api/inquiries` after the fix produced both log lines in the dev server output:
+  ```
+  Email sent: abc91e36-71ab-4c35-afe0-3bd5448fbeb3 → ryan.jackson.2009@gmail.com
+  Email sent: d6b86570-76d3-4931-847a-0726f434b9db → info@kwamebrathwaite.com, ryan.jackson.2009@gmail.com
+  ```
+  Both emails correspond to the `InquiryUserEmail` (user confirmation) and `InquiryAdminEmail` (admin notification) templates being rendered and successfully delivered to Resend's API.
+
+Commit: `0952c03` — "Add @react-email/render as direct dep to fix email sends". Pushed to `main`, auto-deployed via Vercel.
+
+### Why the RLS Fix Didn't Surface This Earlier
+
+The previous fix in this same session switched six routes from the anon-key client to the service-role client. That unblocked the DB insert and the API route started returning 201. But the email send happens **after** the DB insert succeeds (fire-and-forget, non-blocking, per the comment at [app/api/inquiries/route.ts:86](app/api/inquiries/route.ts#L86)), and the email failure is swallowed inside `sendEmail`'s try/catch. So the success response masks the email failure, and the user could not see any difference between "DB insert failed" (which was the RLS symptom) and "DB insert succeeded, email failed" (which was this issue). Only the dev server terminal log showed the real error.
+
+### Diagnostic Path (for reference)
+
+The entire diagnosis took one grep against the dev server log file. The lesson: **when something silently fails after a fix, check the server log, not the user-facing response.** The framework pattern here should have been:
+
+1. Ship the RLS fix.
+2. Immediately test end-to-end, including the email side, before closing out.
+3. If anything is silently failing, `grep -E "Email|Resend|error" server.log` is the first move.
+
+Steps 2 and 3 were skipped in the original session — the contact form showed "Thank you" so we thought we were done. The second bug was only discovered when the user independently went looking for the admin notification email.
+
+### Related Follow-Up (now more urgent)
+
+The "Improve API error logging" item from the previous section is now more clearly justified. [lib/email/send.ts:36-38](lib/email/send.ts#L36-L38) currently does:
+
+```ts
+} catch (error) {
+  console.error('Failed to send email:', error)
+}
+```
+
+This is fine for local dev but in Vercel function logs it's easy to miss because it's a generic `console.error` with no structured metadata and no alerting. Consider one of:
+
+- Wire email failures into Sentry (or whatever error reporter) instead of only `console.error`.
+- Return a non-blocking header on the API response in dev mode, e.g. `X-Email-Send-Status: failed-render-error`, so a developer hitting the endpoint can see the email side-effect state without tailing logs.
+- Change the success response to include `{ emailSent: true/false }` so the frontend could optionally surface "We saved your inquiry but couldn't send the confirmation email; we'll still get back to you" instead of a flat "Thank you".
+
+None of these are blocking for shipping; they're all about not being blindsided the next time an email failure masquerades as success.
 
 ---
 

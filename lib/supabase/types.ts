@@ -435,6 +435,10 @@ export type Database = {
           subscribed_at: string
           unsubscribe_token: string
           unsubscribed_at: string | null
+          confirmed_at: string | null
+          confirmation_token: string
+          confirmation_sent_at: string | null
+          confirmation_send_count: number
         }
         Insert: {
           id?: string
@@ -443,6 +447,10 @@ export type Database = {
           subscribed_at?: string
           unsubscribe_token?: string
           unsubscribed_at?: string | null
+          confirmed_at?: string | null
+          confirmation_token?: string
+          confirmation_sent_at?: string | null
+          confirmation_send_count?: number
         }
         Update: {
           id?: string
@@ -451,6 +459,10 @@ export type Database = {
           subscribed_at?: string
           unsubscribe_token?: string
           unsubscribed_at?: string | null
+          confirmed_at?: string | null
+          confirmation_token?: string
+          confirmation_sent_at?: string | null
+          confirmation_send_count?: number
         }
       }
       translation_cache: {

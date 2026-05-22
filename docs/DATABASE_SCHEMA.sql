@@ -177,7 +177,11 @@ CREATE TABLE newsletter_subscribers (
   locale VARCHAR(5) DEFAULT 'en',
   subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   unsubscribe_token UUID UNIQUE NOT NULL DEFAULT uuid_generate_v4(),
-  unsubscribed_at TIMESTAMP WITH TIME ZONE
+  unsubscribed_at TIMESTAMP WITH TIME ZONE,
+  confirmed_at TIMESTAMP WITH TIME ZONE,                              -- NULL = pending double opt-in
+  confirmation_token UUID UNIQUE NOT NULL DEFAULT uuid_generate_v4(),
+  confirmation_sent_at TIMESTAMP WITH TIME ZONE,                      -- last confirmation email send (cooldown anchor)
+  confirmation_send_count INTEGER NOT NULL DEFAULT 0                  -- total confirmation emails sent to this row
 );
 
 -- Newsletter indexes
@@ -185,6 +189,8 @@ CREATE INDEX idx_newsletter_email ON newsletter_subscribers(email);
 CREATE INDEX idx_newsletter_subscribed ON newsletter_subscribers(subscribed_at DESC);
 CREATE UNIQUE INDEX idx_newsletter_unsubscribe_token ON newsletter_subscribers(unsubscribe_token);
 CREATE INDEX idx_newsletter_unsubscribed_at ON newsletter_subscribers(unsubscribed_at);
+CREATE UNIQUE INDEX idx_newsletter_confirmation_token ON newsletter_subscribers(confirmation_token);
+CREATE INDEX idx_newsletter_confirmed_at ON newsletter_subscribers(confirmed_at);
 
 -- ============================================
 -- TRANSLATION CACHE
