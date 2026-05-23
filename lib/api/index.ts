@@ -28,6 +28,7 @@ export {
   adminFounderCreateSchema,
   adminFounderUpdateSchema,
   founderOtpRequestSchema,
+  founderProfileUpdateSchema,
   newsletterSchema,
   translateSchema,
   parseSearchParams,

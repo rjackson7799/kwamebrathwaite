@@ -7,6 +7,14 @@
     {
       "path": "/api/cron/newsletter-cleanup",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/rate-limit-cleanup",
+      "schedule": "30 3 * * *"
+    },
+    {
+      "path": "/api/cron/founders-stale-invites",
+      "schedule": "0 14 * * 1"
     }
   ]
 }

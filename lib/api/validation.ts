@@ -144,6 +144,34 @@ export const founderOtpRequestSchema = z.object({
   website: z.string().optional(),
 })
 
+// Member self-update — narrow whitelist mirroring the column-guard trigger.
+// Members can change recognition prefs, comms prefs, phone, locale, and the
+// optional mailing address. Tier / pledge / status / internal_notes /
+// relationship_owner_email / email are admin-only (trigger rejects).
+//
+// The mailing_address jsonb shape is loosely validated; the trigger doesn't
+// inspect it, and the field is voluntary stewardship info.
+export const founderProfileUpdateSchema = z.object({
+  full_name: z.string().min(1).max(255).optional(),
+  recognition_name: z.string().max(255).optional().nullable(),
+  recognition_visibility: z.enum(['private', 'public_opt_in']).optional(),
+  phone: z.string().max(50).optional().nullable(),
+  organization: z.string().max(255).optional().nullable(),
+  mailing_address: z
+    .object({
+      line1: z.string().max(255).optional().nullable(),
+      line2: z.string().max(255).optional().nullable(),
+      city: z.string().max(120).optional().nullable(),
+      region: z.string().max(120).optional().nullable(),
+      postal: z.string().max(40).optional().nullable(),
+      country: z.string().max(120).optional().nullable(),
+    })
+    .nullable()
+    .optional(),
+  preferred_locale: z.enum(['en', 'fr', 'ja']).optional(),
+  comms_prefs: z.record(z.string(), z.unknown()).optional(),
+})
+
 // Newsletter subscription
 export const newsletterSchema = z.object({
   email: z.string().email('Invalid email address').max(255),

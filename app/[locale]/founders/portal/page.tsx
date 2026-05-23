@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getCurrentFounder } from '@/lib/auth/founders'
@@ -66,22 +67,28 @@ export default async function FoundersPortalPage({ params }: PageProps) {
             {t('welcomeBody')}
           </p>
 
-          {/* Phase 1D will populate this nav with Profile + Security links.
-              Showing them as muted placeholders today so the surface signals
-              future-completeness without misleading the user. */}
-          <nav className="mt-16 pt-10 border-t border-[#2a2a2a] grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
-            <div className="opacity-50 cursor-not-allowed">
-              <p className="text-[#C9A961] uppercase tracking-[0.14em] text-[10px] mb-2">
-                Coming soon
+          {/* Portal nav — Phase 1D ships Profile + Security; later phases
+              (Print, Briefings, Recognition, Contribute, Tax letters) will
+              add cards here as they land. */}
+          <nav className="mt-16 pt-10 border-t border-[#2a2a2a] grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <Link
+              href={locale === 'en' ? '/founders/portal/profile' : `/${locale}/founders/portal/profile`}
+              className="group block border border-[#2a2a2a] hover:border-[#C9A961] p-5 transition-colors"
+            >
+              <p className="text-[#C9A961] uppercase tracking-[0.14em] text-[10px] mb-2 group-hover:text-[#d4b572]">
+                {t('navProfile')}
               </p>
-              <p className="text-[#E6E2D6]">{t('navProfile')}</p>
-            </div>
-            <div className="opacity-50 cursor-not-allowed">
-              <p className="text-[#C9A961] uppercase tracking-[0.14em] text-[10px] mb-2">
-                Coming soon
+              <p className="text-[#E6E2D6] text-sm leading-relaxed">{t('navProfileDesc')}</p>
+            </Link>
+            <Link
+              href={locale === 'en' ? '/founders/portal/security' : `/${locale}/founders/portal/security`}
+              className="group block border border-[#2a2a2a] hover:border-[#C9A961] p-5 transition-colors"
+            >
+              <p className="text-[#C9A961] uppercase tracking-[0.14em] text-[10px] mb-2 group-hover:text-[#d4b572]">
+                {t('navSecurity')}
               </p>
-              <p className="text-[#E6E2D6]">{t('navSecurity')}</p>
-            </div>
+              <p className="text-[#E6E2D6] text-sm leading-relaxed">{t('navSecurityDesc')}</p>
+            </Link>
           </nav>
         </div>
       </div>
