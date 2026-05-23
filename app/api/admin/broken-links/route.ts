@@ -35,8 +35,12 @@ export async function GET(request: NextRequest) {
 
   try {
     if (view === 'aggregate') {
+      // Service-role client: broken_links_aggregate() is SECURITY DEFINER and
+      // EXECUTE is granted only to service_role (revoked from authenticated in
+      // 2026-05-22-admins-and-rls-refactor.sql). The admin check has already
+      // happened in requireAuth() above, so service-role escalation here is safe.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const supabase = (await createClient()) as any
+      const supabase = createAdminClient() as any
       const { data, error } = await supabase.rpc('broken_links_aggregate', {
         days_back: days,
       })

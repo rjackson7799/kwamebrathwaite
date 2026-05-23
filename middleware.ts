@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import createIntlMiddleware from 'next-intl/middleware'
 import { createServerClient } from '@supabase/ssr'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { locales, defaultLocale } from './i18n/request'
 
 // Create the intl middleware
@@ -30,10 +31,29 @@ function createSupabaseMiddlewareClient(request: NextRequest, response: NextResp
   )
 }
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+// Strip a leading locale segment so subsequent guards only see canonical paths.
+// '/fr/founders/portal/x' → '/founders/portal/x', '/admin' → '/admin'.
+function stripLocale(pathname: string) {
+  const seg = pathname.split('/')[1]
+  return (locales as readonly string[]).includes(seg)
+    ? '/' + pathname.split('/').slice(2).join('/')
+    : pathname
+}
 
-  // Protect admin API routes (defense-in-depth; individual routes also call requireAuth)
+async function isAdminUid(supabase: SupabaseClient, uid: string): Promise<boolean> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (supabase as any).rpc('is_admin', { uid })
+  if (error) {
+    console.error('is_admin RPC failed in middleware:', error)
+    return false
+  }
+  return data === true
+}
+
+export async function middleware(request: NextRequest) {
+  const pathname = stripLocale(request.nextUrl.pathname)
+
+  // Protect admin API routes (defense-in-depth; individual routes also call requireAdmin)
   if (pathname.startsWith('/api/admin')) {
     // Allow the auth endpoints themselves (login/logout/session)
     if (pathname.startsWith('/api/admin/auth/')) {
@@ -50,10 +70,20 @@ export async function middleware(request: NextRequest) {
         { status: 401 }
       )
     }
+
+    if (!(await isAdminUid(supabase, user.id))) {
+      // Belt-and-braces: clear the session so this user cannot continue
+      // hitting admin endpoints with a non-admin token.
+      await supabase.auth.signOut()
+      return NextResponse.json(
+        { error: { code: 'FORBIDDEN', message: 'Admin access required' } },
+        { status: 403 }
+      )
+    }
     return response
   }
 
-  // Handle admin page routes - check authentication
+  // Handle admin page routes - check authentication AND admin membership.
   if (pathname.startsWith('/admin')) {
     if (pathname === '/admin/login') {
       return NextResponse.next()
@@ -65,6 +95,13 @@ export async function middleware(request: NextRequest) {
 
     if (!user) {
       const loginUrl = new URL('/admin/login', request.url)
+      return NextResponse.redirect(loginUrl)
+    }
+
+    if (!(await isAdminUid(supabase, user.id))) {
+      await supabase.auth.signOut()
+      const loginUrl = new URL('/admin/login', request.url)
+      loginUrl.searchParams.set('reason', 'not_admin')
       return NextResponse.redirect(loginUrl)
     }
 
