@@ -33,6 +33,17 @@ const securityHeaders = [
   },
 ]
 
+// Founder's Circle portal — never index, never cache. The portal contains
+// private donor data; the brief §6.7 (Privacy as a Feature) and §10
+// (Security posture) call this out explicitly. Matches all locale variants
+// (/founders/portal/*, /fr/founders/portal/*, /ja/founders/portal/*) and
+// the founder-side API routes.
+const portalPrivateHeaders = [
+  { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+  { key: 'Cache-Control', value: 'no-store, max-age=0, must-revalidate' },
+  { key: 'Referrer-Policy', value: 'same-origin' },
+]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -64,6 +75,20 @@ const nextConfig = {
       {
         source: '/:path*',
         headers: securityHeaders,
+      },
+      // Founder portal: noindex + no-store, on every locale variant + the
+      // founder-side API routes (request-otp, sign-out, future profile API).
+      {
+        source: '/founders/portal/:path*',
+        headers: portalPrivateHeaders,
+      },
+      {
+        source: '/:locale(fr|ja)/founders/portal/:path*',
+        headers: portalPrivateHeaders,
+      },
+      {
+        source: '/api/founders/:path*',
+        headers: portalPrivateHeaders,
       },
     ]
   },

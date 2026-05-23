@@ -72,6 +72,78 @@ export const founderInquirySchema = z.object({
   website: z.string().optional(),
 })
 
+// ============================================
+// Founder's Circle — admin + auth schemas (Phase 1C)
+// ============================================
+
+const founderTier = z.enum([
+  'founder',
+  'collector_circle',
+  'leadership',
+  'archive',
+  'legacy',
+])
+const founderStatus = z.enum(['invited', 'active', 'paused', 'archived'])
+const recognitionVisibility = z.enum(['private', 'public_opt_in'])
+
+// Admin: list filters
+export const adminFoundersFiltersSchema = paginationSchema.extend({
+  status: founderStatus.optional(),
+  tier: founderTier.optional(),
+  q: z.string().optional(),
+  sort: z.string().optional(),
+  order: orderSchema,
+})
+
+// Admin: create a founder directly (without converting an inquiry).
+// The route handler is responsible for the auth.users provisioning step
+// before inserting into founders.
+export const adminFounderCreateSchema = z.object({
+  email: z.string().email().max(255),
+  full_name: z.string().min(1).max(255),
+  recognition_name: z.string().max(255).optional().nullable(),
+  recognition_visibility: recognitionVisibility.optional(),
+  tier: founderTier.optional().nullable(),
+  pledge_amount: z.number().nonnegative().optional().nullable(),
+  pledge_term_years: z.number().int().positive().optional().nullable(),
+  phone: z.string().max(50).optional().nullable(),
+  organization: z.string().max(255).optional().nullable(),
+  relationship_owner_email: z.string().email().max(255).optional().nullable(),
+  preferred_locale: z.enum(['en', 'fr', 'ja']).optional(),
+  internal_notes: z.string().max(5000).optional().nullable(),
+  // If converting from an inquiry, optionally back-link.
+  inquiry_id: z.string().uuid().optional(),
+  // Optional one-time personal note included in the invitation email.
+  personal_note: z.string().max(2000).optional().nullable(),
+  // Set true to skip sending the invitation email immediately. Default false
+  // (i.e. the admin can quickly create + invite in one action).
+  skip_invite: z.boolean().optional(),
+})
+
+// Admin: update an existing founder row.
+export const adminFounderUpdateSchema = z.object({
+  full_name: z.string().min(1).max(255).optional(),
+  recognition_name: z.string().max(255).optional().nullable(),
+  recognition_visibility: recognitionVisibility.optional(),
+  tier: founderTier.optional().nullable(),
+  pledge_amount: z.number().nonnegative().optional().nullable(),
+  pledge_term_years: z.number().int().positive().optional().nullable(),
+  pledge_fulfilled_amount: z.number().nonnegative().optional(),
+  status: founderStatus.optional(),
+  phone: z.string().max(50).optional().nullable(),
+  organization: z.string().max(255).optional().nullable(),
+  relationship_owner_email: z.string().email().max(255).optional().nullable(),
+  preferred_locale: z.enum(['en', 'fr', 'ja']).optional(),
+  internal_notes: z.string().max(5000).optional().nullable(),
+})
+
+// Public: founder magic-link OTP request.
+export const founderOtpRequestSchema = z.object({
+  email: z.string().email().max(255),
+  // Honeypot
+  website: z.string().optional(),
+})
+
 // Newsletter subscription
 export const newsletterSchema = z.object({
   email: z.string().email('Invalid email address').max(255),

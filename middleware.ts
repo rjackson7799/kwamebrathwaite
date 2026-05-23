@@ -108,8 +108,55 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
+  // Handle the Founder's Circle portal — session + founders-table membership.
+  // Locale-aware: we already stripped the locale prefix at the top, so a
+  // request to /fr/founders/portal/x lands here with pathname='/founders/portal/x'.
+  if (pathname.startsWith('/founders/portal')) {
+    const response = intlMiddleware(request)
+    const supabase = createSupabaseMiddlewareClient(request, response)
+    const { data: { user } } = await supabase.auth.getUser()
+
+    // Preserve the user's intended locale on the redirect URL.
+    const urlLocale = request.nextUrl.pathname.match(/^\/(fr|ja)\//)?.[1]
+    const localePrefix = urlLocale ? `/${urlLocale}` : ''
+    const loginUrl = new URL(`${localePrefix}/founders/login`, request.url)
+
+    if (!user) {
+      return NextResponse.redirect(loginUrl)
+    }
+
+    if (!(await isFounderUid(supabase, user.id))) {
+      await supabase.auth.signOut()
+      loginUrl.searchParams.set('reason', 'not_invited')
+      return NextResponse.redirect(loginUrl)
+    }
+
+    return response
+  }
+
   // Handle public routes with i18n
   return intlMiddleware(request)
+}
+
+async function isFounderUid(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any,
+  uid: string
+): Promise<boolean> {
+  // RLS allows the row owner to read their own row (founders_select policy).
+  // No service role needed.
+  const { data, error } = await supabase
+    .from('founders')
+    .select('user_id, status')
+    .eq('user_id', uid)
+    .maybeSingle()
+
+  if (error) {
+    console.error('isFounderUid lookup failed:', error)
+    return false
+  }
+  // Archived founders are treated as non-members for portal access purposes.
+  return data !== null && data.status !== 'archived'
 }
 
 export const config = {

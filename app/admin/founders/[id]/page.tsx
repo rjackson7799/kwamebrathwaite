@@ -1,0 +1,437 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { PageHeader } from '@/components/admin/PageHeader'
+import { StatusBadge } from '@/components/admin/StatusBadge'
+import { ConfirmDialog } from '@/components/admin/ConfirmDialog'
+
+interface Founder {
+  user_id: string
+  email: string
+  full_name: string
+  recognition_name: string | null
+  recognition_visibility: 'private' | 'public_opt_in'
+  tier: string | null
+  pledge_amount: number | null
+  pledge_term_years: number | null
+  pledge_fulfilled_amount: number
+  status: 'invited' | 'active' | 'paused' | 'archived'
+  phone: string | null
+  organization: string | null
+  relationship_owner_email: string | null
+  preferred_locale: string
+  internal_notes: string | null
+  invited_at: string
+  activated_at: string | null
+  last_login_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+type FormState = {
+  full_name: string
+  recognition_name: string
+  recognition_visibility: 'private' | 'public_opt_in'
+  tier: string
+  pledge_amount: string
+  pledge_term_years: string
+  pledge_fulfilled_amount: string
+  status: 'invited' | 'active' | 'paused' | 'archived'
+  phone: string
+  organization: string
+  relationship_owner_email: string
+  preferred_locale: 'en' | 'fr' | 'ja'
+  internal_notes: string
+}
+
+function toFormState(f: Founder): FormState {
+  return {
+    full_name: f.full_name ?? '',
+    recognition_name: f.recognition_name ?? '',
+    recognition_visibility: f.recognition_visibility ?? 'private',
+    tier: f.tier ?? '',
+    pledge_amount: f.pledge_amount?.toString() ?? '',
+    pledge_term_years: f.pledge_term_years?.toString() ?? '',
+    pledge_fulfilled_amount: (f.pledge_fulfilled_amount ?? 0).toString(),
+    status: f.status,
+    phone: f.phone ?? '',
+    organization: f.organization ?? '',
+    relationship_owner_email: f.relationship_owner_email ?? '',
+    preferred_locale: (f.preferred_locale as 'en' | 'fr' | 'ja') ?? 'en',
+    internal_notes: f.internal_notes ?? '',
+  }
+}
+
+export default function AdminFounderDetailPage() {
+  const params = useParams()
+  const router = useRouter()
+  const id = String(params.id)
+
+  const [founder, setFounder] = useState<Founder | null>(null)
+  const [form, setForm] = useState<FormState | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [resending, setResending] = useState(false)
+  const [revoking, setRevoking] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [revokeDialog, setRevokeDialog] = useState(false)
+  const [savedAt, setSavedAt] = useState<number | null>(null)
+
+  const fetchFounder = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/admin/founders/${id}`)
+      const json = await res.json()
+      if (!json.success) {
+        setError(json.error?.message || 'Founder not found')
+        return
+      }
+      setFounder(json.data)
+      setForm(toFormState(json.data))
+    } catch {
+      setError('Failed to load founder')
+    } finally {
+      setLoading(false)
+    }
+  }, [id])
+
+  useEffect(() => {
+    if (id) fetchFounder()
+  }, [id, fetchFounder])
+
+  const handleSave = async () => {
+    if (!form) return
+    setSaving(true)
+    try {
+      // Marshal numeric/optional fields back to the API shape
+      const body: Record<string, unknown> = {
+        full_name: form.full_name,
+        recognition_name: form.recognition_name || null,
+        recognition_visibility: form.recognition_visibility,
+        tier: form.tier || null,
+        pledge_amount:
+          form.pledge_amount === '' ? null : Number(form.pledge_amount),
+        pledge_term_years:
+          form.pledge_term_years === '' ? null : Number(form.pledge_term_years),
+        pledge_fulfilled_amount:
+          form.pledge_fulfilled_amount === '' ? 0 : Number(form.pledge_fulfilled_amount),
+        status: form.status,
+        phone: form.phone || null,
+        organization: form.organization || null,
+        relationship_owner_email: form.relationship_owner_email || null,
+        preferred_locale: form.preferred_locale,
+        internal_notes: form.internal_notes || null,
+      }
+      const res = await fetch(`/api/admin/founders/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const json = await res.json()
+      if (json.success) {
+        setFounder(json.data)
+        setForm(toFormState(json.data))
+        setSavedAt(Date.now())
+      } else {
+        alert(json.error?.message || 'Failed to save changes')
+      }
+    } catch {
+      alert('Failed to save changes')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleResendInvite = async () => {
+    setResending(true)
+    try {
+      const res = await fetch(`/api/admin/founders/${id}/invite`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      })
+      const json = await res.json()
+      if (!json.success) {
+        alert(json.error?.message || 'Failed to send invitation')
+      } else {
+        alert('Invitation email sent.')
+      }
+    } catch {
+      alert('Failed to send invitation')
+    } finally {
+      setResending(false)
+    }
+  }
+
+  const handleRevoke = async () => {
+    setRevoking(true)
+    try {
+      const res = await fetch(`/api/admin/founders/${id}/revoke`, {
+        method: 'POST',
+      })
+      const json = await res.json()
+      if (json.success) {
+        await fetchFounder()
+      } else {
+        alert(json.error?.message || 'Failed to revoke access')
+      }
+    } catch {
+      alert('Failed to revoke access')
+    } finally {
+      setRevoking(false)
+      setRevokeDialog(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <>
+        <PageHeader title="Founder" breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Founders', href: '/admin/founders' }, { label: 'Loading…' }]} />
+        <div className="p-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  if (error || !founder || !form) {
+    return (
+      <>
+        <PageHeader title="Founder" breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Founders', href: '/admin/founders' }, { label: 'Error' }]} />
+        <div className="p-8">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+            <p className="text-red-700 mb-4">{error || 'Founder not found'}</p>
+            <button
+              onClick={() => router.push('/admin/founders')}
+              className="px-4 py-2 bg-black text-white text-sm font-medium rounded-md hover:bg-gray-800"
+            >
+              Back to Founders
+            </button>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  const formatDate = (d: string | null) => {
+    if (!d) return '—'
+    return new Date(d).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }
+
+  const set = (k: keyof FormState) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => setForm((prev) => (prev ? { ...prev, [k]: e.target.value } : prev))
+
+  return (
+    <>
+      <PageHeader
+        title={founder.full_name}
+        description={founder.email}
+        breadcrumbs={[
+          { label: 'Admin', href: '/admin' },
+          { label: 'Founders', href: '/admin/founders' },
+          { label: founder.full_name },
+        ]}
+        actions={
+          <div className="flex items-center gap-2">
+            <StatusBadge status={founder.status} />
+            <button
+              onClick={handleResendInvite}
+              disabled={resending}
+              className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+            >
+              {resending ? 'Sending…' : 'Resend invite'}
+            </button>
+            {founder.status !== 'archived' && (
+              <button
+                onClick={() => setRevokeDialog(true)}
+                className="px-3 py-1.5 text-sm border border-red-300 text-red-600 rounded-md hover:bg-red-50"
+              >
+                Revoke access
+              </button>
+            )}
+          </div>
+        }
+      />
+
+      <div className="p-8">
+        <div className="max-w-4xl space-y-6">
+          {/* Recognition & visibility */}
+          <Card title="Recognition">
+            <Field label="Full name">
+              <input className="input" value={form.full_name} onChange={set('full_name')} />
+            </Field>
+            <Field label="Recognition name (how the name appears in the permanent record)">
+              <input
+                className="input"
+                value={form.recognition_name}
+                onChange={set('recognition_name')}
+                placeholder={form.full_name}
+              />
+            </Field>
+            <Field label="Recognition visibility (Phase 4 public Founders Wall)">
+              <select className="input" value={form.recognition_visibility} onChange={set('recognition_visibility')}>
+                <option value="private">Private — never shown publicly</option>
+                <option value="public_opt_in">Public (opt-in)</option>
+              </select>
+            </Field>
+          </Card>
+
+          {/* Tier & pledge */}
+          <Card title="Tier & pledge">
+            <Field label="Tier">
+              <select className="input" value={form.tier} onChange={set('tier')}>
+                <option value="">— Not set —</option>
+                <option value="founder">Founder</option>
+                <option value="collector_circle">Collector Circle</option>
+                <option value="leadership">Leadership</option>
+                <option value="archive">Archive</option>
+                <option value="legacy">Legacy</option>
+              </select>
+            </Field>
+            <div className="grid grid-cols-3 gap-4">
+              <Field label="Pledge amount (USD)">
+                <input className="input" type="number" min="0" step="100" value={form.pledge_amount} onChange={set('pledge_amount')} />
+              </Field>
+              <Field label="Pledge term (years)">
+                <input className="input" type="number" min="1" step="1" value={form.pledge_term_years} onChange={set('pledge_term_years')} />
+              </Field>
+              <Field label="Fulfilled to date (USD)">
+                <input className="input" type="number" min="0" step="100" value={form.pledge_fulfilled_amount} onChange={set('pledge_fulfilled_amount')} />
+              </Field>
+            </div>
+            <Field label="Status">
+              <select className="input" value={form.status} onChange={set('status')}>
+                <option value="invited">Invited (link sent, not signed in)</option>
+                <option value="active">Active</option>
+                <option value="paused">Paused</option>
+                <option value="archived">Archived</option>
+              </select>
+            </Field>
+          </Card>
+
+          {/* Stewardship */}
+          <Card title="Stewardship">
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Phone">
+                <input className="input" value={form.phone} onChange={set('phone')} />
+              </Field>
+              <Field label="Organization">
+                <input className="input" value={form.organization} onChange={set('organization')} />
+              </Field>
+              <Field label="Relationship owner (staff email)">
+                <input className="input" type="email" value={form.relationship_owner_email} onChange={set('relationship_owner_email')} />
+              </Field>
+              <Field label="Preferred locale">
+                <select className="input" value={form.preferred_locale} onChange={set('preferred_locale')}>
+                  <option value="en">English</option>
+                  <option value="fr">Français</option>
+                  <option value="ja">日本語</option>
+                </select>
+              </Field>
+            </div>
+            <Field label="Internal notes (admin-only — never shown to member)">
+              <textarea
+                className="input resize-none"
+                rows={4}
+                value={form.internal_notes}
+                onChange={set('internal_notes')}
+              />
+            </Field>
+          </Card>
+
+          {/* Account state */}
+          <Card title="Account">
+            <dl className="grid grid-cols-2 gap-4 text-sm">
+              <DLRow label="Email" value={founder.email} />
+              <DLRow label="Invited" value={formatDate(founder.invited_at)} />
+              <DLRow
+                label="Activated"
+                value={founder.activated_at ? formatDate(founder.activated_at) : 'Not yet signed in'}
+              />
+              <DLRow
+                label="Last sign-in"
+                value={founder.last_login_at ? formatDate(founder.last_login_at) : '—'}
+              />
+            </dl>
+          </Card>
+
+          {/* Save bar */}
+          <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
+            <Link
+              href="/admin/founders"
+              className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50"
+            >
+              Back
+            </Link>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="px-4 py-2 bg-black text-white text-sm font-medium rounded-md hover:bg-gray-800 disabled:opacity-50"
+            >
+              {saving ? 'Saving…' : 'Save changes'}
+            </button>
+            {savedAt && (
+              <span className="text-xs text-gray-500">
+                Saved at {new Date(savedAt).toLocaleTimeString()}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <ConfirmDialog
+        open={revokeDialog}
+        onClose={() => setRevokeDialog(false)}
+        onConfirm={handleRevoke}
+        title="Revoke access"
+        description={`Archive ${founder.full_name} and sign them out of every active session? They can be unarchived later by changing their status back to active.`}
+        confirmLabel="Revoke access"
+        variant="danger"
+        loading={revoking}
+      />
+    </>
+  )
+}
+
+// ──────────────────────────────────────────────────────────────────────
+// Small layout helpers — kept local since they're admin-detail-page-only
+// ──────────────────────────────────────────────────────────────────────
+
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-5">
+        {title}
+      </h2>
+      <div className="space-y-4">{children}</div>
+    </div>
+  )
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block text-xs font-medium text-gray-500 mb-1.5">{label}</label>
+      {children}
+    </div>
+  )
+}
+
+function DLRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-xs font-medium text-gray-500 mb-1">{label}</dt>
+      <dd className="text-sm text-gray-900">{value}</dd>
+    </div>
+  )
+}

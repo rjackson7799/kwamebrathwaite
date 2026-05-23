@@ -11,6 +11,7 @@ const navItems = [
   { name: 'Exhibitions', href: '/admin/exhibitions', icon: ExhibitionIcon },
   { name: 'Press', href: '/admin/press', icon: PressIcon },
   { name: 'Inquiries', href: '/admin/inquiries', icon: InquiryIcon },
+  { name: 'Founders', href: '/admin/founders', icon: FoundersIcon },
   { name: 'Leads', href: '/admin/leads', icon: LeadsIcon },
   { name: 'Licensing', href: '/admin/licensing', icon: LicensingIcon },
   { name: 'Content', href: '/admin/content', icon: ContentIcon },
@@ -226,6 +227,14 @@ function BrokenLinksIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244M9 15l6-6" />
+    </svg>
+  )
+}
+
+function FoundersIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.32.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
     </svg>
   )
 }

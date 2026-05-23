@@ -3,7 +3,21 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { errorResponse } from './response'
 
 export type ActivityAction = 'create' | 'update' | 'delete' | 'status_change' | 'reorder'
-export type EntityType = 'artwork' | 'exhibition' | 'press' | 'inquiry' | 'content' | 'media' | 'newsletter_subscriber' | 'hero_slide' | 'product' | 'order' | 'license_request' | 'license_type'
+export type EntityType =
+  | 'artwork'
+  | 'exhibition'
+  | 'press'
+  | 'inquiry'
+  | 'content'
+  | 'media'
+  | 'newsletter_subscriber'
+  | 'hero_slide'
+  | 'product'
+  | 'order'
+  | 'license_request'
+  | 'license_type'
+  | 'founder'         // Phase 1C — Founder's Circle member records
+  | 'invitation'      // Phase 1C — Founder invitation lifecycle events
 
 /**
  * Require an authenticated admin for /api/admin/* routes.

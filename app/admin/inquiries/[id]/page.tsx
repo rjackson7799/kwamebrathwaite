@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { PageHeader } from '@/components/admin/PageHeader'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 import { ConfirmDialog } from '@/components/admin/ConfirmDialog'
+import { ConvertInquiryButton } from '@/components/admin/ConvertInquiryButton'
 
 interface Inquiry {
   id: string
@@ -20,6 +21,7 @@ interface Inquiry {
   status: string
   source: string
   founder_status: string | null
+  converted_founder_id: string | null
   locale: string
   admin_notes: string | null
   responded_at: string | null
@@ -256,6 +258,36 @@ export default function InquiryDetailPage() {
 
       <div className="p-8">
         <div className="max-w-4xl">
+          {/* Convert to invitation — only for founder inquiries that haven't
+              been converted yet. Sits above the SLA banner so it's the first
+              action an admin sees. */}
+          {isFounderInquiry && !inquiry.converted_founder_id && (
+            <ConvertInquiryButton
+              inquiryId={inquiry.id}
+              defaultName={inquiry.name}
+              defaultEmail={inquiry.email}
+              defaultLocale={inquiry.locale}
+              onConverted={(founderId) => {
+                router.push(`/admin/founders/${founderId}`)
+              }}
+            />
+          )}
+
+          {/* If already converted, show a quiet pointer to the resulting founder */}
+          {isFounderInquiry && inquiry.converted_founder_id && (
+            <div className="bg-[#FAF6EC] border border-[#C9A961] rounded-md px-4 py-3 mb-6 text-sm text-[#8a6f2b] flex items-center justify-between">
+              <span>
+                This inquiry was converted to a Founder invitation.
+              </span>
+              <Link
+                href={`/admin/founders/${inquiry.converted_founder_id}`}
+                className="font-medium underline hover:no-underline"
+              >
+                Open Founder record &rarr;
+              </Link>
+            </div>
+          )}
+
           {/* SLA banner for founder inquiries that haven't been picked up */}
           {isFounderInquiry && (inquiry.founder_status === 'new' || inquiry.founder_status === 'read') && (
             (() => {
