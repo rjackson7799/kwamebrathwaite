@@ -57,6 +57,21 @@ export const inquirySchema = z.object({
   website: z.string().optional(),
 })
 
+// Founder's Circle inquiry submission (Phase 1B)
+// Distinct from inquirySchema: no inquiry_type / artwork_id / subject — this
+// is a stewardship-conversation opener, not a typed contact form.
+export const founderInquirySchema = z.object({
+  name: z.string().min(1, 'Name is required').max(255),
+  email: z.string().email('Invalid email address').max(255),
+  phone: z.string().max(50).optional(),
+  message: z.string().min(1, 'Message is required').max(5000),
+  locale: z.enum(['en', 'fr', 'ja']).default('en'),
+  // Client-side render timestamp for the timing-trap heuristic.
+  renderedAt: z.number().int().optional(),
+  // Honeypot field — should be empty.
+  website: z.string().optional(),
+})
+
 // Newsletter subscription
 export const newsletterSchema = z.object({
   email: z.string().email('Invalid email address').max(255),
@@ -263,6 +278,10 @@ export const adminPressFiltersSchema = paginationSchema.extend({
 export const adminInquiryFiltersSchema = paginationSchema.extend({
   status: z.enum(['new', 'read', 'responded', 'archived']).optional(),
   type: z.enum(['general', 'purchase', 'exhibition', 'press']).optional(),
+  source: z.enum(['general_contact', 'founder_inquiry']).optional(),
+  founder_status: z
+    .enum(['new', 'read', 'in_conversation', 'converted', 'declined', 'archived'])
+    .optional(),
   q: z.string().optional(),
   sort: z.string().optional(),
   order: orderSchema,
@@ -271,6 +290,9 @@ export const adminInquiryFiltersSchema = paginationSchema.extend({
 // Admin inquiry update
 export const adminInquiryUpdateSchema = z.object({
   status: z.enum(['new', 'read', 'responded', 'archived']).optional(),
+  founder_status: z
+    .enum(['new', 'read', 'in_conversation', 'converted', 'declined', 'archived'])
+    .optional(),
   admin_notes: z.string().max(5000).optional().nullable(),
   responded_at: z.string().optional().nullable(),
   responded_by: z.string().max(255).optional().nullable(),

@@ -77,6 +77,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Build update data - only include provided fields
     const updateData: Record<string, unknown> = {}
     if (result.data.status !== undefined) updateData.status = result.data.status
+    if (result.data.founder_status !== undefined) updateData.founder_status = result.data.founder_status
     if (result.data.admin_notes !== undefined) updateData.admin_notes = result.data.admin_notes
     if (result.data.responded_at !== undefined) updateData.responded_at = result.data.responded_at
     if (result.data.responded_by !== undefined) updateData.responded_by = result.data.responded_by

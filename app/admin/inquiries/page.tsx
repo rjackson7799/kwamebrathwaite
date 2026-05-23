@@ -17,6 +17,8 @@ interface Inquiry {
   inquiry_type: string | null
   artwork_id: string | null
   status: string
+  source: string                       // 'general_contact' | 'founder_inquiry'
+  founder_status: string | null        // populated only when source='founder_inquiry'
   locale: string
   admin_notes: string | null
   responded_at: string | null
@@ -28,6 +30,34 @@ interface Inquiry {
     image_thumbnail_url: string | null
   } | null
   [key: string]: unknown
+}
+
+// Highlight tiers for the Age column on founder inquiries needing follow-up.
+// Brief §7.3: 24-48h SLA. Anything past 24h shows warning, past 48h shows error.
+const SLA_WARNING_MS = 24 * 60 * 60 * 1000
+const SLA_ERROR_MS   = 48 * 60 * 60 * 1000
+
+function needsSlaAttention(row: Inquiry): boolean {
+  if (row.source !== 'founder_inquiry') return false
+  return row.founder_status === 'new' || row.founder_status === 'read'
+}
+
+function ageBucket(row: Inquiry): 'normal' | 'warn' | 'error' {
+  if (!needsSlaAttention(row)) return 'normal'
+  const ageMs = Date.now() - new Date(row.created_at).getTime()
+  if (ageMs >= SLA_ERROR_MS)   return 'error'
+  if (ageMs >= SLA_WARNING_MS) return 'warn'
+  return 'normal'
+}
+
+function formatAge(createdAt: string): string {
+  const ms = Date.now() - new Date(createdAt).getTime()
+  const mins = Math.floor(ms / 60000)
+  const hours = Math.floor(ms / 3600000)
+  const days = Math.floor(ms / 86400000)
+  if (mins < 60)  return `${mins}m`
+  if (hours < 48) return `${hours}h`
+  return `${days}d`
 }
 
 export default function AdminInquiriesPage() {
@@ -43,6 +73,7 @@ export default function AdminInquiriesPage() {
   // Filters
   const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || '')
   const [typeFilter, setTypeFilter] = useState(searchParams.get('type') || '')
+  const [sourceFilter, setSourceFilter] = useState(searchParams.get('source') || '')
   const [search, setSearch] = useState(searchParams.get('q') || '')
 
   // Delete dialog
@@ -57,6 +88,7 @@ export default function AdminInquiriesPage() {
       params.set('limit', String(pageSize))
       if (statusFilter) params.set('status', statusFilter)
       if (typeFilter) params.set('type', typeFilter)
+      if (sourceFilter) params.set('source', sourceFilter)
       if (search) params.set('q', search)
 
       const response = await fetch(`/api/admin/inquiries?${params}`)
@@ -71,7 +103,7 @@ export default function AdminInquiriesPage() {
     } finally {
       setLoading(false)
     }
-  }, [page, pageSize, statusFilter, typeFilter, search])
+  }, [page, pageSize, statusFilter, typeFilter, sourceFilter, search])
 
   useEffect(() => {
     fetchInquiries()
@@ -83,11 +115,12 @@ export default function AdminInquiriesPage() {
     if (page > 1) params.set('page', String(page))
     if (statusFilter) params.set('status', statusFilter)
     if (typeFilter) params.set('type', typeFilter)
+    if (sourceFilter) params.set('source', sourceFilter)
     if (search) params.set('q', search)
 
     const newUrl = params.toString() ? `?${params}` : '/admin/inquiries'
     router.replace(newUrl, { scroll: false })
-  }, [page, statusFilter, typeFilter, search, router])
+  }, [page, statusFilter, typeFilter, sourceFilter, search, router])
 
   const handleDelete = async () => {
     if (!deleteTarget) return
@@ -138,6 +171,18 @@ export default function AdminInquiriesPage() {
       ),
     },
     {
+      key: 'source',
+      label: 'Source',
+      render: (row) =>
+        row.source === 'founder_inquiry' ? (
+          <span className="inline-flex items-center gap-1 text-xs uppercase tracking-wider text-[#8a6f2b] bg-[#FAF6EC] border border-[#C9A961] px-2 py-0.5 rounded">
+            Founder
+          </span>
+        ) : (
+          <span className="text-xs text-gray-500">Contact</span>
+        ),
+    },
+    {
       key: 'subject',
       label: 'Subject',
       render: (row) => (
@@ -160,7 +205,12 @@ export default function AdminInquiriesPage() {
     {
       key: 'status',
       label: 'Status',
-      render: (row) => <StatusBadge status={row.status} />,
+      render: (row) =>
+        row.source === 'founder_inquiry' && row.founder_status ? (
+          <StatusBadge status={row.founder_status} />
+        ) : (
+          <StatusBadge status={row.status} />
+        ),
     },
     {
       key: 'created_at',
@@ -171,6 +221,35 @@ export default function AdminInquiriesPage() {
           {formatDate(row.created_at)}
         </span>
       ),
+    },
+    {
+      key: 'age',
+      label: 'Age',
+      render: (row) => {
+        const bucket = ageBucket(row)
+        const age = formatAge(row.created_at)
+        if (bucket === 'error') {
+          return (
+            <span
+              className="text-xs font-medium px-2 py-1 rounded bg-red-100 text-red-800"
+              title="Past 48h SLA"
+            >
+              {age}
+            </span>
+          )
+        }
+        if (bucket === 'warn') {
+          return (
+            <span
+              className="text-xs font-medium px-2 py-1 rounded bg-amber-100 text-amber-800"
+              title="Approaching 48h SLA"
+            >
+              {age}
+            </span>
+          )
+        }
+        return <span className="text-xs text-gray-500">{age}</span>
+      },
     },
     {
       key: 'artwork',
@@ -257,12 +336,26 @@ export default function AdminInquiriesPage() {
             <option value="press">Press</option>
           </select>
 
-          {(search || statusFilter || typeFilter) && (
+          <select
+            value={sourceFilter}
+            onChange={(e) => {
+              setSourceFilter(e.target.value)
+              setPage(1)
+            }}
+            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black"
+          >
+            <option value="">All Sources</option>
+            <option value="general_contact">General contact</option>
+            <option value="founder_inquiry">Founder&rsquo;s Circle</option>
+          </select>
+
+          {(search || statusFilter || typeFilter || sourceFilter) && (
             <button
               onClick={() => {
                 setSearch('')
                 setStatusFilter('')
                 setTypeFilter('')
+                setSourceFilter('')
                 setPage(1)
               }}
               className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700"

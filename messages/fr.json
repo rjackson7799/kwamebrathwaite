@@ -538,5 +538,32 @@
         "description": "Une collection complète de la photographie iconique de Kwame Brathwaite documentant le mouvement Black is Beautiful."
       }
     }
+  },
+  "founders": {
+    "eyebrow": "The Kwame Brathwaite Archive · Founder's Circle",
+    "heroHeadline": "Keeper of the Images",
+    "heroSubhead": "Preserving a legacy. Building the infrastructure for the next generation of creators.",
+    "intro": {
+      "leadHeading": "Founders are not making a donation.",
+      "leadBody": "They are establishing the permanent infrastructure of one of the most significant photographic archives of the 20th century. You're not giving to the past — you're building the infrastructure that makes this history available to the future.",
+      "benefitsHeading": "What Founders receive",
+      "benefitPrint": "The Founder's Print — a never-before-released archival self-portrait, created as an exclusive edition for Founder's Circle members.",
+      "benefitRecognition": "Permanent recognition in the archive's record, alongside the photographs themselves.",
+      "benefitAccess": "Private access to the archive, early exhibition previews, and ongoing dialogue with the stewardship team.",
+      "benefitTax": "IRS-compliant acknowledgment of contributions to the 501(c)3.",
+      "invitationNote": "The Founder's Circle is invitation-only. Use the form below to introduce yourself; a member of the stewardship team will respond personally within 24 to 48 hours."
+    },
+    "form": {
+      "heading": "Inquire about the Founder's Circle",
+      "name": "Full name",
+      "email": "Email address",
+      "phone": "Phone (optional)",
+      "message": "A short note",
+      "messagePlaceholder": "Tell us briefly how you came to the archive, and what draws you to the program.",
+      "submit": "Send inquiry",
+      "submitting": "Sending…",
+      "success": "Thank you. We've received your inquiry — a member of the stewardship team will be in touch within 24 to 48 hours.",
+      "error": "Something went wrong sending your inquiry. Please try again in a moment, or write to us directly."
+    }
   }
 }

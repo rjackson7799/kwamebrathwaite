@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const { page, limit, status, type, q, sort, order } = filters.data
+    const { page, limit, status, type, source, founder_status, q, sort, order } = filters.data
     const { from, to } = getPagination(page, limit)
 
     const supabase = await createClient()
@@ -41,6 +41,8 @@ export async function GET(request: NextRequest) {
     // Apply filters
     if (status) query = query.eq('status', status)
     if (type) query = query.eq('inquiry_type', type)
+    if (source) query = query.eq('source', source)
+    if (founder_status) query = query.eq('founder_status', founder_status)
     if (q) query = query.or(`name.ilike.%${q}%,email.ilike.%${q}%,subject.ilike.%${q}%`)
 
     // Apply sorting

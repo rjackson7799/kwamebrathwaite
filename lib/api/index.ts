@@ -15,7 +15,7 @@ export {
   type PaginationParams,
 } from './pagination'
 
-export { rateLimit, getClientIP, type RateLimitResult } from './rate-limit'
+export { rateLimit, rateLimitPersistent, getClientIP, type RateLimitResult } from './rate-limit'
 
 export {
   paginationSchema,
@@ -23,6 +23,7 @@ export {
   exhibitionFiltersSchema,
   pressFiltersSchema,
   inquirySchema,
+  founderInquirySchema,
   newsletterSchema,
   translateSchema,
   parseSearchParams,

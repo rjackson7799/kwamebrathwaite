@@ -18,6 +18,8 @@ interface Inquiry {
   inquiry_type: string | null
   artwork_id: string | null
   status: string
+  source: string
+  founder_status: string | null
   locale: string
   admin_notes: string | null
   responded_at: string | null
@@ -31,6 +33,18 @@ interface Inquiry {
   } | null
 }
 
+const FOUNDER_STATUS_OPTIONS = [
+  { value: 'new', label: 'New' },
+  { value: 'read', label: 'Read' },
+  { value: 'in_conversation', label: 'In conversation' },
+  { value: 'converted', label: 'Converted' },
+  { value: 'declined', label: 'Declined' },
+  { value: 'archived', label: 'Archived' },
+]
+
+const SLA_WARN_MS  = 24 * 60 * 60 * 1000
+const SLA_ERROR_MS = 48 * 60 * 60 * 1000
+
 export default function InquiryDetailPage() {
   const params = useParams()
   const router = useRouter()
@@ -43,7 +57,10 @@ export default function InquiryDetailPage() {
 
   // Form state
   const [status, setStatus] = useState('')
+  const [founderStatus, setFounderStatus] = useState('')
   const [adminNotes, setAdminNotes] = useState('')
+
+  const isFounderInquiry = inquiry?.source === 'founder_inquiry'
 
   useEffect(() => {
     const fetchInquiry = async () => {
@@ -58,8 +75,9 @@ export default function InquiryDetailPage() {
 
         setInquiry(data.data)
         setStatus(data.data.status)
+        setFounderStatus(data.data.founder_status || '')
         setAdminNotes(data.data.admin_notes || '')
-      } catch (err) {
+      } catch {
         setError('Failed to load inquiry')
       } finally {
         setLoading(false)
@@ -76,13 +94,19 @@ export default function InquiryDetailPage() {
 
     setSaving(true)
     try {
+      const body: Record<string, unknown> = {
+        admin_notes: adminNotes || null,
+      }
+      if (inquiry.source === 'founder_inquiry') {
+        body.founder_status = founderStatus
+      } else {
+        body.status = status
+      }
+
       const response = await fetch(`/api/admin/inquiries/${inquiry.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          status,
-          admin_notes: adminNotes || null,
-        }),
+        body: JSON.stringify(body),
       })
 
       const data = await response.json()
@@ -91,7 +115,7 @@ export default function InquiryDetailPage() {
       } else {
         alert(data.error?.message || 'Failed to save changes')
       }
-    } catch (err) {
+    } catch {
       alert('Failed to save changes')
     } finally {
       setSaving(false)
@@ -103,25 +127,37 @@ export default function InquiryDetailPage() {
 
     setSaving(true)
     try {
+      const body: Record<string, unknown> = {
+        admin_notes: adminNotes || null,
+        responded_at: new Date().toISOString(),
+        responded_by: 'admin',
+      }
+      if (inquiry.source === 'founder_inquiry') {
+        // For founder inquiries, "marking responded" means moving them
+        // into the in_conversation lifecycle stage.
+        body.founder_status = 'in_conversation'
+      } else {
+        body.status = 'responded'
+      }
+
       const response = await fetch(`/api/admin/inquiries/${inquiry.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          status: 'responded',
-          admin_notes: adminNotes || null,
-          responded_at: new Date().toISOString(),
-          responded_by: 'admin', // This would ideally come from the session
-        }),
+        body: JSON.stringify(body),
       })
 
       const data = await response.json()
       if (data.success) {
         setInquiry(data.data)
-        setStatus('responded')
+        if (inquiry.source === 'founder_inquiry') {
+          setFounderStatus('in_conversation')
+        } else {
+          setStatus('responded')
+        }
       } else {
         alert(data.error?.message || 'Failed to update')
       }
-    } catch (err) {
+    } catch {
       alert('Failed to update')
     } finally {
       setSaving(false)
@@ -220,6 +256,31 @@ export default function InquiryDetailPage() {
 
       <div className="p-8">
         <div className="max-w-4xl">
+          {/* SLA banner for founder inquiries that haven't been picked up */}
+          {isFounderInquiry && (inquiry.founder_status === 'new' || inquiry.founder_status === 'read') && (
+            (() => {
+              const ageMs = Date.now() - new Date(inquiry.created_at).getTime()
+              const past48 = ageMs >= SLA_ERROR_MS
+              const past24 = ageMs >= SLA_WARN_MS
+              const tone = past48
+                ? 'bg-red-50 border-red-300 text-red-900'
+                : past24
+                ? 'bg-amber-50 border-amber-300 text-amber-900'
+                : 'bg-[#FAF6EC] border-[#C9A961] text-[#8a6f2b]'
+              const label = past48
+                ? 'Past the 48-hour SLA window.'
+                : past24
+                ? 'Approaching the 48-hour SLA window.'
+                : "Founder's Circle inquiry · 24–48h response SLA."
+              return (
+                <div className={`border rounded-md px-4 py-3 mb-6 text-sm ${tone}`}>
+                  <strong className="font-medium">{label}</strong>{' '}
+                  Personal follow-up expected.
+                </div>
+              )
+            })()
+          )}
+
           {/* Two-column layout for contact info and status */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* Contact Information */}
@@ -255,15 +316,29 @@ export default function InquiryDetailPage() {
                   </div>
                 )}
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Type</dt>
+                  <dt className="text-sm font-medium text-gray-500">Source</dt>
                   <dd className="text-sm text-gray-900">
-                    {inquiry.inquiry_type ? (
-                      <StatusBadge status={inquiry.inquiry_type} />
+                    {isFounderInquiry ? (
+                      <span className="inline-flex items-center gap-1 text-xs uppercase tracking-wider text-[#8a6f2b] bg-[#FAF6EC] border border-[#C9A961] px-2 py-0.5 rounded">
+                        Founder&rsquo;s Circle
+                      </span>
                     ) : (
-                      <span className="text-gray-400">Not specified</span>
+                      <span className="text-xs text-gray-500">General contact</span>
                     )}
                   </dd>
                 </div>
+                {!isFounderInquiry && (
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500">Type</dt>
+                    <dd className="text-sm text-gray-900">
+                      {inquiry.inquiry_type ? (
+                        <StatusBadge status={inquiry.inquiry_type} />
+                      ) : (
+                        <span className="text-gray-400">Not specified</span>
+                      )}
+                    </dd>
+                  </div>
+                )}
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Submitted</dt>
                   <dd className="text-sm text-gray-900">{formatDate(inquiry.created_at)}</dd>
@@ -281,18 +356,32 @@ export default function InquiryDetailPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-500 mb-1">
-                    Status
+                    {isFounderInquiry ? 'Founder lifecycle' : 'Status'}
                   </label>
-                  <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                  >
-                    <option value="new">New</option>
-                    <option value="read">Read</option>
-                    <option value="responded">Responded</option>
-                    <option value="archived">Archived</option>
-                  </select>
+                  {isFounderInquiry ? (
+                    <select
+                      value={founderStatus}
+                      onChange={(e) => setFounderStatus(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    >
+                      {FOUNDER_STATUS_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <select
+                      value={status}
+                      onChange={(e) => setStatus(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    >
+                      <option value="new">New</option>
+                      <option value="read">Read</option>
+                      <option value="responded">Responded</option>
+                      <option value="archived">Archived</option>
+                    </select>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-500 mb-1">
@@ -306,15 +395,34 @@ export default function InquiryDetailPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black resize-none"
                   />
                 </div>
-                {status !== 'responded' && (
-                  <button
-                    onClick={handleMarkResponded}
-                    disabled={saving}
-                    className="w-full px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 disabled:opacity-50"
-                  >
-                    {saving ? 'Saving...' : 'Mark as Responded'}
-                  </button>
-                )}
+                {(() => {
+                  if (isFounderInquiry) {
+                    // For founder inquiries, the "first reply" action moves
+                    // the row into the in_conversation lifecycle stage.
+                    if (founderStatus === 'new' || founderStatus === 'read') {
+                      return (
+                        <button
+                          onClick={handleMarkResponded}
+                          disabled={saving}
+                          className="w-full px-4 py-2 bg-[#C9A961] text-[#0e0e0e] text-sm font-medium rounded-md hover:bg-[#d4b572] disabled:opacity-50"
+                        >
+                          {saving ? 'Saving...' : 'Mark as in conversation'}
+                        </button>
+                      )
+                    }
+                    return null
+                  }
+                  // Original behavior for general_contact inquiries.
+                  return status !== 'responded' ? (
+                    <button
+                      onClick={handleMarkResponded}
+                      disabled={saving}
+                      className="w-full px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 disabled:opacity-50"
+                    >
+                      {saving ? 'Saving...' : 'Mark as Responded'}
+                    </button>
+                  ) : null
+                })()}
                 {inquiry.responded_at && (
                   <div className="text-sm text-gray-500 pt-2 border-t border-gray-200">
                     <p>

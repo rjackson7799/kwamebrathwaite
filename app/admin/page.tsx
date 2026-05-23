@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 interface DashboardStats {
   totalArtworks: number
@@ -19,11 +20,24 @@ interface ActivityItem {
   created_at: string
 }
 
+interface FounderInquiry {
+  id: string
+  name: string
+  email: string
+  founder_status: string
+  created_at: string
+}
+
+const SLA_WARN_MS  = 24 * 60 * 60 * 1000
+const SLA_ERROR_MS = 48 * 60 * 60 * 1000
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [activity, setActivity] = useState<ActivityItem[]>([])
+  const [pendingFounders, setPendingFounders] = useState<FounderInquiry[]>([])
   const [loadingStats, setLoadingStats] = useState(true)
   const [loadingActivity, setLoadingActivity] = useState(true)
+  const [loadingFounders, setLoadingFounders] = useState(true)
 
   useEffect(() => {
     // Fetch dashboard stats
@@ -56,9 +70,50 @@ export default function AdminDashboard() {
       }
     }
 
+    // Fetch founder inquiries awaiting first response (the 24-48h SLA queue).
+    // Pull anything still in 'new' or 'read', sorted oldest-first so the most
+    // SLA-risky lands at the top of the card.
+    async function fetchPendingFounders() {
+      try {
+        // The list endpoint filters by founder_status one at a time, so do two
+        // fetches and merge. Cheap — typically these counts are small.
+        const [a, b] = await Promise.all([
+          fetch('/api/admin/inquiries?source=founder_inquiry&founder_status=new&limit=20&sort=created_at&order=asc'),
+          fetch('/api/admin/inquiries?source=founder_inquiry&founder_status=read&limit=20&sort=created_at&order=asc'),
+        ])
+        const [aJson, bJson] = await Promise.all([a.json(), b.json()])
+        const rows: FounderInquiry[] = [
+          ...(aJson.success ? aJson.data : []),
+          ...(bJson.success ? bJson.data : []),
+        ]
+        rows.sort((x, y) => new Date(x.created_at).getTime() - new Date(y.created_at).getTime())
+        setPendingFounders(rows)
+      } catch (error) {
+        console.error('Failed to fetch pending founder inquiries:', error)
+      } finally {
+        setLoadingFounders(false)
+      }
+    }
+
     fetchStats()
     fetchActivity()
+    fetchPendingFounders()
   }, [])
+
+  function ageLabel(createdAt: string) {
+    const ms = Date.now() - new Date(createdAt).getTime()
+    const hours = Math.floor(ms / 3600000)
+    const days = Math.floor(ms / 86400000)
+    if (hours < 48) return `${hours}h`
+    return `${days}d`
+  }
+
+  function ageBucket(createdAt: string): 'fresh' | 'warn' | 'error' {
+    const ms = Date.now() - new Date(createdAt).getTime()
+    if (ms >= SLA_ERROR_MS) return 'error'
+    if (ms >= SLA_WARN_MS) return 'warn'
+    return 'fresh'
+  }
 
   const statCards = [
     { label: 'Total Artworks', value: stats?.totalArtworks, color: 'bg-blue-50' },
@@ -111,6 +166,79 @@ export default function AdminDashboard() {
             <div className="text-sm text-gray-600">{stat.label}</div>
           </div>
         ))}
+      </div>
+
+      {/* Founder inquiries awaiting response (24-48h SLA queue) */}
+      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+        <div className="flex items-baseline justify-between mb-4">
+          <h2 className="text-lg font-medium">
+            <span className="text-[11px] uppercase tracking-[0.16em] text-[#8a6f2b] block mb-1">
+              Founder&rsquo;s Circle
+            </span>
+            Inquiries awaiting response
+          </h2>
+          <Link
+            href="/admin/inquiries?source=founder_inquiry"
+            className="text-xs text-gray-500 hover:text-gray-800"
+          >
+            View all →
+          </Link>
+        </div>
+
+        {loadingFounders ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="w-full h-12 bg-gray-100 rounded animate-pulse" />
+            ))}
+          </div>
+        ) : pendingFounders.length === 0 ? (
+          <div className="text-gray-500 text-sm py-6 text-center">
+            No founder inquiries waiting. The SLA queue is clear.
+          </div>
+        ) : (
+          <div className="divide-y divide-gray-100">
+            {pendingFounders.map((row) => {
+              const bucket = ageBucket(row.created_at)
+              const ageColor =
+                bucket === 'error'
+                  ? 'bg-red-100 text-red-800'
+                  : bucket === 'warn'
+                  ? 'bg-amber-100 text-amber-800'
+                  : 'bg-[#FAF6EC] text-[#8a6f2b] border border-[#C9A961]'
+              return (
+                <Link
+                  key={row.id}
+                  href={`/admin/inquiries/${row.id}`}
+                  className="flex items-center justify-between gap-4 py-3 hover:bg-gray-50 -mx-2 px-2 rounded transition-colors"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium text-gray-900 truncate">
+                      {row.name}
+                    </div>
+                    <div className="text-xs text-gray-500 truncate">
+                      {row.email}
+                      {row.founder_status === 'read' && (
+                        <span className="ml-2 text-gray-400">· read, no reply yet</span>
+                      )}
+                    </div>
+                  </div>
+                  <span
+                    className={`text-xs font-medium px-2 py-1 rounded ${ageColor}`}
+                    title={
+                      bucket === 'error'
+                        ? 'Past 48-hour SLA'
+                        : bucket === 'warn'
+                        ? 'Past 24-hour SLA'
+                        : 'Within SLA window'
+                    }
+                  >
+                    {ageLabel(row.created_at)}
+                  </span>
+                </Link>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       {/* Recent activity */}
