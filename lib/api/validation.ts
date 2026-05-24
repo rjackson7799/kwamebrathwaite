@@ -86,6 +86,37 @@ const founderTier = z.enum([
 const founderStatus = z.enum(['invited', 'active', 'paused', 'archived'])
 const recognitionVisibility = z.enum(['private', 'public_opt_in'])
 
+// ============================================
+// Phase 2A — Briefings
+// ============================================
+
+const briefingStatus = z.enum(['draft', 'published', 'archived'])
+
+// Admin: list briefings
+export const adminBriefingFiltersSchema = paginationSchema.extend({
+  status: briefingStatus.optional(),
+  q: z.string().optional(),
+  sort: z.string().optional(),
+  order: orderSchema,
+})
+
+// Admin: create a briefing (always starts in 'draft'; publish is a separate route)
+export const adminBriefingCreateSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(255),
+  excerpt: z.string().max(500).optional().nullable(),
+  body_html: z.string().min(1, 'Body is required'),
+})
+
+// Admin: update a briefing — title/body/excerpt are member-visible fields,
+// so admin can edit them while in draft. Status transitions happen via the
+// dedicated publish route, not via PATCH.
+export const adminBriefingUpdateSchema = z.object({
+  title: z.string().min(1).max(255).optional(),
+  excerpt: z.string().max(500).optional().nullable(),
+  body_html: z.string().min(1).optional(),
+  status: briefingStatus.optional(),  // only 'archived' makes sense here; publish has its own route
+})
+
 // Admin: list filters
 export const adminFoundersFiltersSchema = paginationSchema.extend({
   status: founderStatus.optional(),

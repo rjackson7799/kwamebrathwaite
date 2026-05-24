@@ -587,14 +587,23 @@
       "expiredBody": "Request a new link from the sign-in page."
     },
     "portal": {
-      "welcomeEyebrow": "Welcome",
-      "welcomeBody": "Manage how your name appears in the archive's permanent record and your account settings. More of your Founder's Circle space is being prepared.",
-      "navProfile": "Profile",
-      "navProfileDesc": "Recognition name, contact details, communication preferences.",
-      "navSecurity": "Security",
-      "navSecurityDesc": "Two-factor authentication and active sessions.",
-      "signOut": "Sign out",
-      "back": "Back to portal"
+      "welcomeEyebrow": "Bienvenue",
+      "welcomeBody": "Gérez la manière dont votre nom apparaît dans les archives permanentes et vos paramètres de compte. D'autres espaces du Cercle des Fondateurs sont en préparation.",
+      "navBriefings": "Bulletins",
+      "navBriefingsDesc": "Actualités des archives, vernissages d'expositions et messages de la famille de Kwame.",
+      "navProfile": "Profil",
+      "navProfileDesc": "Nom de reconnaissance, coordonnées, préférences de communication.",
+      "navSecurity": "Sécurité",
+      "navSecurityDesc": "Authentification à deux facteurs et sessions actives.",
+      "signOut": "Se déconnecter",
+      "back": "Retour au portail"
+    },
+    "briefings": {
+      "eyebrow": "Bulletins",
+      "heading": "Dépêches des archives",
+      "intro": "Un dialogue en cours. De nouvelles entrées sont ajoutées lorsque l'équipe a quelque chose digne d'être partagé — sans calendrier, sans urgence.",
+      "empty": "Aucun bulletin n'a encore été publié.",
+      "backToList": "Tous les bulletins"
     },
     "profile": {
       "eyebrow": "Profile",

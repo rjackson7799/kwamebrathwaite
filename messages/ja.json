@@ -587,14 +587,23 @@
       "expiredBody": "Request a new link from the sign-in page."
     },
     "portal": {
-      "welcomeEyebrow": "Welcome",
-      "welcomeBody": "Manage how your name appears in the archive's permanent record and your account settings. More of your Founder's Circle space is being prepared.",
-      "navProfile": "Profile",
-      "navProfileDesc": "Recognition name, contact details, communication preferences.",
-      "navSecurity": "Security",
-      "navSecurityDesc": "Two-factor authentication and active sessions.",
-      "signOut": "Sign out",
-      "back": "Back to portal"
+      "welcomeEyebrow": "ようこそ",
+      "welcomeBody": "アーカイブの永久記録におけるお名前の表示方法とアカウント設定を管理します。ファウンダーズ・サークルの他の機能も準備中です。",
+      "navBriefings": "ブリーフィング",
+      "navBriefingsDesc": "アーカイブからのお知らせ、展覧会のオープニング、クウェイメのご家族からのメッセージ。",
+      "navProfile": "プロフィール",
+      "navProfileDesc": "表示名、連絡先、コミュニケーション設定。",
+      "navSecurity": "セキュリティ",
+      "navSecurityDesc": "二要素認証とアクティブなセッション。",
+      "signOut": "サインアウト",
+      "back": "ポータルに戻る"
+    },
+    "briefings": {
+      "eyebrow": "ブリーフィング",
+      "heading": "アーカイブからのお知らせ",
+      "intro": "継続的な対話です。共有する価値のあるものがあるときに、新しい記事が追加されます — スケジュールも、緊急性もありません。",
+      "empty": "まだブリーフィングは公開されていません。",
+      "backToList": "すべてのブリーフィング"
     },
     "profile": {
       "eyebrow": "Profile",

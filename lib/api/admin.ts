@@ -16,8 +16,10 @@ export type EntityType =
   | 'order'
   | 'license_request'
   | 'license_type'
-  | 'founder'         // Phase 1C — Founder's Circle member records
-  | 'invitation'      // Phase 1C — Founder invitation lifecycle events
+  | 'founder'                  // Phase 1C — Founder's Circle member records
+  | 'invitation'               // Phase 1C — Founder invitation lifecycle events
+  | 'briefing'                 // Phase 2A — Founder briefings
+  | 'briefing_notification'    // Phase 2A — Briefing notification batches
 
 /**
  * Require an authenticated admin for /api/admin/* routes.

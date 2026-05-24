@@ -626,12 +626,21 @@
     "portal": {
       "welcomeEyebrow": "Welcome",
       "welcomeBody": "Manage how your name appears in the archive's permanent record and your account settings. More of your Founder's Circle space is being prepared.",
+      "navBriefings": "Briefings",
+      "navBriefingsDesc": "News from the archive, exhibition openings, and notes from Kwame's family.",
       "navProfile": "Profile",
       "navProfileDesc": "Recognition name, contact details, communication preferences.",
       "navSecurity": "Security",
       "navSecurityDesc": "Two-factor authentication and active sessions.",
       "signOut": "Sign out",
       "back": "Back to portal"
+    },
+    "briefings": {
+      "eyebrow": "Briefings",
+      "heading": "Dispatches from the archive",
+      "intro": "An ongoing conversation. New entries are added when the stewardship team has something worth sharing — no schedule, no urgency.",
+      "empty": "No briefings have been published yet.",
+      "backToList": "All briefings"
     },
     "profile": {
       "eyebrow": "Profile",

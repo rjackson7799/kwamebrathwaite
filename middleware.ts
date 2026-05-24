@@ -155,8 +155,13 @@ async function isFounderUid(
     console.error('isFounderUid lookup failed:', error)
     return false
   }
-  // Archived founders are treated as non-members for portal access purposes.
-  return data !== null && data.status !== 'archived'
+  // Phase 2A tightening: only status='active' members can enter the portal.
+  // 'invited' = onboarding (the magic-link callback promotes them to active).
+  // 'paused' = admin temporarily revoked content access.
+  // 'archived' = access permanently revoked.
+  // The matching RLS predicate is public.is_current_founder() which also
+  // requires status='active' — middleware + RLS agree on this floor.
+  return data !== null && data.status === 'active'
 }
 
 export const config = {

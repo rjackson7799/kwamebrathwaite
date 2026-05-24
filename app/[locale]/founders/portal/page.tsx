@@ -67,10 +67,19 @@ export default async function FoundersPortalPage({ params }: PageProps) {
             {t('welcomeBody')}
           </p>
 
-          {/* Portal nav — Phase 1D ships Profile + Security; later phases
-              (Print, Briefings, Recognition, Contribute, Tax letters) will
+          {/* Portal nav — Phase 1D ships Profile + Security; Phase 2A adds
+              Briefings; later sub-phases (Previews, Print, Archive) will
               add cards here as they land. */}
           <nav className="mt-16 pt-10 border-t border-[#2a2a2a] grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <Link
+              href={locale === 'en' ? '/founders/portal/briefings' : `/${locale}/founders/portal/briefings`}
+              className="group block border border-[#2a2a2a] hover:border-[#C9A961] p-5 transition-colors sm:col-span-2"
+            >
+              <p className="text-[#C9A961] uppercase tracking-[0.14em] text-[10px] mb-2 group-hover:text-[#d4b572]">
+                {t('navBriefings')}
+              </p>
+              <p className="text-[#E6E2D6] text-sm leading-relaxed">{t('navBriefingsDesc')}</p>
+            </Link>
             <Link
               href={locale === 'en' ? '/founders/portal/profile' : `/${locale}/founders/portal/profile`}
               className="group block border border-[#2a2a2a] hover:border-[#C9A961] p-5 transition-colors"

@@ -12,6 +12,7 @@ const navItems = [
   { name: 'Press', href: '/admin/press', icon: PressIcon },
   { name: 'Inquiries', href: '/admin/inquiries', icon: InquiryIcon },
   { name: 'Founders', href: '/admin/founders', icon: FoundersIcon },
+  { name: 'Briefings', href: '/admin/briefings', icon: BriefingsIcon },
   { name: 'Leads', href: '/admin/leads', icon: LeadsIcon },
   { name: 'Licensing', href: '/admin/licensing', icon: LicensingIcon },
   { name: 'Content', href: '/admin/content', icon: ContentIcon },
@@ -235,6 +236,14 @@ function FoundersIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.32.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+    </svg>
+  )
+}
+
+function BriefingsIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
     </svg>
   )
 }
