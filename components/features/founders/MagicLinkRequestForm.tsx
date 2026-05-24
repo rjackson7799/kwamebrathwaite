@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -18,11 +18,6 @@ export function MagicLinkRequestForm() {
 
   const [submitting, setSubmitting] = useState(false)
   const [status, setStatus] = useState<'idle' | 'sent' | 'error'>('idle')
-
-  // We don't need renderedAt timing on the login form — keeping the API
-  // surface aligned with the inquiry form for symmetry, but the OTP route
-  // doesn't currently consume it.
-  const renderedAtRef = useRef<number>(Date.now())
 
   const {
     register,
@@ -85,9 +80,6 @@ export function MagicLinkRequestForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* renderedAt ref kept for future timing-trap; reads to suppress unused warning */}
-      <span hidden>{renderedAtRef.current}</span>
-
       <div>
         <label
           htmlFor="founder-login-email"

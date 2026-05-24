@@ -128,7 +128,20 @@ export async function GET(request: NextRequest) {
       update.status = 'active'
     }
   }
-  await adminSupabase.from('founders').update(update).eq('user_id', userId)
+  const { error: promoteError } = await adminSupabase
+    .from('founders')
+    .update(update)
+    .eq('user_id', userId)
+  if (promoteError) {
+    // Surface the failure — Phase 2A's middleware requires status='active',
+    // so a silent UPDATE failure here would create a bounce loop to
+    // /founders/login?reason=not_invited that's invisible to ops.
+    console.error('founders auth callback: status promotion failed', promoteError)
+    await supabase.auth.signOut()
+    return NextResponse.redirect(
+      new URL(`${localePrefix}/founders/login?reason=server_error`, origin)
+    )
+  }
 
   return response
 }
