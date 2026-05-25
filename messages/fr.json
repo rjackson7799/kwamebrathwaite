@@ -591,6 +591,8 @@
       "welcomeBody": "Gérez la manière dont votre nom apparaît dans les archives permanentes et vos paramètres de compte. D'autres espaces du Cercle des Fondateurs sont en préparation.",
       "navBriefings": "Bulletins",
       "navBriefingsDesc": "Actualités des archives, vernissages d'expositions et messages de la famille de Kwame.",
+      "navPreviews": "Aperçus d'expositions",
+      "navPreviewsDesc": "Accès anticipé aux expositions à venir, avec les notes du commissaire, avant l'ouverture publique.",
       "navProfile": "Profil",
       "navProfileDesc": "Nom de reconnaissance, coordonnées, préférences de communication.",
       "navSecurity": "Sécurité",
@@ -604,6 +606,15 @@
       "intro": "Un dialogue en cours. De nouvelles entrées sont ajoutées lorsque l'équipe a quelque chose digne d'être partagé — sans calendrier, sans urgence.",
       "empty": "Aucun bulletin n'a encore été publié.",
       "backToList": "Tous les bulletins"
+    },
+    "previews": {
+      "eyebrow": "Aperçus d'expositions",
+      "eyebrowItem": "Aperçu Fondateur",
+      "heading": "Expositions à venir",
+      "intro": "Accès anticipé aux expositions avant leur ouverture publique. Les notes du commissaire des archives accompagnent chacune d'elles.",
+      "empty": "Aucun aperçu disponible pour le moment. Nous présenterons ici les expositions à venir avant leur ouverture publique.",
+      "backToList": "Tous les aperçus",
+      "curatorNote": "Note du commissaire"
     },
     "profile": {
       "eyebrow": "Profile",

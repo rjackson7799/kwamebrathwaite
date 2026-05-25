@@ -329,6 +329,16 @@ export const adminExhibitionSchema = z.object({
   status: z.enum(['draft', 'published', 'archived']).default('draft'),
   meta_title: z.string().max(255).optional().nullable(),
   meta_description: z.string().max(500).optional().nullable(),
+  // Phase 2B — Founder Preview window. When preview_starts_at is in the past
+  // AND status='draft', active founders read this row via the additive RLS
+  // policy founders_read_exhibition_previews. preview_notes is founder-only
+  // curator HTML, lazily translated via translation_cache.
+  preview_starts_at: z
+    .string()
+    .optional()
+    .nullable()
+    .or(z.literal('')),
+  preview_notes: z.string().optional().nullable(),
 })
 
 export type AdminExhibitionInput = z.infer<typeof adminExhibitionSchema>

@@ -89,12 +89,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Clean up empty strings to null for URL fields
+    // Clean up empty strings to null for URL fields + Phase 2B preview window.
     const cleanedData = {
       ...result.data,
       image_url: result.data.image_url || null,
       thumbnail_image_url: result.data.thumbnail_image_url || null,
       venue_url: result.data.venue_url || null,
+      preview_starts_at: result.data.preview_starts_at || null,
+      preview_notes: result.data.preview_notes || null,
     }
 
     const supabase = await createAdminClient()

@@ -628,6 +628,8 @@
       "welcomeBody": "Manage how your name appears in the archive's permanent record and your account settings. More of your Founder's Circle space is being prepared.",
       "navBriefings": "Briefings",
       "navBriefingsDesc": "News from the archive, exhibition openings, and notes from Kwame's family.",
+      "navPreviews": "Exhibition Previews",
+      "navPreviewsDesc": "Early access to upcoming exhibitions with curator notes, before the public opening.",
       "navProfile": "Profile",
       "navProfileDesc": "Recognition name, contact details, communication preferences.",
       "navSecurity": "Security",
@@ -641,6 +643,15 @@
       "intro": "An ongoing conversation. New entries are added when the stewardship team has something worth sharing — no schedule, no urgency.",
       "empty": "No briefings have been published yet.",
       "backToList": "All briefings"
+    },
+    "previews": {
+      "eyebrow": "Exhibition Previews",
+      "eyebrowItem": "Founder Preview",
+      "heading": "Upcoming exhibitions",
+      "intro": "Early access to exhibitions before they open publicly. Curator notes from the archive accompany each one.",
+      "empty": "No previews open at the moment. We'll surface upcoming exhibitions here ahead of their public opening.",
+      "backToList": "All previews",
+      "curatorNote": "Curator's note"
     },
     "profile": {
       "eyebrow": "Profile",

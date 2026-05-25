@@ -5,7 +5,13 @@ import { adminExhibitionSchema } from '@/lib/api/validation'
 import { requireAuth, logActivity, getCurrentUserEmail } from '@/lib/api/admin'
 import type { Database } from '@/lib/supabase/types'
 
-type ExhibitionUpdate = Database['public']['Tables']['exhibitions']['Update']
+// Widened to include Phase 2B columns (preview_starts_at, preview_notes)
+// which haven't been regenerated into Database types yet — Phase 1 convention
+// is `as any` casts pending CLI link.
+type ExhibitionUpdate = Database['public']['Tables']['exhibitions']['Update'] & {
+  preview_starts_at?: string | null
+  preview_notes?: string | null
+}
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -99,6 +105,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       status: result.data.status,
       meta_title: result.data.meta_title,
       meta_description: result.data.meta_description,
+      preview_starts_at: result.data.preview_starts_at || null,
+      preview_notes: result.data.preview_notes || null,
       updated_at: new Date().toISOString(),
     }
 

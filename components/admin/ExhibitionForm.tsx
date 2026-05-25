@@ -33,6 +33,26 @@ interface ExhibitionFormData {
   status: 'draft' | 'published' | 'archived'
   meta_title?: string | null
   meta_description?: string | null
+  // Phase 2B — Founder Preview window. preview_starts_at is stored as
+  // timestamptz in the DB; the datetime-local <input> binds to a
+  // 'YYYY-MM-DDTHH:MM' string. The API accepts either form.
+  preview_starts_at?: string | null
+  preview_notes?: string | null
+}
+
+// Format an incoming timestamptz / ISO string for a datetime-local input.
+// Returns 'YYYY-MM-DDTHH:MM' or '' for null/invalid.
+function toDateTimeLocal(value: string | null | undefined): string {
+  if (!value) return ''
+  // Already in datetime-local shape (no timezone, 16 chars).
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) return value
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return ''
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return (
+    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
+    `T${pad(d.getHours())}:${pad(d.getMinutes())}`
+  )
 }
 
 interface ExhibitionFormProps {
@@ -76,6 +96,8 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
       venue_description: null,
       exhibition_url: null,
       status: 'draft',
+      preview_starts_at: null,
+      preview_notes: null,
       meta_title: null,
       meta_description: null,
     },
@@ -571,6 +593,60 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
                 <option value="archived">Archived</option>
               </Select>
             </FormField>
+          </div>
+
+          {/* Founder Preview Card (Phase 2B) */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-1">
+              Founder Preview
+            </h3>
+            <p className="text-xs text-gray-500 mb-4">
+              When the preview starts, active Founder&rsquo;s Circle members
+              can read this exhibition in their portal even while it&rsquo;s
+              still a draft.
+            </p>
+
+            <FormField label="Preview starts at" htmlFor="preview_starts_at">
+              <Controller
+                name="preview_starts_at"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    id="preview_starts_at"
+                    type="datetime-local"
+                    value={toDateTimeLocal(field.value)}
+                    onChange={(e) => field.onChange(e.target.value || null)}
+                    className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
+                  />
+                )}
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                Leave blank to disable the preview. Once you flip the
+                exhibition to <em>Published</em>, founders see it via the
+                public canonical page instead.
+              </p>
+            </FormField>
+
+            <div className="mt-4 space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Curator&rsquo;s note (founder-only)
+              </label>
+              <Controller
+                name="preview_notes"
+                control={control}
+                render={({ field }) => (
+                  <RichTextEditor
+                    value={field.value || ''}
+                    onChange={field.onChange}
+                    placeholder="Optional. Shown to founders above the public description."
+                  />
+                )}
+              />
+              <p className="text-xs text-gray-400">
+                Never appears on the public site. Translated for FR/JA on
+                first read.
+              </p>
+            </div>
           </div>
 
           {/* Featured Artworks Card */}
