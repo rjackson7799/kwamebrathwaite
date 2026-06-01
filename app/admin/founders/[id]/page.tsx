@@ -81,6 +81,8 @@ export default function AdminFounderDetailPage() {
   const [revoking, setRevoking] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [revokeDialog, setRevokeDialog] = useState(false)
+  const [deleteDialog, setDeleteDialog] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [savedAt, setSavedAt] = useState<number | null>(null)
   const [activating, setActivating] = useState(false)
   const [donationRef, setDonationRef] = useState('')
@@ -166,6 +168,22 @@ export default function AdminFounderDetailPage() {
     } finally {
       setActivating(false)
     }
+  }
+
+  const handleDelete = async () => {
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/admin/founders/${id}/delete`, { method: 'POST' })
+      const json = await res.json()
+      if (json.success) {
+        router.push('/admin/founders')
+        return
+      }
+      alert(json.error?.message || 'Failed to delete founder')
+    } catch {
+      alert('Failed to delete founder')
+    }
+    setDeleting(false)
   }
 
   const handleResendInvite = async () => {
@@ -284,6 +302,12 @@ export default function AdminFounderDetailPage() {
                 Revoke access
               </button>
             )}
+            <button
+              onClick={() => setDeleteDialog(true)}
+              className="px-3 py-1.5 text-sm border border-red-400 text-red-700 rounded-md hover:bg-red-50"
+            >
+              Delete
+            </button>
           </div>
         }
       />
@@ -466,6 +490,19 @@ export default function AdminFounderDetailPage() {
         confirmLabel="Revoke access"
         variant="danger"
         loading={revoking}
+      />
+
+      <ConfirmDialog
+        open={deleteDialog}
+        onClose={() => setDeleteDialog(false)}
+        onConfirm={handleDelete}
+        title="Delete permanently"
+        description={`This permanently removes ${founder.full_name} and every associated record — their login, print fulfillment, and briefing history. It cannot be undone. To temporarily disable access instead, use Revoke access.`}
+        confirmLabel="Delete permanently"
+        variant="danger"
+        loading={deleting}
+        requireConfirmText={founder.email}
+        confirmTextLabel={`Type the founder's email (${founder.email}) to confirm`}
       />
     </>
   )

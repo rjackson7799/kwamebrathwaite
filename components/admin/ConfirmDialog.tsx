@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface ConfirmDialogProps {
   open: boolean
@@ -12,6 +12,13 @@ interface ConfirmDialogProps {
   cancelLabel?: string
   variant?: 'danger' | 'default'
   loading?: boolean
+  /**
+   * When set, the user must type this exact value before the confirm button
+   * enables — a guard for destructive, irreversible actions.
+   */
+  requireConfirmText?: string
+  /** Label shown above the type-to-confirm input. */
+  confirmTextLabel?: string
 }
 
 export function ConfirmDialog({
@@ -24,8 +31,19 @@ export function ConfirmDialog({
   cancelLabel = 'Cancel',
   variant = 'default',
   loading = false,
+  requireConfirmText,
+  confirmTextLabel,
 }: ConfirmDialogProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
+  const [typed, setTyped] = useState('')
+
+  // Reset the type-to-confirm field whenever the dialog opens/closes.
+  useEffect(() => {
+    if (!open) setTyped('')
+  }, [open])
+
+  const confirmBlocked =
+    loading || (requireConfirmText != null && typed !== requireConfirmText)
 
   // Handle escape key
   useEffect(() => {
@@ -86,6 +104,22 @@ export function ConfirmDialog({
             </p>
           )}
 
+          {requireConfirmText != null && (
+            <div className="mt-4">
+              <label className="block text-xs font-medium text-gray-500 mb-1.5">
+                {confirmTextLabel ?? `Type "${requireConfirmText}" to confirm`}
+              </label>
+              <input
+                type="text"
+                value={typed}
+                onChange={(e) => setTyped(e.target.value)}
+                disabled={loading}
+                autoComplete="off"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
+              />
+            </div>
+          )}
+
           <div className="mt-6 flex gap-3 justify-end">
             <button
               type="button"
@@ -98,7 +132,7 @@ export function ConfirmDialog({
             <button
               type="button"
               onClick={onConfirm}
-              disabled={loading}
+              disabled={confirmBlocked}
               className={`
                 px-4 py-2 text-sm font-medium text-white rounded-md
                 focus:outline-none focus:ring-2 focus:ring-offset-2
