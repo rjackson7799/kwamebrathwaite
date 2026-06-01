@@ -11,10 +11,20 @@ import { FounderInvitationEmail, FounderMagicLinkEmail } from '@/lib/email/templ
  * Supabase Auth project redirect allowlist (see plan §6 "Redirect allowlist").
  */
 function siteUrl(): string {
-  return (
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
-    'http://localhost:3000'
-  )
+  // Canonical, explicitly-configured site URL wins (set this in every env,
+  // e.g. NEXT_PUBLIC_SITE_URL=https://kwamebrathwaite.com).
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '')
+  if (explicit) return explicit
+
+  // Safety net on Vercel: if the canonical var was forgotten, use the
+  // deployment's domain rather than silently minting a localhost magic link
+  // in a deployed environment.
+  const vercel =
+    process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL
+  if (vercel) return `https://${vercel.replace(/\/$/, '')}`
+
+  // Local development fallback.
+  return 'http://localhost:3000'
 }
 
 /**
