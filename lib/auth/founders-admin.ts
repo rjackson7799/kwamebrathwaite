@@ -86,11 +86,14 @@ export async function ensureAuthUserForEmail(
  * Server-side PKCE flow with hashed_token in the query string avoids that
  * entirely.
  *
- * Per-locale callback URL is built externally if needed (e.g. /fr/founders/...);
- * for now we always send English-prefixed (since EN is the default locale and
- * the page handles redirects to the right locale internally).
+ * `locale` localises the callback the email links to so fr/ja invitees land on
+ * the matching locale (en = no prefix). The callback then redirects in-locale
+ * to the invitation page or portal.
  */
-export async function generateFounderMagicLink(email: string): Promise<string> {
+export async function generateFounderMagicLink(
+  email: string,
+  locale: string = 'en'
+): Promise<string> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAdminClient() as any
   const { data, error } = await supabase.auth.admin.generateLink({
@@ -98,7 +101,7 @@ export async function generateFounderMagicLink(email: string): Promise<string> {
     email: email.toLowerCase().trim(),
     options: {
       // Supabase requires a redirectTo even though we don't use the
-      // implicit-flow action_link. Point it at our callback for
+      // implicit-flow action_link. Point it at our (un-prefixed) callback for
       // consistency with the allowlist.
       redirectTo: `${siteUrl()}/founders/auth/callback`,
     },
@@ -111,7 +114,8 @@ export async function generateFounderMagicLink(email: string): Promise<string> {
   }
 
   // Construct OUR callback URL with the hashed token. Server-side PKCE.
-  const callbackUrl = new URL(`${siteUrl()}/founders/auth/callback`)
+  const prefix = locale === 'fr' || locale === 'ja' ? `/${locale}` : ''
+  const callbackUrl = new URL(`${siteUrl()}${prefix}/founders/auth/callback`)
   callbackUrl.searchParams.set('token_hash', data.properties.hashed_token)
   // verifyOtp's `type` for a magic-link hashed_token is 'email'
   callbackUrl.searchParams.set('type', 'email')

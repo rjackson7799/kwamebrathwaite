@@ -13,9 +13,11 @@ import { createAdminClient } from '@/lib/supabase/server'
 //   3. Verify the now-signed-in user is in the `founders` table. If NOT,
 //      sign back out and bounce to /founders/login?reason=not_invited so a
 //      non-Founder can't sit in an authenticated state.
-//   4. UPSERT-ish: set activated_at (first sign-in) + last_login_at on
-//      the founders row.
-//   5. Redirect to /founders/portal.
+//   4. Record last_login_at (non-fatal). Activation to 'active' is NOT done
+//      here — it's a deliberate admin step after the donation is confirmed.
+//   5. Redirect by status: active -> portal; invited -> invitation page
+//      (review + donate); paused/declined -> invitation page's closed state;
+//      archived -> signed out above.
 //
 // On any failure, redirect to /founders/login with a `reason` query param
 // rather than throwing — the brief's audience (infrequent users) shouldn't
@@ -89,7 +91,7 @@ export async function GET(request: NextRequest) {
   const adminSupabase = createAdminClient() as any
   const { data: founder, error: lookupError } = await adminSupabase
     .from('founders')
-    .select('user_id, status, activated_at')
+    .select('user_id, status')
     .eq('user_id', userId)
     .maybeSingle()
 
@@ -118,30 +120,25 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  // First-login bookkeeping. activated_at is set only the first time.
+  // Record the sign-in. Non-fatal: a failed timestamp write must not block a
+  // successful login (the session is already valid).
   const now = new Date().toISOString()
-  const update: Record<string, unknown> = { last_login_at: now }
-  if (!founder.activated_at) {
-    update.activated_at = now
-    // Move 'invited' rows to 'active' on first successful sign-in.
-    if (founder.status === 'invited') {
-      update.status = 'active'
-    }
-  }
-  const { error: promoteError } = await adminSupabase
+  const { error: loginStampError } = await adminSupabase
     .from('founders')
-    .update(update)
+    .update({ last_login_at: now })
     .eq('user_id', userId)
-  if (promoteError) {
-    // Surface the failure — Phase 2A's middleware requires status='active',
-    // so a silent UPDATE failure here would create a bounce loop to
-    // /founders/login?reason=not_invited that's invisible to ops.
-    console.error('founders auth callback: status promotion failed', promoteError)
-    await supabase.auth.signOut()
-    return NextResponse.redirect(
-      new URL(`${localePrefix}/founders/login?reason=server_error`, origin)
-    )
+  if (loginStampError) {
+    console.warn('founders auth callback: last_login_at update failed', loginStampError)
   }
 
+  // Route by status. Activation (invited -> active) is a deliberate admin step
+  // after the donation, so an invited member lands on the invitation page to
+  // review terms + donate rather than the portal. paused/declined also land on
+  // the invitation page, which renders the "no longer active" state.
+  const dest =
+    founder.status === 'active'
+      ? `${localePrefix}/founders/portal`
+      : `${localePrefix}/founders/invitation`
+  response.headers.set('location', new URL(dest, origin).toString())
   return response
 }

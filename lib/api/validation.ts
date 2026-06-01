@@ -83,8 +83,48 @@ const founderTier = z.enum([
   'archive',
   'legacy',
 ])
-const founderStatus = z.enum(['invited', 'active', 'paused', 'archived'])
+const founderStatus = z.enum(['invited', 'active', 'paused', 'archived', 'declined'])
 const recognitionVisibility = z.enum(['private', 'public_opt_in'])
+
+// ============================================
+// Phase 2C — Founder Print fulfillment
+// ============================================
+
+const printFulfillmentStatus = z.enum([
+  'pending',
+  'in_production',
+  'ready',
+  'shipped',
+  'delivered',
+])
+
+// Admin: upsert the per-founder fulfillment row.
+// The route normalises empty strings to null before writing.
+export const adminPrintFulfillmentSchema = z
+  .object({
+    edition_number: z.coerce.number().int().positive().optional().nullable(),
+    is_ap: z.boolean().optional().default(false),
+    status: printFulfillmentStatus.default('pending'),
+    shipped_at: z.string().optional().nullable().or(z.literal('')),
+    delivered_at: z.string().optional().nullable().or(z.literal('')),
+    tracking_url: z.string().url().optional().nullable().or(z.literal('')),
+    internal_notes: z.string().optional().nullable(),
+  })
+  // Mirror the DB CHECK: numbered editions are 1..15, Artist's Proofs 1..2.
+  .superRefine((val, ctx) => {
+    if (val.edition_number != null) {
+      const max = val.is_ap ? 2 : 15
+      if (val.edition_number > max) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['edition_number'],
+          message: val.is_ap
+            ? "Artist's Proof number must be 1 or 2"
+            : 'Edition number must be between 1 and 15',
+        })
+      }
+    }
+  })
 
 // ============================================
 // Phase 2A — Briefings
@@ -166,6 +206,15 @@ export const adminFounderUpdateSchema = z.object({
   relationship_owner_email: z.string().email().max(255).optional().nullable(),
   preferred_locale: z.enum(['en', 'fr', 'ja']).optional(),
   internal_notes: z.string().max(5000).optional().nullable(),
+})
+
+// Admin: confirm donation + activate a founder. The money gate goes through
+// this dedicated action (not the status dropdown) so activation is deliberate
+// and audited. The route enforces the invited -> active transition.
+export const adminFounderActivateSchema = z.object({
+  donation_amount: z.number().nonnegative().optional().nullable(),
+  payment_reference: z.string().max(255).optional().nullable(),
+  terms_version: z.string().max(50).optional().nullable(),
 })
 
 // Public: founder magic-link OTP request.

@@ -104,14 +104,28 @@ export async function POST(request: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const supabase = createAdminClient() as any
 
-    // Look up the full_name so the email can use it in the salutation.
+    // Look up name + status + locale for the salutation, eligibility, and the
+    // locale-correct callback link.
     const { data: founder } = await supabase
       .from('founders')
-      .select('full_name')
+      .select('full_name, status, preferred_locale')
       .eq('email', normalisedEmail)
       .maybeSingle()
 
-    const actionLink = await generateFounderMagicLink(normalisedEmail)
+    // Don't send sign-in links to declined/archived members — they have no
+    // pending invitation or access. We still return the same generic response
+    // so this never reveals a member's terminal state.
+    if (founder && (founder.status === 'archived' || founder.status === 'declined')) {
+      return successResponse({
+        message:
+          "If your email is on file, you'll receive a sign-in link shortly.",
+      })
+    }
+
+    const actionLink = await generateFounderMagicLink(
+      normalisedEmail,
+      founder?.preferred_locale ?? 'en'
+    )
     await sendFounderMagicLinkEmail({
       toEmail: normalisedEmail,
       fullName: founder?.full_name ?? null,

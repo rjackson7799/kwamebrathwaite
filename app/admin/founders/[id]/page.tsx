@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { PageHeader } from '@/components/admin/PageHeader'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 import { ConfirmDialog } from '@/components/admin/ConfirmDialog'
+import { PrintFulfillmentPanel } from '@/components/admin/PrintFulfillmentPanel'
+import { FOUNDER_TERMS_VERSION } from '@/lib/founders/terms'
 
 interface Founder {
   user_id: string
@@ -17,28 +19,34 @@ interface Founder {
   pledge_amount: number | null
   pledge_term_years: number | null
   pledge_fulfilled_amount: number
-  status: 'invited' | 'active' | 'paused' | 'archived'
+  status: 'invited' | 'active' | 'paused' | 'archived' | 'declined'
   phone: string | null
   organization: string | null
   relationship_owner_email: string | null
   preferred_locale: string
   internal_notes: string | null
+  donation_amount: number | null
+  donation_confirmed_at: string | null
+  payment_reference: string | null
+  terms_version: string | null
+  terms_accepted_at: string | null
+  activated_by: string | null
   invited_at: string
+  last_invited_at: string | null
   activated_at: string | null
   last_login_at: string | null
   created_at: string
   updated_at: string
 }
 
+// Tier + pledge controls are retired for the flat-$10k special fundraiser
+// (the DB columns are kept for possible future tiers), so they're omitted
+// from the editable form to stop staff entering obsolete data.
 type FormState = {
   full_name: string
   recognition_name: string
   recognition_visibility: 'private' | 'public_opt_in'
-  tier: string
-  pledge_amount: string
-  pledge_term_years: string
-  pledge_fulfilled_amount: string
-  status: 'invited' | 'active' | 'paused' | 'archived'
+  status: 'invited' | 'active' | 'paused' | 'archived' | 'declined'
   phone: string
   organization: string
   relationship_owner_email: string
@@ -51,10 +59,6 @@ function toFormState(f: Founder): FormState {
     full_name: f.full_name ?? '',
     recognition_name: f.recognition_name ?? '',
     recognition_visibility: f.recognition_visibility ?? 'private',
-    tier: f.tier ?? '',
-    pledge_amount: f.pledge_amount?.toString() ?? '',
-    pledge_term_years: f.pledge_term_years?.toString() ?? '',
-    pledge_fulfilled_amount: (f.pledge_fulfilled_amount ?? 0).toString(),
     status: f.status,
     phone: f.phone ?? '',
     organization: f.organization ?? '',
@@ -78,6 +82,9 @@ export default function AdminFounderDetailPage() {
   const [error, setError] = useState<string | null>(null)
   const [revokeDialog, setRevokeDialog] = useState(false)
   const [savedAt, setSavedAt] = useState<number | null>(null)
+  const [activating, setActivating] = useState(false)
+  const [donationRef, setDonationRef] = useState('')
+  const [donationAmount, setDonationAmount] = useState('10000')
 
   const fetchFounder = useCallback(async () => {
     try {
@@ -109,13 +116,6 @@ export default function AdminFounderDetailPage() {
         full_name: form.full_name,
         recognition_name: form.recognition_name || null,
         recognition_visibility: form.recognition_visibility,
-        tier: form.tier || null,
-        pledge_amount:
-          form.pledge_amount === '' ? null : Number(form.pledge_amount),
-        pledge_term_years:
-          form.pledge_term_years === '' ? null : Number(form.pledge_term_years),
-        pledge_fulfilled_amount:
-          form.pledge_fulfilled_amount === '' ? 0 : Number(form.pledge_fulfilled_amount),
         status: form.status,
         phone: form.phone || null,
         organization: form.organization || null,
@@ -140,6 +140,31 @@ export default function AdminFounderDetailPage() {
       alert('Failed to save changes')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleActivate = async () => {
+    setActivating(true)
+    try {
+      const res = await fetch(`/api/admin/founders/${id}/activate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          donation_amount: donationAmount === '' ? null : Number(donationAmount),
+          payment_reference: donationRef || null,
+          terms_version: FOUNDER_TERMS_VERSION,
+        }),
+      })
+      const json = await res.json()
+      if (json.success) {
+        await fetchFounder()
+      } else {
+        alert(json.error?.message || 'Failed to activate founder')
+      }
+    } catch {
+      alert('Failed to activate founder')
+    } finally {
+      setActivating(false)
     }
   }
 
@@ -286,37 +311,76 @@ export default function AdminFounderDetailPage() {
             </Field>
           </Card>
 
-          {/* Tier & pledge */}
-          <Card title="Tier & pledge">
-            <Field label="Tier">
-              <select className="input" value={form.tier} onChange={set('tier')}>
-                <option value="">— Not set —</option>
-                <option value="founder">Founder</option>
-                <option value="collector_circle">Collector Circle</option>
-                <option value="leadership">Leadership</option>
-                <option value="archive">Archive</option>
-                <option value="legacy">Legacy</option>
-              </select>
-            </Field>
-            <div className="grid grid-cols-3 gap-4">
-              <Field label="Pledge amount (USD)">
-                <input className="input" type="number" min="0" step="100" value={form.pledge_amount} onChange={set('pledge_amount')} />
-              </Field>
-              <Field label="Pledge term (years)">
-                <input className="input" type="number" min="1" step="1" value={form.pledge_term_years} onChange={set('pledge_term_years')} />
-              </Field>
-              <Field label="Fulfilled to date (USD)">
-                <input className="input" type="number" min="0" step="100" value={form.pledge_fulfilled_amount} onChange={set('pledge_fulfilled_amount')} />
-              </Field>
-            </div>
+          {/* Donation & status (flat $10k fundraiser — tier/pledge retired) */}
+          <Card title="Donation & status">
+            {founder.status === 'invited' ? (
+              <div className="rounded-md border border-amber-200 bg-amber-50 p-4 space-y-3">
+                <p className="text-sm font-medium text-amber-900">
+                  Confirm donation &amp; activate
+                </p>
+                <p className="text-xs text-amber-800">
+                  Activating grants portal access. Do this only after the
+                  donation is confirmed in Givebutter.
+                  {founder.terms_accepted_at
+                    ? ` Member accepted the terms (${FOUNDER_TERMS_VERSION}) on ${formatDate(founder.terms_accepted_at)}.`
+                    : ' Member has not yet accepted the terms on the invitation page.'}
+                </p>
+                <div className="grid grid-cols-2 gap-4">
+                  <Field label="Donation amount (USD)">
+                    <input
+                      className="input"
+                      type="number"
+                      min="0"
+                      step="100"
+                      value={donationAmount}
+                      onChange={(e) => setDonationAmount(e.target.value)}
+                    />
+                  </Field>
+                  <Field label="Payment reference (Givebutter)">
+                    <input
+                      className="input"
+                      value={donationRef}
+                      onChange={(e) => setDonationRef(e.target.value)}
+                      placeholder="e.g. GB-XXXX"
+                    />
+                  </Field>
+                </div>
+                <button
+                  onClick={handleActivate}
+                  disabled={activating}
+                  className="px-4 py-2 bg-emerald-700 text-white text-sm font-medium rounded-md hover:bg-emerald-800 disabled:opacity-50"
+                >
+                  {activating ? 'Activating…' : 'Confirm donation & activate'}
+                </button>
+              </div>
+            ) : (
+              <dl className="grid grid-cols-2 gap-4 text-sm">
+                <DLRow
+                  label="Donation amount"
+                  value={founder.donation_amount != null ? `$${founder.donation_amount.toLocaleString()}` : '—'}
+                />
+                <DLRow label="Confirmed" value={formatDate(founder.donation_confirmed_at)} />
+                <DLRow label="Payment reference" value={founder.payment_reference || '—'} />
+                <DLRow
+                  label="Terms accepted"
+                  value={founder.terms_accepted_at ? `${founder.terms_version ?? ''} · ${formatDate(founder.terms_accepted_at)}` : '—'}
+                />
+              </dl>
+            )}
             <Field label="Status">
               <select className="input" value={form.status} onChange={set('status')}>
-                <option value="invited">Invited (link sent, not signed in)</option>
+                <option value="invited">Invited — awaiting donation</option>
                 <option value="active">Active</option>
                 <option value="paused">Paused</option>
                 <option value="archived">Archived</option>
+                <option value="declined">Declined</option>
               </select>
             </Field>
+            <p className="text-xs text-gray-500">
+              Status changes here cover pause / archive / decline / re-invite.
+              Moving an invitee to <strong>Active</strong> must go through
+              “Confirm donation &amp; activate” above so the donation is recorded.
+            </p>
           </Card>
 
           {/* Stewardship */}
@@ -356,7 +420,7 @@ export default function AdminFounderDetailPage() {
               <DLRow label="Invited" value={formatDate(founder.invited_at)} />
               <DLRow
                 label="Activated"
-                value={founder.activated_at ? formatDate(founder.activated_at) : 'Not yet signed in'}
+                value={founder.activated_at ? formatDate(founder.activated_at) : 'Not yet activated'}
               />
               <DLRow
                 label="Last sign-in"
@@ -364,6 +428,10 @@ export default function AdminFounderDetailPage() {
               />
             </dl>
           </Card>
+
+          {/* Phase 2C — Print fulfillment panel. Self-contained: loads + saves
+              via its own API route, no coupling to the profile save flow. */}
+          <PrintFulfillmentPanel founderId={founder.user_id} />
 
           {/* Save bar */}
           <div className="flex items-center gap-4 pt-4 border-t border-gray-200">

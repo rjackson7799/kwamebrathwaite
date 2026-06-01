@@ -581,10 +581,10 @@
     "heroHeadline": "Keeper of the Images",
     "heroSubhead": "Preserving a legacy. Building the infrastructure for the next generation of creators.",
     "intro": {
-      "leadHeading": "Founders are not making a donation.",
-      "leadBody": "They are establishing the permanent infrastructure of one of the most significant photographic archives of the 20th century. You're not giving to the past — you're building the infrastructure that makes this history available to the future.",
+      "leadHeading": "A $10,000 donation that preserves a landmark archive.",
+      "leadBody": "Founders establish the permanent infrastructure of one of the most significant photographic archives of the 20th century. You're not giving to the past — you're building the infrastructure that makes this history available to the future.",
       "benefitsHeading": "What Founders receive",
-      "benefitPrint": "The Founder's Print — a never-before-released archival self-portrait, created as an exclusive edition for Founder's Circle members.",
+      "benefitPrint": "The Founder's Print — a never-before-released 20×20 archival self-portrait, in an exclusive edition of 15 (plus 2 Artist's Proofs) for Founder's Circle members only.",
       "benefitRecognition": "Permanent recognition in the archive's record, alongside the photographs themselves.",
       "benefitAccess": "Private access to the archive, early exhibition previews, and ongoing dialogue with the stewardship team.",
       "benefitTax": "IRS-compliant acknowledgment of contributions to the 501(c)3.",
@@ -626,6 +626,8 @@
     "portal": {
       "welcomeEyebrow": "Welcome",
       "welcomeBody": "Manage how your name appears in the archive's permanent record and your account settings. More of your Founder's Circle space is being prepared.",
+      "navPrint": "The Founder's Print",
+      "navPrintDesc": "Provenance, edition, and the status of your framed print.",
       "navBriefings": "Briefings",
       "navBriefingsDesc": "News from the archive, exhibition openings, and notes from Kwame's family.",
       "navPreviews": "Exhibition Previews",
@@ -652,6 +654,65 @@
       "empty": "No previews open at the moment. We'll surface upcoming exhibitions here ahead of their public opening.",
       "backToList": "All previews",
       "curatorNote": "Curator's note"
+    },
+    "print": {
+      "eyebrow": "The Founder's Print",
+      "heading": "Black Is Beautiful (Self-portrait)",
+      "subheading": "1968 · Archival pigment print · 20 × 20 in.",
+      "editionInfo": "Edition of 15 + 2 AP",
+      "provenance": {
+        "p1": "This image was made by Kwame Brathwaite during the founding years of the Grandassa Models and the Black Is Beautiful movement. It was carried in his archive — never released, never collected, never exhibited.",
+        "p2": "Founders receive it as part of the program and as a record: a framed, signed, editioned print of the work, mailed to you. Your physical print is the artifact; this page is its companion.",
+        "p3": "Provenance, edition number, and certificate of authenticity travel with the print. The archive maintains a permanent record of every Founder edition."
+      },
+      "preparing": "Your print is being prepared. Fulfillment details will appear here when production begins.",
+      "editionLabel": "Edition {number} of 15",
+      "editionLabelAp": "Artist's Proof (AP {number}/2)",
+      "editionPending": "Edition number to be issued upon production.",
+      "coaPending": "Your Certificate of Authenticity will be available once your edition number is assigned.",
+      "fulfillment": {
+        "pending": "Preparing",
+        "in_production": "In production",
+        "ready": "Ready to ship",
+        "shipped": "Shipped",
+        "delivered": "Delivered"
+      },
+      "tracking": "Track shipment",
+      "shippedOn": "Shipped on {date}",
+      "deliveredOn": "Delivered on {date}",
+      "coaCta": "View your certificate"
+    },
+    "coa": {
+      "eyebrow": "Certificate of Authenticity",
+      "body": "This certificate confirms that <name></name> is the holder of <editionLabel></editionLabel> of the work titled <workTitle></workTitle> by Kwame Brathwaite, issued by The Kwame Brathwaite Archive as part of the Founder's Circle program. <editionInfo></editionInfo>.",
+      "editionLine": "edition {number} of 15",
+      "editionLineAp": "artist's proof (AP {number} of 2)",
+      "editionLinePending": "an edition (number to be issued upon production)",
+      "issuedOn": "Issued on",
+      "issuedBy": "Issued by",
+      "printButton": "Print this certificate"
+    },
+    "invitation": {
+      "eyebrow": "The Kwame Brathwaite Archive · Founder's Circle",
+      "heading": "Welcome, {name}.",
+      "intro": "You've been invited to join the Founder's Circle — an invitation-only opportunity to support the archive and collect an unreleased special-edition print of Kwame Brathwaite's work. Please review the terms below, then make your contribution.",
+      "termsHeading": "The terms",
+      "term20x20": "A 20 × 20 in. archival special-edition print, never released outside the Founder's Circle.",
+      "termDonation": "A flat $10,000 donation — no step-ups.",
+      "termEdition": "An edition of 15 numbered prints plus 2 Artist's Proofs (17 in total).",
+      "holdUntil2036": "Founders agree to hold their print until 2036.",
+      "secondaryMarket": "On any future resale, {percent} of the proceeds are contributed back to the archive.",
+      "whatYouReceiveHeading": "What you receive",
+      "termsAgree": "I have read and agree to the Founder's Circle terms above, including the commitment to hold the print until 2036 and the secondary-market contribution.",
+      "donateCta": "Make your donation",
+      "accepting": "Saving…",
+      "declineButton": "No, thank you",
+      "declineConfirm": "Decline this invitation? You won't be able to undo this yourself, but the team can re-invite you.",
+      "actionError": "Something went wrong. Please try again in a moment.",
+      "returnNote": "You can leave and return anytime before you're ready to give — just request a fresh sign-in link from the sign-in page.",
+      "closedHeading": "This invitation is no longer active.",
+      "closedBody": "If you believe this is in error, please write to the stewardship team.",
+      "signOut": "Sign out"
     },
     "profile": {
       "eyebrow": "Profile",

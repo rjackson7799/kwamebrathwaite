@@ -5,10 +5,14 @@
  * in vercel.json.
  *
  * Conservative behavior — does NOT delete. Surfaces a count of founder rows
- * that have been in status='invited' for more than 30 days (no activated_at).
- * The team can then decide case-by-case whether to follow up, resend, or
- * archive them; we don't want a cron silently dropping invitations that the
- * stewardship team might still be cultivating.
+ * that have been in status='invited' for more than 30 days since the LAST
+ * invite was sent (last_invited_at). The team can then decide case-by-case
+ * whether to follow up, resend, or archive them; we don't want a cron silently
+ * dropping invitations that the stewardship team might still be cultivating.
+ *
+ * Keyed on last_invited_at (not invited_at / activated_at) so a re-invited
+ * former member restarts the clock and isn't wrongly skipped: activation is
+ * now a deliberate admin step, so activated_at no longer marks "accepted".
  */
 
 import { NextRequest } from 'next/server'
@@ -51,10 +55,9 @@ async function handle(request: NextRequest) {
   try {
     const { data, error, count } = await supabase
       .from('founders')
-      .select('user_id, email, full_name, invited_at', { count: 'exact' })
+      .select('user_id, email, full_name, last_invited_at', { count: 'exact' })
       .eq('status', 'invited')
-      .is('activated_at', null)
-      .lt('invited_at', cutoffIso)
+      .lt('last_invited_at', cutoffIso)
 
     if (error) {
       console.error('founders-stale-invites query error:', error)

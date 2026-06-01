@@ -6,22 +6,26 @@ import {
   adminFounderUpdateSchema,
 } from '@/lib/api'
 import { requireAdmin, logActivity, getCurrentUserEmail } from '@/lib/api/admin'
-import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
+import { checkStatusTransition } from '@/lib/founders/lifecycle'
 
 interface RouteParams {
   params: Promise<{ id: string }>  // founders.user_id (uuid)
 }
 
 // GET /api/admin/founders/[id]
+// Service-role read: the founders base table has column-level SELECT revoked
+// from `authenticated`, so admin reads of staff-only columns (internal_notes,
+// pledge_*, etc.) must use the service-role client. Admin-gated above.
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { errorResponse: authError } = await requireAdmin(request)
   if (authError) return authError
 
   try {
     const { id } = await params
-    const supabase = await createClient()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data, error } = await (supabase as any)
+    const supabase = createAdminClient() as any
+    const { data, error } = await supabase
       .from('founders')
       .select('*')
       .eq('user_id', id)
@@ -73,6 +77,38 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const updateData: Record<string, unknown> = {}
     for (const [key, value] of Object.entries(parsed.data)) {
       if (value !== undefined) updateData[key] = value
+    }
+
+    // Enforce the status lifecycle server-side.
+    if (typeof updateData.status === 'string') {
+      const { data: current, error: curErr } = await supabase
+        .from('founders')
+        .select('status')
+        .eq('user_id', id)
+        .maybeSingle()
+      if (curErr) {
+        return errorResponse(ErrorCodes.DB_ERROR, 'Failed to load founder', 500)
+      }
+      if (!current) {
+        return errorResponse(ErrorCodes.NOT_FOUND, 'Founder not found', 404)
+      }
+      const from = current.status as string
+      const to = updateData.status as string
+      const verdict = checkStatusTransition(from, to)
+      if (verdict === 'needs-activation') {
+        return errorResponse(
+          'FORBIDDEN',
+          'Use “Confirm donation & activate” to activate an invited founder.',
+          403
+        )
+      }
+      if (verdict === 'forbidden') {
+        return errorResponse(
+          'FORBIDDEN',
+          `Status change ${from} → ${to} is not allowed.`,
+          403
+        )
+      }
     }
 
     const { data, error } = await supabase

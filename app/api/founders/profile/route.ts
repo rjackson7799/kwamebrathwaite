@@ -6,9 +6,12 @@ import {
   founderProfileUpdateSchema,
 } from '@/lib/api'
 import { createClient } from '@/lib/supabase/server'
+import { MEMBER_FOUNDER_COLUMNS } from '@/lib/auth/founders'
 
 // GET /api/founders/profile — read the current Founder's row.
 // Uses the SSR client + RLS (founders_select policy allows the row owner).
+// Projects MEMBER_FOUNDER_COLUMNS only — staff-only columns have column-level
+// SELECT revoked from the member role, so select('*') would error.
 export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -19,7 +22,7 @@ export async function GET() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await (supabase as any)
     .from('founders')
-    .select('*')
+    .select(MEMBER_FOUNDER_COLUMNS)
     .eq('user_id', user.id)
     .maybeSingle()
 
@@ -84,7 +87,7 @@ export async function PATCH(request: NextRequest) {
     .from('founders')
     .update(updateData)
     .eq('user_id', user.id)
-    .select('*')
+    .select(MEMBER_FOUNDER_COLUMNS)
     .single()
 
   if (error) {

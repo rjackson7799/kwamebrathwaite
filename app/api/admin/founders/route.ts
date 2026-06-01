@@ -9,7 +9,7 @@ import {
 } from '@/lib/api'
 import { requireAdmin, logActivity, getCurrentUserEmail } from '@/lib/api/admin'
 import { getPagination } from '@/lib/api/pagination'
-import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import {
   ensureAuthUserForEmail,
   generateFounderMagicLink,
@@ -36,10 +36,12 @@ export async function GET(request: NextRequest) {
     const { page, limit, status, tier, q, sort, order } = parsed.data
     const { from, to } = getPagination(page, limit)
 
-    // RLS allows admins full read access on founders; the SSR client is fine.
-    const supabase = await createClient()
+    // Service-role read: founders has column-level SELECT revoked from
+    // `authenticated`, so admin reads of staff-only columns must bypass via the
+    // service role. Admin-gated above.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let query = (supabase as any).from('founders').select('*', { count: 'exact' })
+    const supabase = createAdminClient() as any
+    let query = supabase.from('founders').select('*', { count: 'exact' })
 
     if (status) query = query.eq('status', status)
     if (tier)   query = query.eq('tier', tier)
@@ -134,6 +136,8 @@ export async function POST(request: NextRequest) {
     relationship_owner_email: data.relationship_owner_email ?? null,
     preferred_locale: data.preferred_locale ?? 'en',
     internal_notes: data.internal_notes ?? null,
+    // Starts the stale-invite clock only when we're actually sending an invite.
+    last_invited_at: data.skip_invite ? null : new Date().toISOString(),
   }
 
   const { data: inserted, error: insertError } = await supabase
@@ -162,7 +166,7 @@ export async function POST(request: NextRequest) {
   if (!data.skip_invite) {
     try {
       const adminEmail = await getCurrentUserEmail()
-      const actionLink = await generateFounderMagicLink(data.email)
+      const actionLink = await generateFounderMagicLink(data.email, data.preferred_locale ?? 'en')
       const result = await sendFounderInvitationEmail({
         toEmail: data.email,
         fullName: data.full_name,

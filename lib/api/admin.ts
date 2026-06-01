@@ -20,6 +20,7 @@ export type EntityType =
   | 'invitation'               // Phase 1C — Founder invitation lifecycle events
   | 'briefing'                 // Phase 2A — Founder briefings
   | 'briefing_notification'    // Phase 2A — Briefing notification batches
+  | 'founder_print_fulfillment' // Phase 2C — Per-founder physical Print tracking
 
 /**
  * Require an authenticated admin for /api/admin/* routes.

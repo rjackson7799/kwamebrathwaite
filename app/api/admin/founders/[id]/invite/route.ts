@@ -35,7 +35,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     const { data: founder, error: lookupError } = await supabase
       .from('founders')
-      .select('user_id, email, full_name')
+      .select('user_id, email, full_name, preferred_locale, status')
       .eq('user_id', id)
       .maybeSingle()
 
@@ -43,9 +43,20 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return errorResponse(ErrorCodes.NOT_FOUND, 'Founder not found', 404)
     }
 
+    // Resending an invitation only makes sense for a pending/declined invite.
+    // For active/paused/archived members, the sign-in link page is the right
+    // tool (this route is "Resend invitation", not "Send sign-in link").
+    if (founder.status !== 'invited' && founder.status !== 'declined') {
+      return errorResponse(
+        'CONFLICT',
+        `This founder is ${founder.status}; resending an invitation isn't applicable. To re-invite, set status to Invited first.`,
+        409
+      )
+    }
+
     const adminEmail = await getCurrentUserEmail()
 
-    const actionLink = await generateFounderMagicLink(founder.email)
+    const actionLink = await generateFounderMagicLink(founder.email, founder.preferred_locale ?? 'en')
     const result = await sendFounderInvitationEmail({
       toEmail: founder.email,
       fullName: founder.full_name,
@@ -53,6 +64,12 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       personalNote: body.personal_note ?? null,
       invitedByName: adminEmail ?? null,
     })
+
+    // Restart the stale-invite clock.
+    await supabase
+      .from('founders')
+      .update({ last_invited_at: new Date().toISOString() })
+      .eq('user_id', id)
 
     if (adminEmail) {
       await logActivity(

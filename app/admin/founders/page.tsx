@@ -13,7 +13,7 @@ interface Founder {
   full_name: string
   recognition_name: string | null
   tier: string | null
-  status: 'invited' | 'active' | 'paused' | 'archived'
+  status: 'invited' | 'active' | 'paused' | 'archived' | 'declined'
   organization: string | null
   invited_at: string
   activated_at: string | null
@@ -161,7 +161,7 @@ export default function AdminFoundersPage() {
             href="/admin/founders/new"
             className="px-4 py-2 bg-black text-white text-sm font-medium rounded-md hover:bg-gray-800"
           >
-            New Founder
+            Invite a Founder
           </Link>
         }
       />
@@ -192,6 +192,7 @@ export default function AdminFoundersPage() {
             <option value="invited">Invited</option>
             <option value="active">Active</option>
             <option value="paused">Paused</option>
+            <option value="declined">Declined</option>
             <option value="archived">Archived</option>
           </select>
 

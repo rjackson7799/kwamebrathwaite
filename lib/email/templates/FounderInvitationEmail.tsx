@@ -29,11 +29,11 @@ export function FounderInvitationEmail({
       <Text style={paragraph}>Dear {fullName},</Text>
 
       <Text style={paragraph}>
-        It is our privilege to welcome you to the Founder&rsquo;s Circle of the
-        Kwame Brathwaite Archive. The link below will sign you in to your
-        member space, where you&rsquo;ll be able to confirm how your name
-        appears in the archive&rsquo;s permanent record and update your
-        preferences.
+        It is our privilege to invite you to the Founder&rsquo;s Circle of the
+        Kwame Brathwaite Archive — an invitation-only opportunity to support the
+        archive and collect an unreleased special-edition print. The link below
+        signs you in to your invitation, where you can review the terms and make
+        your contribution.
       </Text>
 
       {personalNote ? (
@@ -50,9 +50,9 @@ export function FounderInvitationEmail({
       </Section>
 
       <Text style={smallNote}>
-        This link is valid for 24 hours and can only be used once. If you
-        don&rsquo;t click it in that window, request a new one anytime from
-        the sign-in page.
+        This link is valid for 24 hours and can only be used once. You can
+        return anytime before you&rsquo;re ready to give &mdash; just request a
+        fresh sign-in link from the sign-in page.
       </Text>
 
       <Hr style={divider} />

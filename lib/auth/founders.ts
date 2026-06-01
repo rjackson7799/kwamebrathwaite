@@ -1,4 +1,17 @@
+import { redirect } from 'next/navigation'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
+
+// Member-readable founder columns. MUST stay in sync with the column-level
+// GRANT in 2026-05-31-founders-fundraiser-rework.sql — staff-only columns
+// (internal_notes, relationship_owner_email, pledge_*, payment_reference,
+// activated_by, last_invited_at) are revoked from the `authenticated` role, so
+// any member-side read MUST use this explicit projection (never select('*'),
+// which would error).
+export const MEMBER_FOUNDER_COLUMNS =
+  'user_id, email, full_name, recognition_name, recognition_visibility, tier, ' +
+  'status, phone, mailing_address, organization, preferred_locale, comms_prefs, ' +
+  'invited_at, activated_at, last_login_at, created_at, updated_at, ' +
+  'donation_amount, donation_confirmed_at, terms_version, terms_accepted_at'
 
 export interface FounderRow {
   user_id: string
@@ -7,12 +20,15 @@ export interface FounderRow {
   recognition_name: string | null
   recognition_visibility: 'private' | 'public_opt_in'
   tier: string | null
-  status: 'invited' | 'active' | 'paused' | 'archived'
+  status: 'invited' | 'active' | 'paused' | 'archived' | 'declined'
   preferred_locale: string
   comms_prefs: Record<string, unknown>
   invited_at: string
   activated_at: string | null
   last_login_at: string | null
+  terms_version: string | null
+  terms_accepted_at: string | null
+  donation_confirmed_at: string | null
 }
 
 /**
@@ -58,7 +74,7 @@ export async function getCurrentFounder(): Promise<FounderRow | null> {
     .select(
       'user_id, email, full_name, recognition_name, recognition_visibility, ' +
       'tier, status, preferred_locale, comms_prefs, invited_at, activated_at, ' +
-      'last_login_at'
+      'last_login_at, terms_version, terms_accepted_at, donation_confirmed_at'
     )
     .eq('user_id', user.id)
     .maybeSingle()
@@ -68,6 +84,30 @@ export async function getCurrentFounder(): Promise<FounderRow | null> {
     return null
   }
   return (data as FounderRow | null) ?? null
+}
+
+/**
+ * Locale-aware founders path. `en` has no prefix; fr/ja are prefixed.
+ * `path` is the no-prefix form, e.g. '/founders/login'.
+ */
+export function foundersPath(locale: string, path: string): string {
+  return locale === 'en' ? path : `/${locale}${path}`
+}
+
+/**
+ * Server-side gate for /founders/portal/* — requires an ACTIVE founder.
+ * Defense in depth alongside middleware: a logged-in but `invited` member is
+ * redirected to the invitation page (review + donate), and any other
+ * non-active status to the invitation page's "no longer active" state.
+ * Returns the active FounderRow for use by the layout/page.
+ */
+export async function requireActiveFounder(locale: string): Promise<FounderRow> {
+  const founder = await getCurrentFounder()
+  if (!founder) redirect(foundersPath(locale, '/founders/login'))
+  if (founder.status !== 'active') {
+    redirect(foundersPath(locale, '/founders/invitation'))
+  }
+  return founder
 }
 
 /**

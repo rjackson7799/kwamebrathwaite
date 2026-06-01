@@ -134,6 +134,33 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
+  // Handle the invitation page — logged-in + founder membership of ANY status.
+  // Unlike the portal, this does NOT require status='active': an 'invited'
+  // member reviews terms + donates here, and the page itself renders the
+  // correct state per status (invited / closed). Must come before the public
+  // fallthrough.
+  if (pathname.startsWith('/founders/invitation')) {
+    const response = intlMiddleware(request)
+    const supabase = createSupabaseMiddlewareClient(request, response)
+    const { data: { user } } = await supabase.auth.getUser()
+
+    const urlLocale = request.nextUrl.pathname.match(/^\/(fr|ja)\//)?.[1]
+    const localePrefix = urlLocale ? `/${urlLocale}` : ''
+    const loginUrl = new URL(`${localePrefix}/founders/login`, request.url)
+
+    if (!user) {
+      return NextResponse.redirect(loginUrl)
+    }
+
+    if (!(await hasFounderRow(supabase, user.id))) {
+      await supabase.auth.signOut()
+      loginUrl.searchParams.set('reason', 'not_invited')
+      return NextResponse.redirect(loginUrl)
+    }
+
+    return response
+  }
+
   // Handle public routes with i18n
   return intlMiddleware(request)
 }
@@ -155,13 +182,32 @@ async function isFounderUid(
     console.error('isFounderUid lookup failed:', error)
     return false
   }
-  // Phase 2A tightening: only status='active' members can enter the portal.
-  // 'invited' = onboarding (the magic-link callback promotes them to active).
+  // Only status='active' members enter the portal.
+  // 'invited' = pre-donation; sent to /founders/invitation (review + donate).
+  //   Activation to 'active' is a deliberate admin step after the donation.
   // 'paused' = admin temporarily revoked content access.
-  // 'archived' = access permanently revoked.
+  // 'declined' = invitation declined; 'archived' = access permanently revoked.
   // The matching RLS predicate is public.is_current_founder() which also
   // requires status='active' — middleware + RLS agree on this floor.
   return data !== null && data.status === 'active'
+}
+
+// Membership-only check (any status) for the invitation page.
+async function hasFounderRow(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any,
+  uid: string
+): Promise<boolean> {
+  const { data, error } = await supabase
+    .from('founders')
+    .select('user_id')
+    .eq('user_id', uid)
+    .maybeSingle()
+  if (error) {
+    console.error('hasFounderRow lookup failed:', error)
+    return false
+  }
+  return data !== null
 }
 
 export const config = {
