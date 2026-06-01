@@ -8,7 +8,11 @@ interface FounderInvitationEmailProps {
   fullName: string
   /** Optional personal note from the admin who issued the invitation. */
   personalNote?: string | null
-  /** Display name for the staff member who sent the invitation (optional). */
+  /**
+   * Display name for the staff member who sent the invitation. Accepted for
+   * backwards compatibility but no longer rendered — the invitation is signed
+   * by Kwame Brathwaite Jr.
+   */
   invitedByName?: string | null
 }
 
@@ -16,7 +20,6 @@ export function FounderInvitationEmail({
   actionLink,
   fullName,
   personalNote,
-  invitedByName,
 }: FounderInvitationEmailProps) {
   return (
     <BaseLayout previewText="Your invitation to the Founder's Circle">
@@ -58,9 +61,9 @@ export function FounderInvitationEmail({
       <Hr style={divider} />
 
       <Text style={paragraph}>
-        With gratitude,
+        With Gratitude,
         <br />
-        {invitedByName ?? 'The Kwame Brathwaite Archive'}
+        Kwame Brathwaite Jr.
       </Text>
     </BaseLayout>
   )
