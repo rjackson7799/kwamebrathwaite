@@ -13,5 +13,8 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/**/*.test.ts'],
+    // Integration tests need a live Supabase connection and run via their own
+    // config (vitest.integration.config.ts → `npm run test:integration`).
+    exclude: ['tests/integration/**', 'node_modules/**'],
   },
 })
