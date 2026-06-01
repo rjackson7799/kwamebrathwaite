@@ -67,7 +67,7 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
         {/* Hero — text beside the portrait (mirrors the About page layout) so
             the eyebrow, heading and intro stay above the fold. Stacks
             text-first on mobile. */}
-        <div className="flex flex-col md:flex-row gap-10 md:gap-14 items-start mb-16">
+        <div className="flex flex-col md:flex-row gap-10 md:gap-14 items-start mb-14">
           <div className="md:w-[58%]">
             <p className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
               {t('eyebrow')}
@@ -77,11 +77,23 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
             </h1>
             <div className="w-24 h-[2px] bg-[#C9A961] mb-8" />
             <p className="text-lg leading-relaxed text-[#C0BBA8]">{t('intro')}</p>
+
+            {/* Terms — pulled up beside the portrait so they begin under the intro. */}
+            <p className="mt-10 text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
+              {t('termsHeading')}
+            </p>
+            <ul className="space-y-5">
+              <Term text={t('term20x20')} />
+              <Term text={t('termDonation')} />
+              <Term text={t('termEdition')} />
+              <Term text={t('holdUntil2036')} />
+              <Term text={t('secondaryMarket', { percent: RESALE_PERCENT_PLACEHOLDER })} />
+            </ul>
           </div>
 
-          {/* Archival plate — gold-hairline framed portrait. */}
+          {/* Archival plate — clean borderless portrait (matches the About page). */}
           <div className="w-full md:w-[42%] md:flex-shrink-0">
-            <div className="relative aspect-square w-full overflow-hidden bg-[#0a0a0a] ring-1 ring-[#C9A961]/25 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)]">
+            <div className="relative aspect-square w-full overflow-hidden rounded-sm bg-[#0a0a0a] shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)]">
               <Image
                 src="/founders/kb_self_founders.jpg"
                 alt={t('imageAlt')}
@@ -90,25 +102,12 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
                 sizes="(max-width: 768px) 100vw, 42vw"
                 className="object-cover"
               />
-              <div className="pointer-events-none absolute inset-[10px] border border-[#C9A961]/20" />
             </div>
           </div>
         </div>
 
         {/* Body — single readable column. */}
         <div className="max-w-2xl">
-          {/* Terms */}
-          <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
-            {t('termsHeading')}
-          </p>
-          <ul className="space-y-5 mb-14">
-            <Term text={t('term20x20')} />
-            <Term text={t('termDonation')} />
-            <Term text={t('termEdition')} />
-            <Term text={t('holdUntil2036')} />
-            <Term text={t('secondaryMarket', { percent: RESALE_PERCENT_PLACEHOLDER })} />
-          </ul>
-
           {/* What you receive (reuses the public landing benefit copy) */}
           <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
             {t('whatYouReceiveHeading')}
