@@ -694,6 +694,7 @@
     },
     "invitation": {
       "eyebrow": "The Kwame Brathwaite Archive · Founder's Circle",
+      "imageAlt": "Kwame Brathwaite, self-portrait with his camera",
       "heading": "Welcome, {name}.",
       "intro": "You've been invited to join the Founder's Circle — an invitation-only opportunity to support the archive and collect an unreleased special-edition print of Kwame Brathwaite's work. Please review the terms below, then make your contribution.",
       "termsHeading": "The terms",

@@ -657,6 +657,7 @@
     },
     "invitation": {
       "eyebrow": "The Kwame Brathwaite Archive · Cercle des Fondateurs",
+      "imageAlt": "Kwame Brathwaite, autoportrait avec son appareil photo",
       "heading": "Bienvenue, {name}.",
       "intro": "Vous êtes invité·e à rejoindre le Cercle des Fondateurs — une occasion, sur invitation uniquement, de soutenir les archives et de collectionner un tirage spécial inédit de l'œuvre de Kwame Brathwaite. Veuillez consulter les conditions ci-dessous, puis faire votre don.",
       "termsHeading": "Les conditions",

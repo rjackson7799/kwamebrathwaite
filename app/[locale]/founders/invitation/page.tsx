@@ -63,6 +63,23 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
   return (
     <main className="bg-[#0e0e0e] text-[#E6E2D6] min-h-screen">
       <section className="max-w-3xl mx-auto px-8 sm:px-12 py-20 md:py-24">
+        {/* Archival plate — Kwame's self-portrait. The image's own near-black
+            ground blends into the page; the bottom gradient fades it into the
+            composition and a gold hairline frames it like a gallery print.
+            Background-image (not <Image>) keeps it gracefully invisible if the
+            asset is ever missing, matching the public landing hero pattern. */}
+        <div className="mb-12 sm:mb-16 max-w-xl">
+          <div
+            role="img"
+            aria-label={t('imageAlt')}
+            className="relative aspect-[4/5] sm:aspect-square w-full bg-[#0a0a0a] bg-cover bg-center ring-1 ring-[#C9A961]/25 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)]"
+            style={{ backgroundImage: "url('/founders/kb_self_founders.jpg')" }}
+          >
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0e0e0e] via-transparent to-transparent" />
+            <div className="pointer-events-none absolute inset-[10px] border border-[#C9A961]/20" />
+          </div>
+        </div>
+
         <p className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
           {t('eyebrow')}
         </p>
