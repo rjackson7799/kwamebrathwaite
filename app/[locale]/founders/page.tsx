@@ -32,11 +32,11 @@ export default async function FoundersPage({ params }: PageProps) {
             {/* Gold vertical accent rule */}
             <div className="absolute left-0 top-12 bottom-12 w-[3px] bg-[#C9A961]" />
 
-            <p className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-8 font-serif">
+            <p className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-8 font-heading">
               {t('eyebrow')}
             </p>
 
-            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl leading-[0.95] text-[#F5EFE0] mb-8">
+            <h1 className="font-heading font-light uppercase tracking-[0.06em] text-4xl sm:text-5xl md:text-6xl leading-[1.08] text-[#F5EFE0] mb-8">
               {t('heroHeadline')}
             </h1>
 
@@ -66,7 +66,7 @@ export default async function FoundersPage({ params }: PageProps) {
       {/* PROGRAM POSITIONING ────────────────────────────────────────────── */}
       <section className="border-t border-[#2a2a2a]">
         <div className="max-w-3xl mx-auto px-8 sm:px-12 py-20 md:py-28">
-          <h2 className="font-serif text-3xl sm:text-4xl text-[#F5EFE0] leading-tight mb-8">
+          <h2 className="font-heading font-light text-3xl sm:text-4xl text-[#F5EFE0] leading-tight mb-8">
             {tIntro('leadHeading')}
           </h2>
 
@@ -74,7 +74,7 @@ export default async function FoundersPage({ params }: PageProps) {
             {tIntro('leadBody')}
           </p>
 
-          <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-8 font-serif">
+          <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-8 font-heading">
             {tIntro('benefitsHeading')}
           </p>
 
@@ -96,10 +96,10 @@ export default async function FoundersPage({ params }: PageProps) {
       {/* INQUIRY FORM ───────────────────────────────────────────────────── */}
       <section id="inquire" className="border-t border-[#2a2a2a] bg-[#0a0a0a]">
         <div className="max-w-2xl mx-auto px-8 sm:px-12 py-20 md:py-28">
-          <p className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-4 font-serif">
+          <p className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-4 font-heading">
             {t('eyebrow')}
           </p>
-          <h2 className="font-serif text-3xl sm:text-4xl text-[#F5EFE0] mb-10">
+          <h2 className="font-heading font-light text-3xl sm:text-4xl text-[#F5EFE0] mb-10">
             {t('form.heading')}
           </h2>
 

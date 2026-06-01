@@ -50,7 +50,7 @@ export default async function FoundersBriefingDetailPage({ params }: PageProps) 
     <main className="bg-[#0e0e0e] text-[#E6E2D6] min-h-screen flex flex-col">
       <header className="border-b border-[#2a2a2a] px-6 sm:px-10 py-5">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-[#C9A961] font-serif">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-[#C9A961] font-heading">
             {tFounders('eyebrow')}
           </p>
           <Link
@@ -81,19 +81,19 @@ export default async function FoundersBriefingDetailPage({ params }: PageProps) 
             })}
           </p>
 
-          <h1 className="font-serif text-4xl sm:text-5xl text-[#F5EFE0] mb-10 leading-tight">
+          <h1 className="font-heading font-light text-4xl sm:text-5xl text-[#F5EFE0] mb-10 leading-tight">
             {briefing.title}
           </h1>
 
           {briefing.excerpt ? (
-            <p className="text-[#C9A961] text-lg leading-relaxed mb-10 font-serif italic">
+            <p className="text-[#C9A961] text-lg leading-relaxed mb-10 italic">
               {briefing.excerpt}
             </p>
           ) : null}
 
           <RichTextContent
             html={briefing.body_html}
-            className="prose prose-invert prose-headings:font-serif prose-headings:text-[#F5EFE0] prose-p:text-[#C0BBA8] prose-a:text-[#C9A961] prose-strong:text-[#E6E2D6] prose-blockquote:border-[#C9A961] prose-blockquote:text-[#C0BBA8] max-w-none"
+            className="prose prose-invert prose-headings:font-heading prose-headings:font-light prose-headings:text-[#F5EFE0] prose-p:text-[#C0BBA8] prose-a:text-[#C9A961] prose-strong:text-[#E6E2D6] prose-blockquote:border-[#C9A961] prose-blockquote:text-[#C0BBA8] max-w-none"
           />
         </article>
       </div>

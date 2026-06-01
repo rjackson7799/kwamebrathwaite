@@ -34,7 +34,7 @@ export default async function FoundersSecurityPage({ params }: PageProps) {
     <main className="bg-[#0e0e0e] text-[#E6E2D6] min-h-screen flex flex-col">
       <header className="border-b border-[#2a2a2a] px-6 sm:px-10 py-5">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-[#C9A961] font-serif">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-[#C9A961] font-heading">
             {tFounders('eyebrow')}
           </p>
           <Link
@@ -49,10 +49,10 @@ export default async function FoundersSecurityPage({ params }: PageProps) {
       <div className="flex-1 px-6 sm:px-10 py-12 sm:py-20">
         <div className="max-w-2xl mx-auto">
           <div className="w-16 h-[2px] bg-[#C9A961] mb-8" />
-          <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-4 font-serif">
+          <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-4 font-heading">
             {t('eyebrow')}
           </p>
-          <h1 className="font-serif text-4xl sm:text-5xl text-[#F5EFE0] mb-6 leading-tight">
+          <h1 className="font-heading font-light text-4xl sm:text-5xl text-[#F5EFE0] mb-6 leading-tight">
             {t('heading')}
           </h1>
           <p className="text-[#C0BBA8] text-sm sm:text-base leading-relaxed mb-16 max-w-xl">
@@ -61,7 +61,7 @@ export default async function FoundersSecurityPage({ params }: PageProps) {
 
           {/* 2FA */}
           <section className="mb-16">
-            <h2 className="font-serif text-2xl text-[#F5EFE0] mb-6">
+            <h2 className="font-heading font-light text-2xl text-[#F5EFE0] mb-6">
               {t('twofa_heading')}
             </h2>
             <TwoFactorPanel />
@@ -69,7 +69,7 @@ export default async function FoundersSecurityPage({ params }: PageProps) {
 
           {/* Sessions */}
           <section className="pt-10 border-t border-[#2a2a2a]">
-            <h2 className="font-serif text-2xl text-[#F5EFE0] mb-6">
+            <h2 className="font-heading font-light text-2xl text-[#F5EFE0] mb-6">
               {t('sessions_heading')}
             </h2>
             <SessionsPanel />

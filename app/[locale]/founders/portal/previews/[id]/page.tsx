@@ -65,7 +65,7 @@ export default async function FoundersPreviewDetailPage({ params }: PageProps) {
     <main className="bg-[#0e0e0e] text-[#E6E2D6] min-h-screen flex flex-col">
       <header className="border-b border-[#2a2a2a] px-6 sm:px-10 py-5">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-[#C9A961] font-serif">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-[#C9A961] font-heading">
             {tFounders('eyebrow')}
           </p>
           <Link
@@ -92,7 +92,7 @@ export default async function FoundersPreviewDetailPage({ params }: PageProps) {
             {t('eyebrowItem')}
           </p>
 
-          <h1 className="font-serif text-4xl sm:text-5xl text-[#F5EFE0] mb-6 leading-tight">
+          <h1 className="font-heading font-light text-4xl sm:text-5xl text-[#F5EFE0] mb-6 leading-tight">
             {exhibition.title}
           </h1>
 
@@ -120,12 +120,12 @@ export default async function FoundersPreviewDetailPage({ params }: PageProps) {
 
           {exhibition.preview_notes ? (
             <section className="border-l-2 border-[#C9A961] pl-6 mb-12">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[#C9A961] mb-3 font-serif">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-[#C9A961] mb-3 font-heading">
                 {t('curatorNote')}
               </p>
               <RichTextContent
                 html={exhibition.preview_notes}
-                className="prose prose-invert prose-headings:font-serif prose-headings:text-[#F5EFE0] prose-p:text-[#C0BBA8] prose-a:text-[#C9A961] prose-strong:text-[#E6E2D6] max-w-none"
+                className="prose prose-invert prose-headings:font-heading prose-headings:font-light prose-headings:text-[#F5EFE0] prose-p:text-[#C0BBA8] prose-a:text-[#C9A961] prose-strong:text-[#E6E2D6] max-w-none"
               />
             </section>
           ) : null}
@@ -133,7 +133,7 @@ export default async function FoundersPreviewDetailPage({ params }: PageProps) {
           {exhibition.description ? (
             <RichTextContent
               html={exhibition.description}
-              className="prose prose-invert prose-headings:font-serif prose-headings:text-[#F5EFE0] prose-p:text-[#C0BBA8] prose-a:text-[#C9A961] prose-strong:text-[#E6E2D6] prose-blockquote:border-[#C9A961] prose-blockquote:text-[#C0BBA8] max-w-none"
+              className="prose prose-invert prose-headings:font-heading prose-headings:font-light prose-headings:text-[#F5EFE0] prose-p:text-[#C0BBA8] prose-a:text-[#C9A961] prose-strong:text-[#E6E2D6] prose-blockquote:border-[#C9A961] prose-blockquote:text-[#C0BBA8] max-w-none"
             />
           ) : null}
         </article>

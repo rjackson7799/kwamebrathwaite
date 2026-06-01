@@ -33,14 +33,14 @@ export default async function FoundersLoginPage({ params }: PageProps) {
       <div className="flex-1 flex items-center justify-center px-6 sm:px-10 py-20">
         <div className="w-full max-w-md">
           {/* Eyebrow */}
-          <p className="text-[11px] uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif text-center">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-heading text-center">
             {tFounders('eyebrow')}
           </p>
 
           {/* Gold accent rule (horizontal, centered) */}
           <div className="w-16 h-[2px] bg-[#C9A961] mx-auto mb-8" />
 
-          <h1 className="font-serif text-3xl sm:text-4xl text-[#F5EFE0] mb-6 text-center leading-tight">
+          <h1 className="font-heading font-light text-3xl sm:text-4xl text-[#F5EFE0] mb-6 text-center leading-tight">
             {t('heading')}
           </h1>
 

@@ -59,7 +59,7 @@ export default async function FoundersCoaPage({ params }: PageProps) {
       {/* Screen-only chrome — hidden when printing */}
       <header className="border-b border-[#d8cfb8] px-6 sm:px-10 py-5 bg-[#0e0e0e] text-[#E6E2D6] print:hidden">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-[#C9A961] font-serif">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-[#C9A961] font-heading">
             {tFounders('eyebrow')}
           </p>
           <div className="flex items-center gap-6">

@@ -36,7 +36,7 @@ export default async function FoundersPortalPage({ params }: PageProps) {
       {/* Header strip — eyebrow + sign out */}
       <header className="border-b border-[#2a2a2a] px-6 sm:px-10 py-5">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-[#C9A961] font-serif">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-[#C9A961] font-heading">
             {tFounders('eyebrow')}
           </p>
           <form action="/api/founders/auth/sign-out" method="post">
@@ -55,11 +55,11 @@ export default async function FoundersPortalPage({ params }: PageProps) {
           {/* Gold rule */}
           <div className="w-16 h-[2px] bg-[#C9A961] mb-10" />
 
-          <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-5 font-serif">
+          <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-5 font-heading">
             {t('welcomeEyebrow')}
           </p>
 
-          <h1 className="font-serif text-4xl sm:text-5xl text-[#F5EFE0] mb-10 leading-tight">
+          <h1 className="font-heading font-light text-4xl sm:text-5xl text-[#F5EFE0] mb-10 leading-tight">
             {displayName}
           </h1>
 

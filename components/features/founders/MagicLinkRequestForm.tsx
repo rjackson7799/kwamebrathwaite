@@ -60,7 +60,7 @@ export function MagicLinkRequestForm() {
     return (
       <div className="space-y-6">
         <div className="rounded-sm border border-[#3a3a3a] bg-[#141414] p-8">
-          <h2 className="font-serif text-2xl text-[#F5EFE0] mb-4">
+          <h2 className="font-heading font-light text-2xl text-[#F5EFE0] mb-4">
             {t('successHeading')}
           </h2>
           <p className="text-[#C0BBA8] leading-relaxed text-sm">

@@ -184,7 +184,7 @@ export function PortalProfileForm({ initial }: Props) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="text-[10px] uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
+      <p className="text-[10px] uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-heading">
         {title}
       </p>
       <div className="space-y-5">{children}</div>

@@ -53,11 +53,11 @@ export function FulfillmentTimeline({
   return (
     <div className="border border-[#2a2a2a] p-6 space-y-6">
       {editionNumber != null ? (
-        <p className="text-[10px] uppercase tracking-[0.18em] text-[#C9A961] font-serif">
+        <p className="text-[10px] uppercase tracking-[0.18em] text-[#C9A961] font-heading">
           {labels.editionLabel}
         </p>
       ) : (
-        <p className="text-[10px] uppercase tracking-[0.18em] text-[#8a6f2b] font-serif italic">
+        <p className="text-[10px] uppercase tracking-[0.18em] text-[#8a6f2b] font-heading italic">
           {labels.editionPending}
         </p>
       )}

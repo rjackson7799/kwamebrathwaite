@@ -45,7 +45,7 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
       <main className="bg-[#0e0e0e] text-[#E6E2D6] min-h-screen flex items-center justify-center px-6">
         <div className="max-w-md text-center">
           <div className="w-16 h-[2px] bg-[#C9A961] mx-auto mb-8" />
-          <h1 className="font-serif text-3xl text-[#F5EFE0] mb-4">{t('closedHeading')}</h1>
+          <h1 className="font-heading font-light text-3xl text-[#F5EFE0] mb-4">{t('closedHeading')}</h1>
           <p className="text-[#C0BBA8] leading-relaxed mb-8">{t('closedBody')}</p>
           <form action="/api/founders/auth/sign-out" method="post">
             <button
@@ -69,17 +69,17 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
             text-first on mobile. */}
         <div className="flex flex-col md:flex-row gap-10 md:gap-14 items-start mb-14">
           <div className="md:w-[58%]">
-            <p className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
+            <p className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-heading">
               {t('eyebrow')}
             </p>
-            <h1 className="font-serif text-4xl sm:text-5xl text-[#F5EFE0] leading-[1.02] mb-6">
+            <h1 className="font-heading font-light text-4xl sm:text-5xl text-[#F5EFE0] leading-[1.05] mb-6">
               {t('heading', { name: founder.recognition_name || founder.full_name })}
             </h1>
             <div className="w-24 h-[2px] bg-[#C9A961] mb-8" />
             <p className="text-lg leading-relaxed text-[#C0BBA8]">{t('intro')}</p>
 
             {/* Terms — pulled up beside the portrait so they begin under the intro. */}
-            <p className="mt-10 text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
+            <p className="mt-10 text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-heading">
               {t('termsHeading')}
             </p>
             <ul className="space-y-5">
@@ -109,7 +109,7 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
         {/* Body — single readable column. */}
         <div className="max-w-2xl">
           {/* What you receive (reuses the public landing benefit copy) */}
-          <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
+          <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-heading">
             {t('whatYouReceiveHeading')}
           </p>
           <ul className="space-y-5 mb-14">
