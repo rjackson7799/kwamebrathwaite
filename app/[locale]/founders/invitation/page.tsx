@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getCurrentFounder, foundersPath } from '@/lib/auth/founders'
@@ -62,72 +63,80 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
   // Invited — full invitation: terms, what you receive, donate + decline.
   return (
     <main className="bg-[#0e0e0e] text-[#E6E2D6] min-h-screen">
-      <section className="max-w-3xl mx-auto px-8 sm:px-12 py-20 md:py-24">
-        {/* Archival plate — Kwame's self-portrait. The image's own near-black
-            ground blends into the page; the bottom gradient fades it into the
-            composition and a gold hairline frames it like a gallery print.
-            Background-image (not <Image>) keeps it gracefully invisible if the
-            asset is ever missing, matching the public landing hero pattern. */}
-        <div className="mb-12 sm:mb-16 max-w-xl">
-          <div
-            role="img"
-            aria-label={t('imageAlt')}
-            className="relative aspect-[4/5] sm:aspect-square w-full bg-[#0a0a0a] bg-cover bg-center ring-1 ring-[#C9A961]/25 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)]"
-            style={{ backgroundImage: "url('/founders/kb_self_founders.jpg')" }}
-          >
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0e0e0e] via-transparent to-transparent" />
-            <div className="pointer-events-none absolute inset-[10px] border border-[#C9A961]/20" />
+      <section className="max-w-5xl mx-auto px-8 sm:px-12 py-14 md:py-20">
+        {/* Hero — text beside the portrait (mirrors the About page layout) so
+            the eyebrow, heading and intro stay above the fold. Stacks
+            text-first on mobile. */}
+        <div className="flex flex-col md:flex-row gap-10 md:gap-14 items-start mb-16">
+          <div className="md:w-[58%]">
+            <p className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
+              {t('eyebrow')}
+            </p>
+            <h1 className="font-serif text-4xl sm:text-5xl text-[#F5EFE0] leading-[1.02] mb-6">
+              {t('heading', { name: founder.recognition_name || founder.full_name })}
+            </h1>
+            <div className="w-24 h-[2px] bg-[#C9A961] mb-8" />
+            <p className="text-lg leading-relaxed text-[#C0BBA8]">{t('intro')}</p>
+          </div>
+
+          {/* Archival plate — gold-hairline framed portrait. */}
+          <div className="w-full md:w-[42%] md:flex-shrink-0">
+            <div className="relative aspect-square w-full overflow-hidden bg-[#0a0a0a] ring-1 ring-[#C9A961]/25 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)]">
+              <Image
+                src="/founders/kb_self_founders.jpg"
+                alt={t('imageAlt')}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 42vw"
+                className="object-cover"
+              />
+              <div className="pointer-events-none absolute inset-[10px] border border-[#C9A961]/20" />
+            </div>
           </div>
         </div>
 
-        <p className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
-          {t('eyebrow')}
-        </p>
-        <h1 className="font-serif text-4xl sm:text-5xl text-[#F5EFE0] leading-[1.02] mb-6">
-          {t('heading', { name: founder.recognition_name || founder.full_name })}
-        </h1>
-        <div className="w-24 h-[2px] bg-[#C9A961] mb-8" />
-        <p className="text-lg leading-relaxed text-[#C0BBA8] mb-14 max-w-2xl">{t('intro')}</p>
-
-        {/* Terms */}
-        <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
-          {t('termsHeading')}
-        </p>
-        <ul className="space-y-5 mb-14">
-          <Term text={t('term20x20')} />
-          <Term text={t('termDonation')} />
-          <Term text={t('termEdition')} />
-          <Term text={t('holdUntil2036')} />
-          <Term text={t('secondaryMarket', { percent: RESALE_PERCENT_PLACEHOLDER })} />
-        </ul>
-
-        {/* What you receive (reuses the public landing benefit copy) */}
-        <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
-          {t('whatYouReceiveHeading')}
-        </p>
-        <ul className="space-y-5 mb-14">
-          <Term text={tIntro('benefitPrint')} />
-          <Term text={tIntro('benefitRecognition')} />
-          <Term text={tIntro('benefitAccess')} />
-        </ul>
-
-        {/* Actions */}
-        <div className="border-t border-[#2a2a2a] pt-10">
-          <InvitationActions
-            givebutterUrl={GIVEBUTTER_URL}
-            initiallyAccepted={founder.terms_accepted_at != null}
-            labels={{
-              termsAgree: t('termsAgree'),
-              donate: t('donateCta'),
-              accepting: t('accepting'),
-              decline: t('declineButton'),
-              declineConfirm: t('declineConfirm'),
-              error: t('actionError'),
-            }}
-          />
-          <p className="mt-8 text-xs text-[#6f6a5b] leading-relaxed max-w-xl">
-            {t('returnNote')}
+        {/* Body — single readable column. */}
+        <div className="max-w-2xl">
+          {/* Terms */}
+          <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
+            {t('termsHeading')}
           </p>
+          <ul className="space-y-5 mb-14">
+            <Term text={t('term20x20')} />
+            <Term text={t('termDonation')} />
+            <Term text={t('termEdition')} />
+            <Term text={t('holdUntil2036')} />
+            <Term text={t('secondaryMarket', { percent: RESALE_PERCENT_PLACEHOLDER })} />
+          </ul>
+
+          {/* What you receive (reuses the public landing benefit copy) */}
+          <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-serif">
+            {t('whatYouReceiveHeading')}
+          </p>
+          <ul className="space-y-5 mb-14">
+            <Term text={tIntro('benefitPrint')} />
+            <Term text={tIntro('benefitRecognition')} />
+            <Term text={tIntro('benefitAccess')} />
+          </ul>
+
+          {/* Actions */}
+          <div className="border-t border-[#2a2a2a] pt-10">
+            <InvitationActions
+              givebutterUrl={GIVEBUTTER_URL}
+              initiallyAccepted={founder.terms_accepted_at != null}
+              labels={{
+                termsAgree: t('termsAgree'),
+                donate: t('donateCta'),
+                accepting: t('accepting'),
+                decline: t('declineButton'),
+                declineConfirm: t('declineConfirm'),
+                error: t('actionError'),
+              }}
+            />
+            <p className="mt-8 text-xs text-[#6f6a5b] leading-relaxed max-w-xl">
+              {t('returnNote')}
+            </p>
+          </div>
         </div>
       </section>
     </main>
