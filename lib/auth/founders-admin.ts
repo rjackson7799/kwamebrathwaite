@@ -23,8 +23,9 @@ function siteUrl(): string {
     process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL
   if (vercel) return `https://${vercel.replace(/\/$/, '')}`
 
-  // Local development fallback.
-  return 'http://localhost:3000'
+  // Local development fallback. Dev runs on 3001 and that port is in the
+  // Supabase redirect allowlist, so a link minted locally is verifiable.
+  return 'http://localhost:3001'
 }
 
 /**
