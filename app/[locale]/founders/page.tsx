@@ -47,18 +47,16 @@ export default async function FoundersPage({ params }: PageProps) {
             </p>
           </div>
 
-          {/* Right column: hero portrait.
-              Asset to provide: public/founders/hero-keeper-of-the-images.jpg
-              (the deck-cover composition supplied by stakeholder). Until the
-              file is dropped in, the gradient shows through and the layout
-              still feels intentional — using background-image instead of an
-              <img> tag so a missing asset is silently invisible (no broken
-              image icon, no client component needed for an onError handler). */}
+          {/* Right column: hero portrait — Kwame's self-portrait
+              (public/founders/kb_self_founders.jpg). Using background-image
+              instead of an <img> tag so a missing asset is silently invisible
+              (no broken image icon, no client component needed for an onError
+              handler); the gradient shows through until it loads. */}
           <div
             role="img"
-            aria-label="Kwame Brathwaite, archival portrait"
+            aria-label="Kwame Brathwaite, self-portrait with his camera"
             className="relative bg-gradient-to-br from-[#2a241c] via-[#1a1714] to-[#0e0e0e] min-h-[40vh] md:min-h-full bg-cover bg-center"
-            style={{ backgroundImage: "url('/founders/hero-keeper-of-the-images.jpg')" }}
+            style={{ backgroundImage: "url('/founders/kb_self_founders.jpg')" }}
           />
         </div>
       </section>
