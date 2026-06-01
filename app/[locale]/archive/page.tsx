@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 import { getPageSettings } from '@/lib/page-settings'
 import { PageTitle } from '@/components/ui/PageTitle'
 import { getPageContent } from '@/lib/supabase/queries/content'
@@ -45,6 +46,7 @@ export default async function ArchivePage({ params }: Props) {
 
   const showTitle = settings?.show_title ?? true
   const imageUrl = archiveImage?.content || '/images/about/kwame-portrait.jpeg'
+  const foundersHref = locale === 'en' ? '/founders' : `/${locale}/founders`
 
   // Translate CMS content for non-English locales
   const [translatedMission, translatedDescription] = await Promise.all([
@@ -73,6 +75,16 @@ export default async function ArchivePage({ params }: Props) {
             {translatedDescription && (
               <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translatedDescription) }} />
             )}
+
+            <p className="mt-8">
+              {t.rich('foundersInvite', {
+                link: (chunks) => (
+                  <Link href={foundersHref} className="underline hover:no-underline">
+                    {chunks}
+                  </Link>
+                ),
+              })}
+            </p>
           </div>
 
           <div className="md:w-[38%] flex-shrink-0 sticky top-24 self-start">

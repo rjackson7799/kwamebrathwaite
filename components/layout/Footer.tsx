@@ -134,6 +134,12 @@ export function Footer() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
             <div className="flex items-center gap-4 text-[11px] uppercase tracking-[0.1em] text-white/50">
               <Link
+                href={getLocalizedHref('/founders')}
+                className="hover:text-white/80 transition-colors"
+              >
+                {t('links.foundersCircle')}
+              </Link>
+              <Link
                 href={getLocalizedHref('/privacy')}
                 className="hover:text-white/80 transition-colors"
               >

@@ -252,7 +252,8 @@
       "title": "The Archive | Kwame Brathwaite",
       "description": "The official Kwame Brathwaite Archive preserves over 10,000 images documenting 60 years of photography and the Black is Beautiful movement."
     },
-    "mission": "Our Mission"
+    "mission": "Our Mission",
+    "foundersInvite": "Help preserve this archive for the future — learn about the <link>Founder's Circle</link>, our invitation-only program supporting the archive's permanent stewardship."
   },
   "contact": {
     "title": "Contact",
@@ -545,6 +546,7 @@
     },
     "copyright": "© {year} Kwame Brathwaite Archive. All rights reserved.",
     "links": {
+      "foundersCircle": "Founder's Circle",
       "privacy": "Privacy Policy",
       "terms": "Terms of Use",
       "licensing": "Image Licensing",

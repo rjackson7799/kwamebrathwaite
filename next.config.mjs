@@ -70,6 +70,24 @@ const nextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
+  async redirects() {
+    return [
+      // Vanity alias: the program is branded "Founder's Circle". The canonical
+      // route stays /founders (no app-wide rename); this lets the prettier
+      // /founders-circle URL resolve for externally-shared links. Covers the
+      // fr/ja locale variants and any deeper sub-paths.
+      {
+        source: '/founders-circle/:path*',
+        destination: '/founders/:path*',
+        permanent: true,
+      },
+      {
+        source: '/:locale(fr|ja)/founders-circle/:path*',
+        destination: '/:locale/founders/:path*',
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       {
