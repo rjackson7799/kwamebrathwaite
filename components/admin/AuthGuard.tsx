@@ -10,6 +10,12 @@ interface AuthGuardProps {
   children: React.ReactNode
 }
 
+const PUBLIC_ADMIN_PATHS = [
+  '/admin/login',
+  '/admin/forgot-password',
+  '/admin/reset-password',
+]
+
 export function AuthGuard({ children }: AuthGuardProps) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
@@ -25,7 +31,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
       setUser(user)
       setLoading(false)
 
-      if (!user && pathname !== '/admin/login') {
+      if (!user && !PUBLIC_ADMIN_PATHS.includes(pathname)) {
         router.push('/admin/login')
       }
     }
@@ -37,7 +43,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
       (event, session) => {
         setUser(session?.user ?? null)
 
-        if (event === 'SIGNED_OUT') {
+        if (event === 'SIGNED_OUT' && !PUBLIC_ADMIN_PATHS.includes(pathname)) {
           router.push('/admin/login')
         }
       }
@@ -60,8 +66,8 @@ export function AuthGuard({ children }: AuthGuardProps) {
     )
   }
 
-  // Allow login page without auth - no sidebar
-  if (pathname === '/admin/login') {
+  // Allow public auth pages without auth - no sidebar
+  if (PUBLIC_ADMIN_PATHS.includes(pathname)) {
     return <>{children}</>
   }
 
