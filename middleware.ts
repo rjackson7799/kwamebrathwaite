@@ -85,7 +85,16 @@ export async function middleware(request: NextRequest) {
 
   // Handle admin page routes - check authentication AND admin membership.
   if (pathname.startsWith('/admin')) {
-    if (pathname === '/admin/login') {
+    // Public admin auth pages — no session required: login plus the password
+    // recovery flow (request a link, then set a new password from the link).
+    // The reset-password page lands with no session (just a token in the URL);
+    // it verifies the token via /api/admin/auth/reset-password/verify itself.
+    const PUBLIC_ADMIN_PAGES = [
+      '/admin/login',
+      '/admin/forgot-password',
+      '/admin/reset-password',
+    ]
+    if (PUBLIC_ADMIN_PAGES.includes(pathname)) {
       return NextResponse.next()
     }
 

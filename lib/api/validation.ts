@@ -224,6 +224,18 @@ export const founderOtpRequestSchema = z.object({
   website: z.string().optional(),
 })
 
+// Public: admin password-reset request (forgot-password form).
+export const adminPasswordResetRequestSchema = z.object({
+  email: z.string().email().max(255),
+  // Honeypot
+  website: z.string().optional(),
+})
+
+// Admin: set a new password from the reset page (after token verification).
+export const adminPasswordUpdateSchema = z.object({
+  password: z.string().min(8, 'Password must be at least 8 characters').max(72),
+})
+
 // Member self-update — narrow whitelist mirroring the column-guard trigger.
 // Members can change recognition prefs, comms prefs, phone, locale, and the
 // optional mailing address. Tier / pledge / status / internal_notes /

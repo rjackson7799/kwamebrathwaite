@@ -1,16 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
-export default function AdminLoginPage() {
+function AdminLoginInner() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [checkingSession, setCheckingSession] = useState(true)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const resetSuccess = searchParams.get('reset') === 'success'
 
   // Check if already logged in
   useEffect(() => {
@@ -79,6 +82,12 @@ export default function AdminLoginPage() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-medium text-black mb-6">Sign In</h2>
 
+          {resetSuccess && (
+            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded text-sm text-green-700">
+              Password updated. Please sign in.
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
@@ -139,6 +148,16 @@ export default function AdminLoginPage() {
               )}
             </button>
           </form>
+
+          {/* Password recovery */}
+          <div className="mt-4 text-center">
+            <Link
+              href="/admin/forgot-password"
+              className="text-sm text-gray-500 hover:text-black"
+            >
+              Forgot password?
+            </Link>
+          </div>
         </div>
 
         {/* Footer */}
@@ -147,5 +166,19 @@ export default function AdminLoginPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <AdminLoginInner />
+    </Suspense>
   )
 }

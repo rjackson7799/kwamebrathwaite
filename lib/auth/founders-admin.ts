@@ -5,28 +5,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { sendUserEmail } from '@/lib/email/send'
 import { FounderInvitationEmail, FounderMagicLinkEmail } from '@/lib/email/templates'
-
-/**
- * Get the absolute site URL used in magic-link redirect_to. Must match the
- * Supabase Auth project redirect allowlist (see plan §6 "Redirect allowlist").
- */
-function siteUrl(): string {
-  // Canonical, explicitly-configured site URL wins (set this in every env,
-  // e.g. NEXT_PUBLIC_SITE_URL=https://kwamebrathwaite.com).
-  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '')
-  if (explicit) return explicit
-
-  // Safety net on Vercel: if the canonical var was forgotten, use the
-  // deployment's domain rather than silently minting a localhost magic link
-  // in a deployed environment.
-  const vercel =
-    process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL
-  if (vercel) return `https://${vercel.replace(/\/$/, '')}`
-
-  // Local development fallback. Dev runs on 3001 and that port is in the
-  // Supabase redirect allowlist, so a link minted locally is verifiable.
-  return 'http://localhost:3001'
-}
+import { siteUrl } from '@/lib/auth/site-url'
 
 /**
  * Ensure an auth.users row exists for the given email. Returns the uuid.

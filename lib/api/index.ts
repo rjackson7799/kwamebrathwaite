@@ -33,6 +33,8 @@ export {
   adminBriefingUpdateSchema,
   adminPrintFulfillmentSchema,
   founderOtpRequestSchema,
+  adminPasswordResetRequestSchema,
+  adminPasswordUpdateSchema,
   founderProfileUpdateSchema,
   newsletterSchema,
   translateSchema,
