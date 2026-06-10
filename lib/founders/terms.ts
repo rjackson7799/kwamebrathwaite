@@ -7,4 +7,6 @@
 // wording each member agreed to.
 //
 // ⚠️ Pending legal/tax sign-off before launch (see the plan's release gates).
-export const FOUNDER_TERMS_VERSION = 'fc-2026-05'
+// fc-2026-06: client confirmed the secondary-market contribution rate at 10%
+// (was a [TBD]% placeholder on the invitation page).
+export const FOUNDER_TERMS_VERSION = 'fc-2026-06'

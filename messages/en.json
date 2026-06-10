@@ -583,14 +583,18 @@
     "heroHeadline": "Keeper of the Images",
     "heroSubhead": "Preserving a legacy. Building the infrastructure for the next generation of creators.",
     "intro": {
-      "leadHeading": "A $10,000 donation that preserves a landmark archive.",
-      "leadBody": "Founders establish the permanent infrastructure of one of the most significant photographic archives of the 20th century. You're not giving to the past — you're building the infrastructure that makes this history available to the future.",
+      "leadHeading": "A donation that preserves a landmark archive.",
+      "leadBody": "Founders establish the permanent infrastructure of one of the most significant photographic archives of the 20th century. You're not giving to the past — you're building the infrastructure that makes this history available to the future. Donations of $10,000 or more from a selected group of supporters.",
       "benefitsHeading": "What Founders receive",
       "benefitPrint": "The Founder's Print — a never-before-released 20×20 archival self-portrait, in an exclusive edition of 15 (plus 2 Artist's Proofs) for Founder's Circle members only.",
       "benefitRecognition": "Permanent recognition in the archive's record, alongside the photographs themselves.",
       "benefitAccess": "Private access to the archive, early exhibition previews, and ongoing dialogue with the stewardship team.",
       "benefitTax": "IRS-compliant acknowledgment of contributions to the 501(c)3.",
-      "invitationNote": "The Founder's Circle is invitation-only. Use the form below to introduce yourself; a member of the stewardship team will respond personally within 24 to 48 hours."
+      "invitationNote": "The Founder's Circle is invitation-only. Use the form below to introduce yourself; a member of the stewardship team will respond personally within 24 to 48 hours.",
+      "commitmentNote": "Founders will hold works for a minimum of 10 years and any sales in secondary market requires 10% donation to the archive.",
+      "signatureName": "Kwame S. Brathwaite",
+      "signatureTitle": "Archive Director",
+      "signatureOrg": "The Kwame Brathwaite Archive"
     },
     "form": {
       "heading": "Inquire about the Founder's Circle",

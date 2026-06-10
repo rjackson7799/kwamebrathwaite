@@ -17,8 +17,8 @@ export const revalidate = 0
 // is tied to an identified, invited member.
 const GIVEBUTTER_URL = 'https://givebutter.com/trUmGD'
 
-// Placeholder until counsel/tax confirm the secondary-market contribution rate.
-const RESALE_PERCENT_PLACEHOLDER = '[TBD]%'
+// Secondary-market contribution rate, confirmed by the client at 10%.
+const RESALE_PERCENT = '10%'
 
 interface PageProps {
   params: Promise<{ locale: string }>
@@ -87,7 +87,7 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
               <Term text={t('termDonation')} />
               <Term text={t('termEdition')} />
               <Term text={t('holdUntil2036')} />
-              <Term text={t('secondaryMarket', { percent: RESALE_PERCENT_PLACEHOLDER })} />
+              <Term text={t('secondaryMarket', { percent: RESALE_PERCENT })} />
             </ul>
           </div>
 

@@ -88,6 +88,21 @@ export default async function FoundersPage({ params }: PageProps) {
               {tIntro('invitationNote')}
             </p>
           </div>
+
+          {/* Binding commitment — fine print the client added to the public page. */}
+          <p className="mt-12 text-sm leading-relaxed text-[#8a8a8a] max-w-2xl">
+            {tIntro('commitmentNote')}
+          </p>
+
+          {/* Signature — closes the section like a signed letter from the director. */}
+          <div className="mt-12">
+            <div className="w-16 h-[2px] bg-[#C9A961] mb-5" />
+            <p className="font-heading font-light text-xl text-[#F5EFE0]">
+              {tIntro('signatureName')}
+            </p>
+            <p className="mt-1 text-sm text-[#C0BBA8]">{tIntro('signatureTitle')}</p>
+            <p className="text-sm text-[#8a8a8a]">{tIntro('signatureOrg')}</p>
+          </div>
         </div>
       </section>
 

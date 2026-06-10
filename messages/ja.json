@@ -546,14 +546,18 @@
     "heroHeadline": "Keeper of the Images",
     "heroSubhead": "Preserving a legacy. Building the infrastructure for the next generation of creators.",
     "intro": {
-      "leadHeading": "重要なアーカイブを守る、10,000ドルのご寄付。",
-      "leadBody": "ファウンダーは、20世紀で最も重要な写真アーカイブの一つの恒久的な基盤を築きます。過去に与えるのではなく、この歴史を未来へ伝える基盤を築くのです。",
+      "leadHeading": "重要なアーカイブを守る、ご寄付。",
+      "leadBody": "ファウンダーは、20世紀で最も重要な写真アーカイブの一つの恒久的な基盤を築きます。過去に与えるのではなく、この歴史を未来へ伝える基盤を築くのです。ご寄付は、限られた支援者の方々からの10,000ドル以上となります。",
       "benefitsHeading": "ファウンダーが受け取るもの",
       "benefitPrint": "ファウンダーズ・プリント — 未公開の20×20アーカイバル自画像。ファウンダーズ・サークル会員限定の15部（およびアーティストプルーフ2部）の特別エディションです。",
       "benefitRecognition": "Permanent recognition in the archive's record, alongside the photographs themselves.",
       "benefitAccess": "Private access to the archive, early exhibition previews, and ongoing dialogue with the stewardship team.",
       "benefitTax": "IRS-compliant acknowledgment of contributions to the 501(c)3.",
-      "invitationNote": "The Founder's Circle is invitation-only. Use the form below to introduce yourself; a member of the stewardship team will respond personally within 24 to 48 hours."
+      "invitationNote": "The Founder's Circle is invitation-only. Use the form below to introduce yourself; a member of the stewardship team will respond personally within 24 to 48 hours.",
+      "commitmentNote": "ファウンダーは作品を最低10年間保有し、二次市場での売却にはアーカイブへの10％のご寄付が必要です。",
+      "signatureName": "Kwame S. Brathwaite",
+      "signatureTitle": "アーカイブ・ディレクター",
+      "signatureOrg": "The Kwame Brathwaite Archive"
     },
     "form": {
       "heading": "Inquire about the Founder's Circle",
