@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { MagicLinkRequestForm } from '@/components/features/founders/MagicLinkRequestForm'
 import type { Metadata } from 'next'
@@ -26,8 +25,6 @@ export default async function FoundersLoginPage({ params }: PageProps) {
   const t = await getTranslations({ locale, namespace: 'founders.login' })
   const tFounders = await getTranslations({ locale, namespace: 'founders' })
 
-  const learnMoreHref = locale === 'en' ? '/founders' : `/${locale}/founders`
-
   return (
     <main className="bg-[#0e0e0e] text-[#E6E2D6] min-h-screen flex flex-col">
       <div className="flex-1 flex items-center justify-center px-6 sm:px-10 py-20">
@@ -50,16 +47,9 @@ export default async function FoundersLoginPage({ params }: PageProps) {
 
           <MagicLinkRequestForm />
 
-          {/* "Not a member yet?" — points to public info page, never a signup */}
-          <div className="mt-16 pt-8 border-t border-[#2a2a2a] text-center">
-            <p className="text-[#8a8a8a] text-sm mb-2">{t('notInvitedHeading')}</p>
-            <Link
-              href={learnMoreHref}
-              className="text-[#C9A961] text-sm uppercase tracking-[0.14em] hover:text-[#d4b572] transition-colors"
-            >
-              {t('notInvitedLink')} &rarr;
-            </Link>
-          </div>
+          {/* "Not a member yet?" learn-more link temporarily removed while /founders is
+              unpublished. Restore the block linking to /founders (and the Link import +
+              learnMoreHref const) when the page goes live again. */}
         </div>
       </div>
     </main>

@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { FounderInquiryForm } from '@/components/features/founders/FounderInquiryForm'
 import type { Metadata } from 'next'
@@ -16,6 +17,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function FoundersPage({ params }: PageProps) {
+  // TEMPORARILY UNPUBLISHED — the public Founder's Circle landing page is hidden.
+  // To re-publish: remove the notFound() call below and restore the footer link
+  // in components/layout/Footer.tsx. (Does not affect /founders/portal or /login.)
+  notFound()
+
   const { locale } = await params
   setRequestLocale(locale)
 
