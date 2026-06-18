@@ -22,7 +22,7 @@ framing), this section governs:
 - **Obligations:** Founders **hold the print until 2036**; on any secondary-market resale, a set
   **percentage (TBD — pending counsel/tax)** is contributed back to the archive. A `terms_version` +
   `terms_accepted_at` are recorded when the member accepts on the invitation page.
-- **Framing is a donation** (the contribution runs through Givebutter: `givebutter.com/trUmGD`).
+- **Framing is a donation** (the contribution runs through Givebutter: `givebutter.com/the-founders-circle-rgvzcz`).
 - **Tiers are retired for this program.** The `founder_tier` / `pledge_*` DB columns are kept (tiers
   may return for a future program) but the admin tier/pledge controls are hidden; a flat
   donation amount + payment reference are recorded instead.

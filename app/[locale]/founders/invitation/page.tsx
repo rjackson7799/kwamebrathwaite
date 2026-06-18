@@ -15,7 +15,7 @@ export const revalidate = 0
 
 // Donation page for the special fundraiser. Authenticated so the donate button
 // is tied to an identified, invited member.
-const GIVEBUTTER_URL = 'https://givebutter.com/trUmGD'
+const GIVEBUTTER_URL = 'https://givebutter.com/the-founders-circle-rgvzcz'
 
 // Secondary-market contribution rate, confirmed by the client at 10%.
 const RESALE_PERCENT = '10%'
@@ -60,7 +60,7 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
     )
   }
 
-  // Invited — full invitation: terms, what you receive, donate + decline.
+  // Invited — full invitation: intro, what founders receive, donate + decline.
   return (
     <main className="bg-[#0e0e0e] text-[#E6E2D6] min-h-screen">
       <section className="max-w-5xl mx-auto px-8 sm:px-12 py-14 md:py-20">
@@ -76,19 +76,11 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
               {t('heading', { name: founder.recognition_name || founder.full_name })}
             </h1>
             <div className="w-24 h-[2px] bg-[#C9A961] mb-8" />
-            <p className="text-lg leading-relaxed text-[#C0BBA8]">{t('intro')}</p>
-
-            {/* Terms — pulled up beside the portrait so they begin under the intro. */}
-            <p className="mt-10 text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-heading">
-              {t('termsHeading')}
-            </p>
-            <ul className="space-y-5">
-              <Term text={t('term20x20')} />
-              <Term text={t('termDonation')} />
-              <Term text={t('termEdition')} />
-              <Term text={t('holdUntil2036')} />
-              <Term text={t('secondaryMarket', { percent: RESALE_PERCENT })} />
-            </ul>
+            <div className="space-y-5 text-lg leading-relaxed text-[#C0BBA8]">
+              <p>{t('intro')}</p>
+              <p>{t('intro2')}</p>
+              <p>{t('intro3')}</p>
+            </div>
           </div>
 
           {/* Archival plate — clean borderless portrait (matches the About page). */}
@@ -108,15 +100,30 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
 
         {/* Body — single readable column. */}
         <div className="max-w-2xl">
-          {/* What you receive (reuses the public landing benefit copy) */}
+          {/* What founders receive */}
           <p className="text-xs uppercase tracking-[0.18em] text-[#C9A961] mb-6 font-heading">
             {t('whatYouReceiveHeading')}
           </p>
-          <ul className="space-y-5 mb-14">
+          <ul className="space-y-5 mb-10">
             <Term text={tIntro('benefitPrint')} />
-            <Term text={tIntro('benefitRecognition')} />
-            <Term text={tIntro('benefitAccess')} />
+            <Term text={t('benefitFirstLook')} />
+            <Term text={t('benefitExhibition')} />
+            <Term text={t('benefitTax')} />
+            <Term text={t('secondaryMarket', { percent: RESALE_PERCENT })} />
           </ul>
+
+          {/* Commitment — the binding hold/resale terms, kept as fine print. */}
+          <p className="mb-10 text-sm leading-relaxed text-[#8a8a8a]">
+            {tIntro('commitmentNote')}
+          </p>
+
+          {/* Signature — closes the invitation like a signed letter from the director. */}
+          <div className="mb-14">
+            <div className="w-16 h-[2px] bg-[#C9A961] mb-5" />
+            <p className="font-heading font-light text-xl text-[#F5EFE0]">{tIntro('signatureName')}</p>
+            <p className="mt-1 text-sm text-[#C0BBA8]">{tIntro('signatureTitle')}</p>
+            <p className="text-sm text-[#8a8a8a]">{tIntro('signatureOrg')}</p>
+          </div>
 
           {/* Actions */}
           <div className="border-t border-[#2a2a2a] pt-10">
