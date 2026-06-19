@@ -8,7 +8,7 @@ import { FulfillmentTimeline } from '@/components/features/founders/FulfillmentT
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "The Founder's Print — Founder's Circle",
+  title: "The Founder's Print — Founders Circle",
   robots: { index: false, follow: false },
 }
 

@@ -116,7 +116,7 @@ export default function AdminBriefingsPage() {
     <>
       <PageHeader
         title="Briefings"
-        description="Dispatches published to the Founder's Circle. News from the archive, exhibition openings, notes from Kwame's family."
+        description="Dispatches published to the Founders Circle. News from the archive, exhibition openings, notes from Kwame's family."
         breadcrumbs={[
           { label: 'Admin', href: '/admin' },
           { label: 'Briefings' },

@@ -50,7 +50,7 @@ export async function adminEmailExists(email: string): Promise<boolean> {
  * **fragment** (after `#`). Browsers don't send fragments to the server, so a
  * server-side handler reading searchParams sees nothing. Server-side PKCE with
  * hashed_token in the query string avoids that. (Same rationale as the
- * Founder's Circle callback — see lib/auth/founders-admin.ts.)
+ * Founders Circle callback — see lib/auth/founders-admin.ts.)
  *
  * The admin section is locale-free, so there is no locale prefix on the URL.
  */

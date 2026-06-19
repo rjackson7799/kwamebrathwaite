@@ -40,7 +40,7 @@ export async function POST() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await (supabase as any).auth.mfa.enroll({
     factorType: 'totp',
-    friendlyName: `Founder's Circle (${new Date().toISOString().slice(0, 10)})`,
+    friendlyName: `Founders Circle (${new Date().toISOString().slice(0, 10)})`,
     issuer: 'Kwame Brathwaite Archive',
   })
   if (error || !data) {

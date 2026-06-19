@@ -2,7 +2,7 @@
  * Get the absolute site URL used in auth-link redirect_to / callback URLs.
  * Must match the Supabase Auth project redirect allowlist.
  *
- * Shared by the Founder's Circle magic-link flow (lib/auth/founders-admin.ts)
+ * Shared by the Founders Circle magic-link flow (lib/auth/founders-admin.ts)
  * and the admin password-reset flow (lib/auth/admins-admin.ts) so the two
  * never drift.
  */

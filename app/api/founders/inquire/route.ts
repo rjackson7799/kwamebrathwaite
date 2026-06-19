@@ -20,7 +20,7 @@ const SPAM_THRESHOLD = 3
 /**
  * POST /api/founders/inquire
  *
- * Public Founder's Circle inquiry submission. Reuses the existing inquiries
+ * Public Founders Circle inquiry submission. Reuses the existing inquiries
  * table with source='founder_inquiry' so admins manage all inquiries in
  * one place, but with founder_status (richer SLA lifecycle) instead of the
  * legacy status enum.
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
       const emailTasks: Array<Promise<{ success: boolean }>> = [
         sendUserEmail(
           data.email,
-          'We received your Founder’s Circle inquiry',
+          'We received your Founders Circle inquiry',
           FounderInquiryAckEmail({ name: data.name })
         ),
       ]
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
       if (!isSpam) {
         emailTasks.push(
           sendAdminEmail(
-            `Founder’s Circle inquiry from ${data.name} — 24–48h SLA`,
+            `Founders Circle inquiry from ${data.name} — 24–48h SLA`,
             FounderInquiryAdminEmail({
               name: data.name,
               email: data.email,

@@ -33,7 +33,7 @@ const securityHeaders = [
   },
 ]
 
-// Founder's Circle portal — never index, never cache. The portal contains
+// Founders Circle portal — never index, never cache. The portal contains
 // private donor data; the brief §6.7 (Privacy as a Feature) and §10
 // (Security posture) call this out explicitly. Matches all locale variants
 // (/founders/portal/*, /fr/founders/portal/*, /ja/founders/portal/*) and
@@ -72,7 +72,7 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // Vanity alias: the program is branded "Founder's Circle". The canonical
+      // Vanity alias: the program is branded "Founders Circle". The canonical
       // route stays /founders (no app-wide rename); this lets the prettier
       // /founders-circle URL resolve for externally-shared links. Covers the
       // fr/ja locale variants and any deeper sub-paths.

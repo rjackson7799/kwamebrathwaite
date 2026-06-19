@@ -7,7 +7,7 @@ import { getActivePreviews } from '@/lib/founders/exhibitions'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Previews — Founder's Circle",
+  title: "Previews — Founders Circle",
   robots: { index: false, follow: false },
 }
 

@@ -1,4 +1,4 @@
-# Founder's Circle fundraiser rework — verification
+# Founders Circle fundraiser rework — verification
 
 Run after applying `docs/migrations/2026-05-31-founders-fundraiser-rework.sql`. Dev on port 3001.
 

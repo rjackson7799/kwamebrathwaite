@@ -7,7 +7,7 @@ import { CoaPrintButton } from '@/components/features/founders/CoaPrintButton'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Certificate of Authenticity — Founder's Circle",
+  title: "Certificate of Authenticity — Founders Circle",
   robots: { index: false, follow: false },
 }
 

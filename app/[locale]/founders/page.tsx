@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function FoundersPage({ params }: PageProps) {
-  // TEMPORARILY UNPUBLISHED — the public Founder's Circle landing page is hidden.
+  // TEMPORARILY UNPUBLISHED — the public Founders Circle landing page is hidden.
   // To re-publish: remove the notFound() call below and restore the footer link
   // in components/layout/Footer.tsx. (Does not affect /founders/portal or /login.)
   notFound()

@@ -8,7 +8,7 @@ export default function NewBriefingPage() {
     <>
       <PageHeader
         title="New Briefing"
-        description="A dispatch to the Founder's Circle. Save as draft or publish in one step."
+        description="A dispatch to the Founders Circle. Save as draft or publish in one step."
         breadcrumbs={[
           { label: 'Admin', href: '/admin' },
           { label: 'Briefings', href: '/admin/briefings' },

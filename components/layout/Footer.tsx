@@ -133,7 +133,7 @@ export function Footer() {
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
             <div className="flex items-center gap-4 text-[11px] uppercase tracking-[0.1em] text-white/50">
-              {/* Founder's Circle link temporarily removed while /founders is unpublished.
+              {/* Founders Circle link temporarily removed while /founders is unpublished.
                   Restore this <Link href="/founders"> when the page goes live again. */}
               <Link
                 href={getLocalizedHref('/privacy')}

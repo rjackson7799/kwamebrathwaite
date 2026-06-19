@@ -7,7 +7,7 @@ import { RichTextContent } from '@/components/ui/RichTextContent'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Briefing — Founder's Circle",
+  title: "Briefing — Founders Circle",
   robots: { index: false, follow: false },
 }
 

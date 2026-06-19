@@ -16,7 +16,7 @@ export type EntityType =
   | 'order'
   | 'license_request'
   | 'license_type'
-  | 'founder'                  // Phase 1C — Founder's Circle member records
+  | 'founder'                  // Phase 1C — Founders Circle member records
   | 'invitation'               // Phase 1C — Founder invitation lifecycle events
   | 'briefing'                 // Phase 2A — Founder briefings
   | 'briefing_notification'    // Phase 2A — Briefing notification batches
@@ -62,7 +62,7 @@ export async function requireAdmin(_request: NextRequest) {
 /**
  * @deprecated Use requireAdmin() for /api/admin/* routes. requireAuth() only
  * verifies that a session exists, which is insufficient now that non-admin
- * users (Founder's Circle members) live in the same auth.users pool.
+ * users (Founders Circle members) live in the same auth.users pool.
  *
  * Kept as an alias of requireAdmin() so existing callers do not silently
  * downgrade their security. Will be removed once all callers are migrated.

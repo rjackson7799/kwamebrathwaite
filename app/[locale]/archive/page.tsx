@@ -74,7 +74,7 @@ export default async function ArchivePage({ params }: Props) {
               <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translatedDescription) }} />
             )}
 
-            {/* Founder's Circle invite temporarily removed while /founders is unpublished.
+            {/* Founders Circle invite temporarily removed while /founders is unpublished.
                 Restore the <p>{t.rich('foundersInvite', …)}</p> link (and the Link import +
                 foundersHref const) when the page goes live again. */}
           </div>

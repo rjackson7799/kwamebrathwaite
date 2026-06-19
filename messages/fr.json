@@ -542,7 +542,7 @@
     }
   },
   "founders": {
-    "eyebrow": "The Kwame Brathwaite Archive · Founder's Circle",
+    "eyebrow": "The Kwame Brathwaite Archive · Founders Circle",
     "heroHeadline": "Keeper of the Images",
     "heroSubhead": "Preserving a legacy. Building the infrastructure for the next generation of creators.",
     "intro": {
@@ -553,14 +553,14 @@
       "benefitRecognition": "Permanent recognition in the archive's record, alongside the photographs themselves.",
       "benefitAccess": "Private access to the archive, early exhibition previews, and ongoing dialogue with the stewardship team.",
       "benefitTax": "IRS-compliant acknowledgment of contributions to the 501(c)3.",
-      "invitationNote": "The Founder's Circle is invitation-only. Use the form below to introduce yourself; a member of the stewardship team will respond personally within 24 to 48 hours.",
+      "invitationNote": "The Founders Circle is invitation-only. Use the form below to introduce yourself; a member of the stewardship team will respond personally within 24 to 48 hours.",
       "commitmentNote": "Les Fondateurs conservent leurs œuvres pendant au moins 10 ans ; toute revente sur le marché secondaire implique un don de 10 % à l'archive.",
       "signatureName": "Kwame S. Brathwaite",
       "signatureTitle": "Directeur des archives",
       "signatureOrg": "The Kwame Brathwaite Archive"
     },
     "form": {
-      "heading": "Inquire about the Founder's Circle",
+      "heading": "Inquire about the Founders Circle",
       "name": "Full name",
       "email": "Email address",
       "phone": "Phone (optional)",
@@ -572,22 +572,22 @@
       "error": "Something went wrong sending your inquiry. Please try again in a moment, or write to us directly."
     },
     "login": {
-      "heading": "Sign in to the Founder's Circle",
+      "heading": "Sign in to the Founders Circle",
       "intro": "Enter the email address on your invitation. We'll send you a single-use sign-in link.",
       "email": "Email address",
       "submit": "Send sign-in link",
       "submitting": "Sending…",
       "successHeading": "Check your inbox.",
-      "successBody": "If a Founder's Circle member account exists for this address, we've sent a sign-in link. The link is valid for 24 hours and can only be used once. If you don't see the email within a few minutes, check your spam folder.",
+      "successBody": "If a Founders Circle member account exists for this address, we've sent a sign-in link. The link is valid for 24 hours and can only be used once. If you don't see the email within a few minutes, check your spam folder.",
       "tryAgain": "Didn't receive it? Try again.",
-      "notInvitedHeading": "Not yet a member of the Founder's Circle?",
+      "notInvitedHeading": "Not yet a member of the Founders Circle?",
       "notInvitedBody": "Learn more about the program.",
-      "notInvitedLink": "Founder's Circle program",
+      "notInvitedLink": "Founders Circle program",
       "error": "Something went wrong. Please try again in a moment."
     },
     "callback": {
       "verifying": "Signing you in…",
-      "notInvitedHeading": "This account is not on the Founder's Circle list.",
+      "notInvitedHeading": "This account is not on the Founders Circle list.",
       "notInvitedBody": "If you believe this is in error, please write to the stewardship team.",
       "expiredHeading": "This sign-in link has expired or already been used.",
       "expiredBody": "Request a new link from the sign-in page."
@@ -653,7 +653,7 @@
     },
     "coa": {
       "eyebrow": "Certificat d'authenticité",
-      "body": "Ce certificat confirme que <name></name> est titulaire de <editionLabel></editionLabel> de l'œuvre intitulée <workTitle></workTitle> de Kwame Brathwaite, émis par The Kwame Brathwaite Archive dans le cadre du programme Founder's Circle. <editionInfo></editionInfo>.",
+      "body": "Ce certificat confirme que <name></name> est titulaire de <editionLabel></editionLabel> de l'œuvre intitulée <workTitle></workTitle> de Kwame Brathwaite, émis par The Kwame Brathwaite Archive dans le cadre du programme Founders Circle. <editionInfo></editionInfo>.",
       "editionLine": "l'édition {number} sur 15",
       "editionLineAp": "l'épreuve d'artiste (EA {number} sur 2)",
       "editionLinePending": "une édition (numéro à attribuer dès la mise en production)",

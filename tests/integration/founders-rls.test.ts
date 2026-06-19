@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 // ============================================================================
-// Founder's Circle — RLS / authz / access-gate integration tests
+// Founders Circle — RLS / authz / access-gate integration tests
 // ============================================================================
 // These run against a REAL, DEDICATED TEST Supabase project (never prod) with
 // the founders migrations applied. They prove the security-critical guarantees

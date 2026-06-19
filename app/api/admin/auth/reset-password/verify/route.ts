@@ -12,7 +12,7 @@ import { z } from 'zod'
 // Body: { token_hash: string }
 // Returns: { success: true, data: { email } } | error
 //
-// Mirrors the Founder's Circle callback's server-side verifyOtp cookie wiring
+// Mirrors the Founders Circle callback's server-side verifyOtp cookie wiring
 // (app/[locale]/founders/auth/callback/route.ts). Confirms the verified user
 // is an admin; signs out + 403 otherwise so a non-admin recovery link (should
 // never happen — only admins are emailed) can't yield a usable session.

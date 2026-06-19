@@ -22,7 +22,7 @@ export function FounderInvitationEmail({
   personalNote,
 }: FounderInvitationEmailProps) {
   return (
-    <BaseLayout previewText="Your invitation to the Founder's Circle">
+    <BaseLayout previewText="Your invitation to the Founders Circle">
       <Text style={eyebrow}>
         The Kwame Brathwaite Archive &nbsp;·&nbsp; Founder&rsquo;s Circle
       </Text>

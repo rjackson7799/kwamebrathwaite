@@ -150,7 +150,7 @@ export default function AdminFoundersPage() {
   return (
     <>
       <PageHeader
-        title="Founder's Circle"
+        title="Founders Circle"
         description="Member records — invitations, recognition preferences, and stewardship details."
         breadcrumbs={[
           { label: 'Admin', href: '/admin' },

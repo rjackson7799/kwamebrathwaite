@@ -1,4 +1,4 @@
-// Founder's Circle terms version.
+// Founders Circle terms version.
 //
 // Bumped whenever the binding terms a Founder accepts on the invitation page
 // change (hold-until-2036, secondary-market contribution %, donation/tax

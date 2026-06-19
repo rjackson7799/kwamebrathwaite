@@ -6,7 +6,7 @@ import { getPublishedBriefings } from '@/lib/founders/briefings'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Briefings — Founder's Circle",
+  title: "Briefings — Founders Circle",
   robots: { index: false, follow: false },
 }
 

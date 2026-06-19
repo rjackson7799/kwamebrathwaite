@@ -117,7 +117,7 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
-  // Handle the Founder's Circle portal — session + founders-table membership.
+  // Handle the Founders Circle portal — session + founders-table membership.
   // Locale-aware: we already stripped the locale prefix at the top, so a
   // request to /fr/founders/portal/x lands here with pathname='/founders/portal/x'.
   if (pathname.startsWith('/founders/portal')) {

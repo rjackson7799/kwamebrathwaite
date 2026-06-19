@@ -303,7 +303,7 @@ export default function InquiryDetailPage() {
                 ? 'Past the 48-hour SLA window.'
                 : past24
                 ? 'Approaching the 48-hour SLA window.'
-                : "Founder's Circle inquiry · 24–48h response SLA."
+                : "Founders Circle inquiry · 24–48h response SLA."
               return (
                 <div className={`border rounded-md px-4 py-3 mb-6 text-sm ${tone}`}>
                   <strong className="font-medium">{label}</strong>{' '}

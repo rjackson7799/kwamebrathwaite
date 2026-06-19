@@ -57,7 +57,7 @@ export const inquirySchema = z.object({
   website: z.string().optional(),
 })
 
-// Founder's Circle inquiry submission (Phase 1B)
+// Founders Circle inquiry submission (Phase 1B)
 // Distinct from inquirySchema: no inquiry_type / artwork_id / subject — this
 // is a stewardship-conversation opener, not a typed contact form.
 export const founderInquirySchema = z.object({
@@ -73,7 +73,7 @@ export const founderInquirySchema = z.object({
 })
 
 // ============================================
-// Founder's Circle — admin + auth schemas (Phase 1C)
+// Founders Circle — admin + auth schemas (Phase 1C)
 // ============================================
 
 const founderTier = z.enum([

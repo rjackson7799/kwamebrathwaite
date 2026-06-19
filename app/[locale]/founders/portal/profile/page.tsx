@@ -6,7 +6,7 @@ import { PortalProfileForm } from '@/components/features/founders/PortalProfileF
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Profile — Founder's Circle",
+  title: "Profile — Founders Circle",
   robots: { index: false, follow: false },
 }
 

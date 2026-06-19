@@ -5,7 +5,7 @@ import { getCurrentFounder } from '@/lib/auth/founders'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Founder's Circle — Kwame Brathwaite Archive",
+  title: "Founders Circle — Kwame Brathwaite Archive",
   robots: { index: false, follow: false },
 }
 

@@ -7,7 +7,7 @@ import { SessionsPanel } from '@/components/features/founders/SessionsPanel'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Security — Founder's Circle",
+  title: "Security — Founders Circle",
   robots: { index: false, follow: false },
 }
 

@@ -6,7 +6,7 @@ import { InvitationActions } from '@/components/features/founders/InvitationActi
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Your invitation — Founder's Circle",
+  title: "Your invitation — Founders Circle",
   robots: { index: false, follow: false },
 }
 

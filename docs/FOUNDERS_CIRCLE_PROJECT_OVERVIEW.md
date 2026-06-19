@@ -1,4 +1,4 @@
-# Founder's Circle Member Portal — Project Overview
+# Founders Circle Member Portal — Project Overview
 
 **Document Type:** Feature Brief / Project Overview
 **Project:** Kwame Brathwaite Archive (kwamebrathwaite.com)
@@ -18,7 +18,7 @@ framing), this section governs:
 
 - **The offer:** an unreleased **20 × 20 in.** special-edition print, **flat $10,000 donation**
   (no step-ups), **15 numbered editions + 2 Artist's Proofs** (17 total), available **only** within
-  the Founder's Circle.
+  the Founders Circle.
 - **Obligations:** Founders **hold the print until 2036**; on any secondary-market resale, a set
   **percentage (TBD — pending counsel/tax)** is contributed back to the archive. A `terms_version` +
   `terms_accepted_at` are recorded when the member accepts on the invitation page.
@@ -39,7 +39,7 @@ specifics.
 
 ## About This Document
 
-This is a **project overview**, not a technical specification. It defines the scope, purpose, audience, and experience principles for a secure member portal serving the Kwame Brathwaite Archive's Founder's Circle program. It is intended to give a development agent (working in Cursor / Claude Code with full codebase context) the strategic and functional context needed to produce a detailed technical plan — including database schema, authentication architecture, route structure, and phasing — informed by what already exists in the codebase.
+This is a **project overview**, not a technical specification. It defines the scope, purpose, audience, and experience principles for a secure member portal serving the Kwame Brathwaite Archive's Founders Circle program. It is intended to give a development agent (working in Cursor / Claude Code with full codebase context) the strategic and functional context needed to produce a detailed technical plan — including database schema, authentication architecture, route structure, and phasing — informed by what already exists in the codebase.
 
 Decisions about *how* to implement (auth provider configuration, table structures, API design, component architecture) are deliberately left out of this brief.
 
@@ -53,9 +53,9 @@ The Kwame Brathwaite Archive preserves the legacy of the photographer who became
 
 The archive is a registered 501(c)3, stewarded by Kwame's family and a small team that has spent fifteen years driving institutional recognition for the work.
 
-### The Founder's Circle Program
+### The Founders Circle Program
 
-The Founder's Circle is a curated philanthropic program supporting the **permanent infrastructure** of the archive — organization, digitization, and physical housing of the collection. The deck for prospective Founders frames it precisely:
+The Founders Circle is a curated philanthropic program supporting the **permanent infrastructure** of the archive — organization, digitization, and physical housing of the collection. The deck for prospective Founders frames it precisely:
 
 > *"Founders are not making a donation. They are establishing the permanent infrastructure of one of the most significant photographic archives of the 20th century. You're not giving to the past. You're building the infrastructure that makes this history available to the future."*
 
@@ -65,7 +65,7 @@ This positioning matters because it shapes everything about the portal experienc
 
 Four named benefits, each of which translates to a portal surface:
 
-1. **The Founder's Print** — A never-before-released archival self-portrait, created as an exclusive edition for Founder's Circle members. Not in any other collection. Not for sale.
+1. **The Founder's Print** — A never-before-released archival self-portrait, created as an exclusive edition for Founders Circle members. Not in any other collection. Not for sale.
 2. **Permanent Recognition** — Member names inscribed in the permanent record of the archive, documented alongside the photographs themselves.
 3. **Access & Stewardship** — Private access to the archive, early exhibition previews, and ongoing dialogue with the stewardship team.
 4. **Tax Deductibility** — IRS-compliant acknowledgment of contributions to the 501(c)3.
@@ -97,7 +97,7 @@ The two documents present a **tier reconciliation question** the portal architec
 
 ## 3. The Brief in One Paragraph
 
-Build a private, invitation-only member portal at `kwamebrathwaite.com/founders/*` that authenticates Founder's Circle members via passwordless magic link, delivers the four promised program benefits as quiet, curated surfaces, gives the archive's stewardship team admin tools to invite members and manage their experience, hands contribution flow off to the archive's existing third-party non-profit payment platform via iframe embed, and integrates with the archive's existing Supabase backend, Resend email, and `next-intl` multilingual stack — all without compromising the museum-grade restraint of the public site.
+Build a private, invitation-only member portal at `kwamebrathwaite.com/founders/*` that authenticates Founders Circle members via passwordless magic link, delivers the four promised program benefits as quiet, curated surfaces, gives the archive's stewardship team admin tools to invite members and manage their experience, hands contribution flow off to the archive's existing third-party non-profit payment platform via iframe embed, and integrates with the archive's existing Supabase backend, Resend email, and `next-intl` multilingual stack — all without compromising the museum-grade restraint of the public site.
 
 ---
 
@@ -107,7 +107,7 @@ Each benefit promised in the deck must have a concrete home in the portal. This 
 
 ### 4.1 The Founder's Print
 
-The deck features a specific image — a self-portrait of Brathwaite at the beginning of his career — described as *"never released. Not in any collection. Available exclusively to Founder's Circle members."*
+The deck features a specific image — a self-portrait of Brathwaite at the beginning of his career — described as *"never released. Not in any collection. Available exclusively to Founders Circle members."*
 
 **Portal implications:**
 - A dedicated viewing surface for the Print, presented at museum quality
@@ -178,7 +178,7 @@ The archive uses an existing third-party non-profit payment platform to collect 
 
 **Profile:** Someone recently introduced to the archive — through an exhibition, a press piece, a conversation with an existing Founder, or a referral. Has not yet been invited.
 
-**Goals:** Understand what the Founder's Circle is. Indicate interest. Open a conversation.
+**Goals:** Understand what the Founders Circle is. Indicate interest. Open a conversation.
 
 **Login frequency:** Single session, no account.
 
@@ -295,7 +295,7 @@ The dev agent should plan for:
 
 ### 9.1 Tier Reconciliation
 
-The deck describes a single "Founder's Circle" with one set of benefits. The Collector Prospectus describes Collector Circle ($10K+ annual) plus three Leadership tiers (Leadership $10K, Archive $25K, Legacy $50K+).
+The deck describes a single "Founders Circle" with one set of benefits. The Collector Prospectus describes Collector Circle ($10K+ annual) plus three Leadership tiers (Leadership $10K, Archive $25K, Legacy $50K+).
 
 **These need to be reconciled before launch.** The portal architecture should be tier-aware from day one — members are categorized by tier internally — but the **UI presentation of tier distinctions is a separate decision** that should be confirmed with Kwame's team before surfacing. A reasonable default: schema supports all tiers, Phase 1 UI treats all members as "Founders" without visible tier labels, tier-visible UI can be enabled later via configuration.
 
@@ -338,7 +338,7 @@ Founders are international. The deck specifically positions the work as document
 To keep scope clean:
 
 - **Payment processing inside the portal** — The archive's existing third-party non-profit payment platform handles all payments via iframe embed. The portal *displays* a curated giving record (manually maintained) and houses tax acknowledgment letters; it does not process transactions.
-- **In-portal commerce** — No print sales, no add-on purchases. The Founder's Circle is a giving program, not a shop.
+- **In-portal commerce** — No print sales, no add-on purchases. The Founders Circle is a giving program, not a shop.
 - **Forum/community features** — Founders communicate with the team, not with each other through the portal.
 - **Public Founders Wall** — Deferred. Recommended as a Phase 4 feature with opt-in mechanics.
 - **Mobile app** — Mobile web only.

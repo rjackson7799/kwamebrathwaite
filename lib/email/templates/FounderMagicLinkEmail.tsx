@@ -13,7 +13,7 @@ export function FounderMagicLinkEmail({
   fullName,
 }: FounderMagicLinkEmailProps) {
   return (
-    <BaseLayout previewText="Your sign-in link for the Founder's Circle">
+    <BaseLayout previewText="Your sign-in link for the Founders Circle">
       <Text style={eyebrow}>
         The Kwame Brathwaite Archive &nbsp;·&nbsp; Founder&rsquo;s Circle
       </Text>

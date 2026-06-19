@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     // The user authenticated, but admin access requires membership in the
-    // admins table. Non-admins (e.g., Founder's Circle members who somehow
+    // admins table. Non-admins (e.g., Founders Circle members who somehow
     // have a password) must not get a session that lets them sit at /admin.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: isAdmin, error: rpcError } = await (supabase as any).rpc(

@@ -253,7 +253,7 @@
       "description": "The official Kwame Brathwaite Archive preserves over 10,000 images documenting 60 years of photography and the Black is Beautiful movement."
     },
     "mission": "Our Mission",
-    "foundersInvite": "Help preserve this archive for the future — learn about the <link>Founder's Circle</link>, our invitation-only program supporting the archive's permanent stewardship."
+    "foundersInvite": "Help preserve this archive for the future — learn about the <link>Founders Circle</link>, our invitation-only program supporting the archive's permanent stewardship."
   },
   "contact": {
     "title": "Contact",
@@ -546,7 +546,7 @@
     },
     "copyright": "© {year} Kwame Brathwaite Archive. All rights reserved.",
     "links": {
-      "foundersCircle": "Founder's Circle",
+      "foundersCircle": "Founders Circle",
       "privacy": "Privacy Policy",
       "terms": "Terms of Use",
       "licensing": "Image Licensing",
@@ -579,25 +579,25 @@
     }
   },
   "founders": {
-    "eyebrow": "The Kwame Brathwaite Archive · Founder's Circle",
+    "eyebrow": "The Kwame Brathwaite Archive · Founders Circle",
     "heroHeadline": "Keeper of the Images",
     "heroSubhead": "Preserving a legacy. Building the infrastructure for the next generation of creators.",
     "intro": {
       "leadHeading": "A donation that preserves a landmark archive.",
       "leadBody": "Founders establish the permanent infrastructure of one of the most significant photographic archives of the 20th century. You're not giving to the past — you're building the infrastructure that makes this history available to the future. Donations of $10,000 or more from a selected group of supporters.",
       "benefitsHeading": "What Founders receive",
-      "benefitPrint": "The Founder's Print — a never-before-released 20×20 archival self-portrait, in an exclusive edition of 15 (plus 2 Artist's Proofs) for Founder's Circle members only.",
+      "benefitPrint": "The Founder's Print — a never-before-released 20×20 archival self-portrait, in an exclusive edition of 15 (plus 2 Artist's Proofs) for Founders Circle members only.",
       "benefitRecognition": "Permanent recognition in the archive's record, alongside the photographs themselves.",
       "benefitAccess": "Private access to the archive, early exhibition previews, and ongoing dialogue with the stewardship team.",
       "benefitTax": "IRS-compliant acknowledgment of contributions to the 501(c)3.",
-      "invitationNote": "The Founder's Circle is invitation-only. Use the form below to introduce yourself; a member of the stewardship team will respond personally within 24 to 48 hours.",
+      "invitationNote": "The Founders Circle is invitation-only. Use the form below to introduce yourself; a member of the stewardship team will respond personally within 24 to 48 hours.",
       "commitmentNote": "Founders will hold works for a minimum of 10 years and any sales in secondary market requires 10% donation to the archive.",
       "signatureName": "Kwame S. Brathwaite",
       "signatureTitle": "Archive Director",
       "signatureOrg": "The Kwame Brathwaite Archive"
     },
     "form": {
-      "heading": "Inquire about the Founder's Circle",
+      "heading": "Inquire about the Founders Circle",
       "name": "Full name",
       "email": "Email address",
       "phone": "Phone (optional)",
@@ -609,29 +609,29 @@
       "error": "Something went wrong sending your inquiry. Please try again in a moment, or write to us directly."
     },
     "login": {
-      "heading": "Sign in to the Founder's Circle",
+      "heading": "Sign in to the Founders Circle",
       "intro": "Enter the email address on your invitation. We'll send you a single-use sign-in link.",
       "email": "Email address",
       "submit": "Send sign-in link",
       "submitting": "Sending…",
       "successHeading": "Check your inbox.",
-      "successBody": "If a Founder's Circle member account exists for this address, we've sent a sign-in link. The link is valid for 24 hours and can only be used once. If you don't see the email within a few minutes, check your spam folder.",
+      "successBody": "If a Founders Circle member account exists for this address, we've sent a sign-in link. The link is valid for 24 hours and can only be used once. If you don't see the email within a few minutes, check your spam folder.",
       "tryAgain": "Didn't receive it? Try again.",
-      "notInvitedHeading": "Not yet a member of the Founder's Circle?",
+      "notInvitedHeading": "Not yet a member of the Founders Circle?",
       "notInvitedBody": "Learn more about the program.",
-      "notInvitedLink": "Founder's Circle program",
+      "notInvitedLink": "Founders Circle program",
       "error": "Something went wrong. Please try again in a moment."
     },
     "callback": {
       "verifying": "Signing you in…",
-      "notInvitedHeading": "This account is not on the Founder's Circle list.",
+      "notInvitedHeading": "This account is not on the Founders Circle list.",
       "notInvitedBody": "If you believe this is in error, please write to the stewardship team.",
       "expiredHeading": "This sign-in link has expired or already been used.",
       "expiredBody": "Request a new link from the sign-in page."
     },
     "portal": {
       "welcomeEyebrow": "Welcome",
-      "welcomeBody": "Manage how your name appears in the archive's permanent record and your account settings. More of your Founder's Circle space is being prepared.",
+      "welcomeBody": "Manage how your name appears in the archive's permanent record and your account settings. More of your Founders Circle space is being prepared.",
       "navPrint": "The Founder's Print",
       "navPrintDesc": "Provenance, edition, and the status of your framed print.",
       "navBriefings": "Briefings",
@@ -690,7 +690,7 @@
     },
     "coa": {
       "eyebrow": "Certificate of Authenticity",
-      "body": "This certificate confirms that <name></name> is the holder of <editionLabel></editionLabel> of the work titled <workTitle></workTitle> by Kwame Brathwaite, issued by The Kwame Brathwaite Archive as part of the Founder's Circle program. <editionInfo></editionInfo>.",
+      "body": "This certificate confirms that <name></name> is the holder of <editionLabel></editionLabel> of the work titled <workTitle></workTitle> by Kwame Brathwaite, issued by The Kwame Brathwaite Archive as part of the Founders Circle program. <editionInfo></editionInfo>.",
       "editionLine": "edition {number} of 15",
       "editionLineAp": "artist's proof (AP {number} of 2)",
       "editionLinePending": "an edition (number to be issued upon production)",
@@ -699,18 +699,18 @@
       "printButton": "Print this certificate"
     },
     "invitation": {
-      "eyebrow": "The Kwame Brathwaite Archive · Founder's Circle",
+      "eyebrow": "The Kwame Brathwaite Archive · Founders Circle",
       "imageAlt": "Kwame Brathwaite, self-portrait with his camera",
       "heading": "Welcome, {name}.",
-      "intro": "You've been invited to join the Founder's Circle — an invitation-only opportunity to support the archive.",
-      "intro2": "The Founder's Circle is a select group of individuals committed to advancing the mission of the Kwame Brathwaite Archive.",
+      "intro": "You've been invited to join the Founders Circle — an invitation-only opportunity to support the archive.",
+      "intro2": "The Founders Circle is a select group of individuals committed to advancing the mission of the Kwame Brathwaite Archive.",
       "intro3": "Your contribution supports the infrastructure that ensures the long-term preservation and accessibility of one of the most significant photographic archives of the 20th century. More than preserving the past, your support creates the framework that makes this history available to inspire future generations. Donations of $10,000 or more from a selected group of supporters.",
       "secondaryMarket": "On any future resale, {percent} of the proceeds are contributed back to the archive.",
       "whatYouReceiveHeading": "What Founders receive",
-      "benefitFirstLook": "First look at new work via Founder's Circle access.",
+      "benefitFirstLook": "First look at new work via Founders Circle access.",
       "benefitExhibition": "Recognition in our upcoming solo exhibition in October 2026, co-curated by myself and Jesse Williams.",
       "benefitTax": "IRS-compliant acknowledgment of contribution to the 501(c)3. Founders agree to hold their print until 2036.",
-      "termsAgree": "I have read and agree to the Founder's Circle terms above, including the commitment to hold the print until 2036 and the secondary-market contribution.",
+      "termsAgree": "I have read and agree to the Founders Circle terms above, including the commitment to hold the print until 2036 and the secondary-market contribution.",
       "donateCta": "Make your donation",
       "accepting": "Saving…",
       "declineButton": "No, thank you",

@@ -32,7 +32,7 @@ export interface FounderRow {
 }
 
 /**
- * Server-side check: is the currently signed-in user a Founder's Circle member?
+ * Server-side check: is the currently signed-in user a Founders Circle member?
  *
  * Distinct from admins — a single auth.users row can be in neither table
  * (random signup), in admins, or in founders (Phase 1C model). The membership

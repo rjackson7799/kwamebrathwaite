@@ -1,4 +1,4 @@
-// Admin/service-role helpers for the Founder's Circle invitation flow.
+// Admin/service-role helpers for the Founders Circle invitation flow.
 // These run server-side only, using the Supabase service-role key.
 // Callers MUST gate access via requireAdmin() first.
 
@@ -124,7 +124,7 @@ export async function sendFounderInvitationEmail(args: {
 }): Promise<{ success: boolean }> {
   return sendUserEmail(
     args.toEmail,
-    'You are invited to the Founder’s Circle',
+    'You are invited to the Founders Circle',
     FounderInvitationEmail({
       actionLink: args.actionLink,
       fullName: args.fullName,
@@ -145,7 +145,7 @@ export async function sendFounderMagicLinkEmail(args: {
 }): Promise<{ success: boolean }> {
   return sendUserEmail(
     args.toEmail,
-    'Your sign-in link · Founder’s Circle',
+    'Your sign-in link · Founders Circle',
     FounderMagicLinkEmail({
       actionLink: args.actionLink,
       fullName: args.fullName ?? null,

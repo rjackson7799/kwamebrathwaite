@@ -7,7 +7,7 @@ interface FounderInquiryAckEmailProps {
 
 export function FounderInquiryAckEmail({ name }: FounderInquiryAckEmailProps) {
   return (
-    <BaseLayout previewText="We received your Founder's Circle inquiry">
+    <BaseLayout previewText="We received your Founders Circle inquiry">
       <Text style={eyebrow}>The Kwame Brathwaite Archive &nbsp;·&nbsp; Founder&rsquo;s Circle</Text>
 
       <Text style={heading}>Thank you for reaching out.</Text>
