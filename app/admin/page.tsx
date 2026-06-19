@@ -173,7 +173,7 @@ export default function AdminDashboard() {
         <div className="flex items-baseline justify-between mb-4">
           <h2 className="text-lg font-medium">
             <span className="text-[11px] uppercase tracking-[0.16em] text-[#8a6f2b] block mb-1">
-              Founder&rsquo;s Circle
+              Founders Circle
             </span>
             Inquiries awaiting response
           </h2>

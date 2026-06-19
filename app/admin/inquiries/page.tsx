@@ -346,7 +346,7 @@ export default function AdminInquiriesPage() {
           >
             <option value="">All Sources</option>
             <option value="general_contact">General contact</option>
-            <option value="founder_inquiry">Founder&rsquo;s Circle</option>
+            <option value="founder_inquiry">Founders Circle</option>
           </select>
 
           {(search || statusFilter || typeFilter || sourceFilter) && (

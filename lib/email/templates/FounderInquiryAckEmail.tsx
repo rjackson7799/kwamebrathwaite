@@ -8,7 +8,7 @@ interface FounderInquiryAckEmailProps {
 export function FounderInquiryAckEmail({ name }: FounderInquiryAckEmailProps) {
   return (
     <BaseLayout previewText="We received your Founders Circle inquiry">
-      <Text style={eyebrow}>The Kwame Brathwaite Archive &nbsp;·&nbsp; Founder&rsquo;s Circle</Text>
+      <Text style={eyebrow}>The Kwame Brathwaite Archive &nbsp;·&nbsp; Founders Circle</Text>
 
       <Text style={heading}>Thank you for reaching out.</Text>
 
@@ -21,7 +21,7 @@ export function FounderInquiryAckEmail({ name }: FounderInquiryAckEmailProps) {
       </Text>
 
       <Text style={paragraph}>
-        The Founder&rsquo;s Circle is a curated philanthropic program
+        The Founders Circle is a curated philanthropic program
         supporting the permanent infrastructure of the archive. Membership is
         by invitation, and we take the time to make each introduction
         intentional.

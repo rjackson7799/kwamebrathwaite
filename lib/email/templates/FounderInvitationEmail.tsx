@@ -24,7 +24,7 @@ export function FounderInvitationEmail({
   return (
     <BaseLayout previewText="Your invitation to the Founders Circle">
       <Text style={eyebrow}>
-        The Kwame Brathwaite Archive &nbsp;·&nbsp; Founder&rsquo;s Circle
+        The Kwame Brathwaite Archive &nbsp;·&nbsp; Founders Circle
       </Text>
 
       <Text style={heading}>You&rsquo;re invited.</Text>
@@ -32,7 +32,7 @@ export function FounderInvitationEmail({
       <Text style={paragraph}>Dear {fullName},</Text>
 
       <Text style={paragraph}>
-        It is our privilege to invite you to the Founder&rsquo;s Circle of the
+        It is our privilege to invite you to the Founders Circle of the
         Kwame Brathwaite Archive — an invitation-only opportunity to support the
         archive and collect an unreleased special-edition print. The link below
         signs you in to your invitation, where you can review the terms and make
@@ -48,7 +48,7 @@ export function FounderInvitationEmail({
 
       <Section style={buttonWrap}>
         <Link href={actionLink} style={button}>
-          Enter the Founder&rsquo;s Circle
+          Enter the Founders Circle
         </Link>
       </Section>
 

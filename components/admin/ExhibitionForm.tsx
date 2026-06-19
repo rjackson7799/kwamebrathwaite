@@ -601,7 +601,7 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
               Founder Preview
             </h3>
             <p className="text-xs text-gray-500 mb-4">
-              When the preview starts, active Founder&rsquo;s Circle members
+              When the preview starts, active Founders Circle members
               can read this exhibition in their portal even while it&rsquo;s
               still a draft.
             </p>

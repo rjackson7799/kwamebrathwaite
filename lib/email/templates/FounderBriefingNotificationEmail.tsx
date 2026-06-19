@@ -21,7 +21,7 @@ export function FounderBriefingNotificationEmail({
   return (
     <BaseLayout previewText={`A new briefing from the archive: ${title}`}>
       <Text style={eyebrow}>
-        The Kwame Brathwaite Archive &nbsp;·&nbsp; Founder&rsquo;s Circle
+        The Kwame Brathwaite Archive &nbsp;·&nbsp; Founders Circle
       </Text>
 
       <Text style={heading}>A new briefing from the archive.</Text>
@@ -44,7 +44,7 @@ export function FounderBriefingNotificationEmail({
       </Section>
 
       <Text style={smallNote}>
-        Sign in to your Founder&rsquo;s Circle space to read this and any
+        Sign in to your Founders Circle space to read this and any
         previous briefings in the archive&rsquo;s permanent record.
       </Text>
 

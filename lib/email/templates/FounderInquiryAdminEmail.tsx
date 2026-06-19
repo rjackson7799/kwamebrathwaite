@@ -17,7 +17,7 @@ export function FounderInquiryAdminEmail(props: FounderInquiryAdminEmailProps) {
     <BaseLayout
       previewText={`Founders Circle inquiry from ${props.name} — 24-48h SLA`}
     >
-      <Text style={eyebrow}>Founder&rsquo;s Circle &nbsp;·&nbsp; New inquiry</Text>
+      <Text style={eyebrow}>Founders Circle &nbsp;·&nbsp; New inquiry</Text>
 
       <Text style={heading}>{props.name} reached out</Text>
 

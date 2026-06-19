@@ -352,7 +352,7 @@ export default function InquiryDetailPage() {
                   <dd className="text-sm text-gray-900">
                     {isFounderInquiry ? (
                       <span className="inline-flex items-center gap-1 text-xs uppercase tracking-wider text-[#8a6f2b] bg-[#FAF6EC] border border-[#C9A961] px-2 py-0.5 rounded">
-                        Founder&rsquo;s Circle
+                        Founders Circle
                       </span>
                     ) : (
                       <span className="text-xs text-gray-500">General contact</span>

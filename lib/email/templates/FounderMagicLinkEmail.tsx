@@ -15,7 +15,7 @@ export function FounderMagicLinkEmail({
   return (
     <BaseLayout previewText="Your sign-in link for the Founders Circle">
       <Text style={eyebrow}>
-        The Kwame Brathwaite Archive &nbsp;·&nbsp; Founder&rsquo;s Circle
+        The Kwame Brathwaite Archive &nbsp;·&nbsp; Founders Circle
       </Text>
 
       <Text style={heading}>Your sign-in link</Text>
@@ -25,7 +25,7 @@ export function FounderMagicLinkEmail({
       </Text>
 
       <Text style={paragraph}>
-        Use the link below to sign in to the Founder&rsquo;s Circle. It is
+        Use the link below to sign in to the Founders Circle. It is
         valid for 24 hours and can be used once.
       </Text>
 

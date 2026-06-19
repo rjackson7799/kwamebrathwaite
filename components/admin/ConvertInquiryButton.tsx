@@ -66,7 +66,7 @@ export function ConvertInquiryButton({
       <div className="bg-[#0e0e0e] text-[#E6E2D6] rounded-md px-5 py-4 mb-6 flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.16em] text-[#C9A961] mb-1">
-            Founder&rsquo;s Circle action
+            Founders Circle action
           </p>
           <p className="text-sm">
             Convert this inquiry into a Founder invitation. An auth account
