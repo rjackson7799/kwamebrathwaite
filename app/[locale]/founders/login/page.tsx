@@ -4,6 +4,25 @@ import type { Metadata } from 'next'
 
 interface PageProps {
   params: Promise<{ locale: string }>
+  searchParams: Promise<{ reason?: string }>
+}
+
+// Maps a callback/bridge ?reason=… to a founders.login.reasons key. Several
+// failure modes collapse onto the same message.
+function reasonMessageKey(reason: string | undefined): string | null {
+  switch (reason) {
+    case 'expired':
+    case 'missing_token':
+      return 'reasons.expired'
+    case 'not_invited':
+      return 'reasons.notInvited'
+    case 'revoked':
+      return 'reasons.revoked'
+    case 'server_error':
+      return 'reasons.error'
+    default:
+      return null
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -18,12 +37,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function FoundersLoginPage({ params }: PageProps) {
+export default async function FoundersLoginPage({ params, searchParams }: PageProps) {
   const { locale } = await params
+  const { reason } = await searchParams
   setRequestLocale(locale)
 
   const t = await getTranslations({ locale, namespace: 'founders.login' })
   const tFounders = await getTranslations({ locale, namespace: 'founders' })
+
+  const reasonKey = reasonMessageKey(reason)
 
   return (
     <main className="bg-[#0e0e0e] text-[#E6E2D6] min-h-screen flex flex-col">
@@ -44,6 +66,15 @@ export default async function FoundersLoginPage({ params }: PageProps) {
           <p className="text-[#C0BBA8] text-sm sm:text-base leading-relaxed mb-10 text-center">
             {t('intro')}
           </p>
+
+          {reasonKey && (
+            <div
+              role="status"
+              className="mb-8 rounded-sm border border-[#C9A961]/40 bg-[#C9A961]/10 px-4 py-3 text-sm text-[#E6E2D6] text-center"
+            >
+              {t(reasonKey)}
+            </div>
+          )}
 
           <MagicLinkRequestForm />
 

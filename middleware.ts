@@ -170,6 +170,17 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
+  // Durable invite/sign-in links — public (this is the pre-auth entry point, so
+  // no session is required here), but every response carries a bearer credential
+  // in the URL, so disable caching and Referer leakage. The "no auth on GET"
+  // guarantee lives in the page/route handlers (auth only on the confirm POST).
+  if (pathname.startsWith('/founders/invite')) {
+    const response = intlMiddleware(request)
+    response.headers.set('Cache-Control', 'no-store, max-age=0')
+    response.headers.set('Referrer-Policy', 'no-referrer')
+    return response
+  }
+
   // Handle public routes with i18n
   return intlMiddleware(request)
 }

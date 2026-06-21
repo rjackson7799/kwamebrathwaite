@@ -2,7 +2,10 @@ import { NextRequest } from 'next/server'
 import { successResponse, errorResponse, ErrorCodes } from '@/lib/api'
 import { requireAdmin, logActivity, getCurrentUserEmail } from '@/lib/api/admin'
 import { createAdminClient } from '@/lib/supabase/server'
-import { revokeFounderSessions } from '@/lib/auth/founders-admin'
+import {
+  revokeFounderSessions,
+  revokeFounderInviteLinks,
+} from '@/lib/auth/founders-admin'
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -42,6 +45,15 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     // Best-effort: revoke active sessions. Continues even on failure since
     // status='archived' is the primary effect that closes the door.
     await revokeFounderSessions(id)
+
+    // Best-effort: kill any outstanding durable invite/sign-in links so a
+    // previously copied link can't re-admit a revoked member. (The bridge also
+    // rejects archived founders, so this is hygiene, not the primary guard.)
+    try {
+      await revokeFounderInviteLinks(id)
+    } catch (linkErr) {
+      console.error('admin/founders/[id]/revoke: link cleanup failed', linkErr)
+    }
 
     const adminEmail = await getCurrentUserEmail()
     if (adminEmail) {

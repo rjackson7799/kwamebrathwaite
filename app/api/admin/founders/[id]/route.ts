@@ -8,6 +8,7 @@ import {
 import { requireAdmin, logActivity, getCurrentUserEmail } from '@/lib/api/admin'
 import { createAdminClient } from '@/lib/supabase/server'
 import { checkStatusTransition } from '@/lib/founders/lifecycle'
+import { revokeFounderInviteLinks } from '@/lib/auth/founders-admin'
 
 interface RouteParams {
   params: Promise<{ id: string }>  // founders.user_id (uuid)
@@ -174,6 +175,14 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         error.code === 'PGRST116' ? 'Founder not found' : 'Failed to archive founder',
         error.code === 'PGRST116' ? 404 : 500
       )
+    }
+
+    // Best-effort: kill outstanding durable links on archive (hygiene; the
+    // bridge also rejects archived founders).
+    try {
+      await revokeFounderInviteLinks(id)
+    } catch (linkErr) {
+      console.error('admin/founders/[id] DELETE: link cleanup failed', linkErr)
     }
 
     const adminEmail = await getCurrentUserEmail()

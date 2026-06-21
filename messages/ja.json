@@ -583,7 +583,13 @@
       "notInvitedHeading": "Not yet a member of the Founders Circle?",
       "notInvitedBody": "Learn more about the program.",
       "notInvitedLink": "Founders Circle program",
-      "error": "Something went wrong. Please try again in a moment."
+      "error": "Something went wrong. Please try again in a moment.",
+      "reasons": {
+        "expired": "That sign-in link has expired or has already been used. Request a fresh link below.",
+        "notInvited": "This account isn’t on the Founders Circle list. If you believe this is an error, contact the stewardship team.",
+        "revoked": "Your Founders Circle access has been closed.",
+        "error": "Something went wrong opening that link. Request a fresh sign-in link below."
+      }
     },
     "callback": {
       "verifying": "Signing you in…",
@@ -591,6 +597,11 @@
       "notInvitedBody": "If you believe this is in error, please write to the stewardship team.",
       "expiredHeading": "This sign-in link has expired or already been used.",
       "expiredBody": "Request a new link from the sign-in page."
+    },
+    "invite": {
+      "heading": "Welcome, {name}.",
+      "body": "Select continue to finish signing in to the Founders Circle. This quick step confirms you opened the link yourself.",
+      "continue": "Continue to the Founders Circle"
     },
     "portal": {
       "welcomeEyebrow": "ようこそ",

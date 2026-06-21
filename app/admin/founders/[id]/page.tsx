@@ -87,6 +87,11 @@ export default function AdminFounderDetailPage() {
   const [activating, setActivating] = useState(false)
   const [donationRef, setDonationRef] = useState('')
   const [donationAmount, setDonationAmount] = useState('10000')
+  const [copyingLink, setCopyingLink] = useState(false)
+  const [revokingLinks, setRevokingLinks] = useState(false)
+  const [inviteLink, setInviteLink] = useState<string | null>(null)
+  const [inviteLinkExpires, setInviteLinkExpires] = useState<string | null>(null)
+  const [toast, setToast] = useState<string | null>(null)
 
   const fetchFounder = useCallback(async () => {
     try {
@@ -227,6 +232,68 @@ export default function AdminFounderDetailPage() {
     }
   }
 
+  const showToast = (message: string) => {
+    setToast(message)
+    setTimeout(() => setToast(null), 2500)
+  }
+
+  // Mint a fresh durable link and copy it. Each call creates a NEW link (older
+  // copies keep working until they expire or are revoked), so the admin can
+  // safely re-generate when a previous paste is lost.
+  const handleCopyLink = async () => {
+    setCopyingLink(true)
+    try {
+      const res = await fetch(`/api/admin/founders/${id}/invite-link`, { method: 'POST' })
+      const json = await res.json()
+      if (!json.success) {
+        showToast(json.error?.message || 'Failed to generate link')
+        return
+      }
+      setInviteLink(json.data.link)
+      setInviteLinkExpires(json.data.expires_at)
+      try {
+        await navigator.clipboard.writeText(json.data.link)
+        showToast('Link copied. Paste it into your email to the founder.')
+      } catch {
+        showToast('Link generated — copy it from the box below.')
+      }
+    } catch {
+      showToast('Failed to generate link')
+    } finally {
+      setCopyingLink(false)
+    }
+  }
+
+  const copyExistingLink = async () => {
+    if (!inviteLink) return
+    try {
+      await navigator.clipboard.writeText(inviteLink)
+      showToast('Link copied.')
+    } catch {
+      showToast('Could not copy — select the link and copy manually.')
+    }
+  }
+
+  const handleRevokeLinks = async () => {
+    setRevokingLinks(true)
+    try {
+      const res = await fetch(`/api/admin/founders/${id}/invite-link`, { method: 'DELETE' })
+      const json = await res.json()
+      if (!json.success) {
+        showToast(json.error?.message || 'Failed to revoke links')
+        return
+      }
+      setInviteLink(null)
+      setInviteLinkExpires(null)
+      const n = json.data.revoked as number
+      showToast(`Revoked ${n} link${n === 1 ? '' : 's'}.`)
+    } catch {
+      showToast('Failed to revoke links')
+    } finally {
+      setRevokingLinks(false)
+    }
+  }
+
   if (loading) {
     return (
       <>
@@ -294,6 +361,19 @@ export default function AdminFounderDetailPage() {
             >
               {resending ? 'Sending…' : 'Resend invite'}
             </button>
+            {(founder.status === 'invited' || founder.status === 'active') && (
+              <button
+                onClick={handleCopyLink}
+                disabled={copyingLink}
+                className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+              >
+                {copyingLink
+                  ? 'Generating…'
+                  : founder.status === 'invited'
+                    ? 'Copy invite link'
+                    : 'Copy sign-in link'}
+              </button>
+            )}
             {founder.status !== 'archived' && (
               <button
                 onClick={() => setRevokeDialog(true)}
@@ -314,6 +394,46 @@ export default function AdminFounderDetailPage() {
 
       <div className="p-8">
         <div className="max-w-4xl space-y-6">
+          {/* Copyable durable link reveal — shown after "Copy invite/sign-in link".
+              Lets the admin verify, re-copy, or revoke the link they're sending. */}
+          {inviteLink && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold text-amber-900 uppercase tracking-wider mb-2">
+                    {founder.status === 'invited' ? 'Invite link' : 'Sign-in link'} — paste into your email to the founder
+                  </p>
+                  <input
+                    readOnly
+                    value={inviteLink}
+                    onFocus={(e) => e.currentTarget.select()}
+                    className="w-full text-sm font-mono bg-white border border-amber-300 rounded px-2 py-1.5 text-gray-800"
+                  />
+                  {inviteLinkExpires && (
+                    <p className="text-xs text-amber-800 mt-2">
+                      Expires {formatDate(inviteLinkExpires)}. Anyone with this link can sign in as this founder until then — send it only to {founder.email}.
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2 flex-shrink-0">
+                  <button
+                    onClick={copyExistingLink}
+                    className="px-3 py-1.5 text-sm bg-black text-white rounded-md hover:bg-gray-800"
+                  >
+                    Copy
+                  </button>
+                  <button
+                    onClick={handleRevokeLinks}
+                    disabled={revokingLinks}
+                    className="px-3 py-1.5 text-sm border border-red-300 text-red-600 rounded-md hover:bg-red-50 disabled:opacity-50"
+                  >
+                    {revokingLinks ? 'Revoking…' : 'Revoke all links'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Recognition & visibility */}
           <Card title="Recognition">
             <Field label="Full name">
@@ -504,6 +624,12 @@ export default function AdminFounderDetailPage() {
         requireConfirmText={founder.email}
         confirmTextLabel={`Type the founder's email (${founder.email}) to confirm`}
       />
+
+      {toast && (
+        <div className="fixed bottom-6 right-6 bg-gray-900 text-white px-4 py-3 rounded-md shadow-lg text-sm max-w-md z-50">
+          {toast}
+        </div>
+      )}
     </>
   )
 }

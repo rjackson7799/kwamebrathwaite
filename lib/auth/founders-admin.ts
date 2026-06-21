@@ -2,10 +2,18 @@
 // These run server-side only, using the Supabase service-role key.
 // Callers MUST gate access via requireAdmin() first.
 
+import { randomBytes } from 'crypto'
 import { createAdminClient } from '@/lib/supabase/server'
 import { sendUserEmail } from '@/lib/email/send'
 import { FounderInvitationEmail, FounderMagicLinkEmail } from '@/lib/email/templates'
 import { siteUrl } from '@/lib/auth/site-url'
+import {
+  hashInviteToken,
+  isInviteLinkValid,
+  isLinkEligibleStatus,
+  INVITE_LINK_TTL_MS,
+} from '@/lib/founders/invite-links'
+import type { FounderStatus } from '@/lib/founders/lifecycle'
 
 /**
  * Ensure an auth.users row exists for the given email. Returns the uuid.
@@ -151,6 +159,139 @@ export async function sendFounderMagicLinkEmail(args: {
       fullName: args.fullName ?? null,
     })
   )
+}
+
+// Locale prefix for founder-facing links (en = no prefix). Matches the
+// convention used by generateFounderMagicLink above.
+function foundersLocalePrefix(locale: string): string {
+  return locale === 'fr' || locale === 'ja' ? `/${locale}` : ''
+}
+
+export interface InviteTokenFounder {
+  user_id: string
+  email: string
+  full_name: string
+  recognition_name: string | null
+  preferred_locale: string
+  status: FounderStatus
+}
+
+/**
+ * Mint a durable, copyable invite/sign-in link for a founder.
+ *
+ * Unlike generateFounderMagicLink (a one-time, 24h Supabase token), this is OUR
+ * token: a random 256-bit value whose SHA-256 hash is stored in
+ * founder_invite_links with a 30-day expiry. The raw value lives only in the
+ * returned URL. Multiple links may coexist; each call mints a new row so a
+ * previously copied link keeps working until it expires or is revoked.
+ *
+ * The insert is verified — we throw rather than hand back a link whose hash was
+ * never persisted (which would be a dead link).
+ */
+export async function createFounderInviteLink(args: {
+  userId: string
+  email: string
+  locale?: string
+  createdBy?: string | null
+}): Promise<{ link: string; expiresAt: string }> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAdminClient() as any
+
+  const raw = randomBytes(32).toString('hex')
+  const expiresAt = new Date(Date.now() + INVITE_LINK_TTL_MS).toISOString()
+
+  const { error } = await supabase.from('founder_invite_links').insert({
+    user_id: args.userId,
+    token_hash: hashInviteToken(raw),
+    expires_at: expiresAt,
+    created_by: args.createdBy ?? null,
+  })
+
+  if (error) {
+    throw new Error(`createFounderInviteLink: insert failed: ${error.message}`)
+  }
+
+  const prefix = foundersLocalePrefix(args.locale ?? 'en')
+  const link = `${siteUrl()}${prefix}/founders/invite/${raw}`
+  return { link, expiresAt }
+}
+
+/**
+ * Resolve a raw invite token to its founder + the link's expiry. Returns null
+ * when no row matches the hash. Expiry/status validation is the caller's job
+ * (see isInviteLinkValid / isLinkEligibleStatus in lib/founders/invite-links).
+ */
+export async function findFounderByInviteToken(
+  raw: string
+): Promise<{ founder: InviteTokenFounder; expiresAt: string } | null> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAdminClient() as any
+
+  const { data: link, error: linkError } = await supabase
+    .from('founder_invite_links')
+    .select('user_id, expires_at')
+    .eq('token_hash', hashInviteToken(raw))
+    .maybeSingle()
+
+  if (linkError || !link) return null
+
+  const { data: founder, error: founderError } = await supabase
+    .from('founders')
+    .select('user_id, email, full_name, recognition_name, preferred_locale, status')
+    .eq('user_id', link.user_id)
+    .maybeSingle()
+
+  if (founderError || !founder) return null
+
+  return { founder: founder as InviteTokenFounder, expiresAt: link.expires_at }
+}
+
+export type InviteTokenResolution =
+  | { ok: true; founder: InviteTokenFounder }
+  | { ok: false; reason: 'expired' }
+
+/**
+ * Full server-side check for a raw invite token used by the public bridge
+ * (page + confirm route). All failure modes — unknown token, expired, archived,
+ * or a status that dead-ends (paused/declined) — collapse to a single
+ * { ok: false, reason: 'expired' } so we never leak whether an account exists or
+ * its status. Callers should not authenticate when ok is false.
+ */
+export async function resolveFounderInviteToken(
+  raw: string
+): Promise<InviteTokenResolution> {
+  const found = await findFounderByInviteToken(raw)
+  if (!found) return { ok: false, reason: 'expired' }
+  if (!isInviteLinkValid(found.expiresAt, new Date())) {
+    return { ok: false, reason: 'expired' }
+  }
+  if (
+    found.founder.status === 'archived' ||
+    !isLinkEligibleStatus(found.founder.status)
+  ) {
+    return { ok: false, reason: 'expired' }
+  }
+  return { ok: true, founder: found.founder }
+}
+
+/**
+ * Delete all outstanding invite links for a founder. Used by the manual
+ * "Revoke links" admin action, on archive (revoke route), and on email change.
+ * Returns how many rows were removed.
+ */
+export async function revokeFounderInviteLinks(userId: string): Promise<number> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAdminClient() as any
+  const { data, error } = await supabase
+    .from('founder_invite_links')
+    .delete()
+    .eq('user_id', userId)
+    .select('id')
+
+  if (error) {
+    throw new Error(`revokeFounderInviteLinks: delete failed: ${error.message}`)
+  }
+  return data?.length ?? 0
 }
 
 /**
