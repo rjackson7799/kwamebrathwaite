@@ -49,6 +49,12 @@ Flow: admin `POST /api/admin/founders/[id]/invite-link` → 30-day token (SHA-25
 
 Shipped to `main` and verified working in production. Commits `924d46c` (feature), `56e06d8` (303 fix), `a897f9e` (CSP origin fix).
 
+### Follow-up — portrait + fr/ja localization (June 21, 2026)
+
+- Invitation portrait swapped to `founders_KB_2026.jpg` (`fd00344`).
+- Translated the founder-facing invite/login flow for **French + Japanese** (`7244a9e`): invitation page `intro2`/`intro3` + the three benefit lines, plus the `login`, `callback`, `invite` (confirm page), and `login.reasons` strings — all previously English fallbacks/placeholders. Verified FR/JA login pages + reason banners render translated and EN is unchanged.
+- **Known follow-ups:** (1) **Portal sub-pages** (briefings, previews, profile, security) likely still have untranslated fr/ja strings — not yet swept. (2) Translations are dev-authored; a native-speaker review is advisable, especially the longer `intro3` / `benefitTax` sentences. (3) The fr/ja `founders.invitation` block still carries ~5 dead keys from an older design (`term20x20`, `termDonation`, `termEdition`, `holdUntil2036`, `termsHeading`) — unused, left in place.
+
 ---
 
 ## Newsletter Double Opt-In + Hardening (May 21, 2026)
