@@ -25,7 +25,13 @@ interface RouteParams {
   params: Promise<{ locale: string; token: string }>
 }
 
-function harden(res: NextResponse): NextResponse {
+// Redirect with 303 See Other so the browser switches to GET when following.
+// This is a POST handler; the targets (the GET-only magic-link callback and the
+// login page) would 405 under the default 307, which preserves the method —
+// that's the Post/Redirect/Get rule. Also harden the credential-bearing hop
+// against caching and Referer leakage.
+function redirectGet(url: URL): NextResponse {
+  const res = NextResponse.redirect(url, 303)
   res.headers.set('Cache-Control', 'no-store, max-age=0')
   res.headers.set('Referrer-Policy', 'no-referrer')
   return res
@@ -45,11 +51,11 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     resolution = await resolveFounderInviteToken(token)
   } catch (err) {
     console.error('founders invite confirm: resolve failed', err)
-    return harden(NextResponse.redirect(loginUrl))
+    return redirectGet(loginUrl)
   }
 
   if (!resolution.ok) {
-    return harden(NextResponse.redirect(loginUrl))
+    return redirectGet(loginUrl)
   }
 
   try {
@@ -57,9 +63,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       resolution.founder.email,
       resolution.founder.preferred_locale || 'en'
     )
-    return harden(NextResponse.redirect(new URL(magicUrl)))
+    return redirectGet(new URL(magicUrl))
   } catch (err) {
     console.error('founders invite confirm: magic link mint failed', err)
-    return harden(NextResponse.redirect(loginUrl))
+    return redirectGet(loginUrl)
   }
 }
