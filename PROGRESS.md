@@ -1,7 +1,53 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** May 21, 2026
+**Last Updated:** June 21, 2026
+
+---
+
+## Founders Circle — Durable Copyable Invite/Sign-In Links (June 21, 2026)
+
+### Problem
+
+Some invited founders never received the invitation email (deliverability — spam filtering, typo'd address). The only entry path was an emailed Supabase magic link, so a non-delivered email left the admin with no way to get the person in.
+
+### Architecture
+
+A durable, admin-copyable link an admin pastes into their own email. It is OUR token (30-day life) that bridges to the existing Supabase magic-link callback **at click time** — so the 24h Supabase window only starts on click and "Resend invite" never breaks it. A confirmation interstitial (auth happens only on an explicit POST) defeats email scanners. Available for **invited** (review + donate) and **active** (portal) founders only; paused/declined/archived dead-end at the closed screen and are excluded.
+
+Flow: admin `POST /api/admin/founders/[id]/invite-link` → 30-day token (SHA-256 hash stored, raw in URL) → admin pastes URL → founder opens `/founders/invite/[token]` (GET confirm page, **no auth**) → clicks Continue (POST) → 303 to a freshly minted Supabase magic link **on the same origin** → existing `/founders/auth/callback` verifies + routes by status. Multiple links may coexist per founder; each "Copy" mints a new one.
+
+### What Was Built
+
+- [x] **Migration** [docs/migrations/2026-06-21-founder-invite-links.sql](docs/migrations/2026-06-21-founder-invite-links.sql) — `founder_invite_links` table: service-role only (no grants to authenticated/anon, RLS enabled), hashed tokens, UNIQUE hash index. **Applied to prod 2026-06-21.**
+- [x] **Pure helpers** [lib/founders/invite-links.ts](lib/founders/invite-links.ts) (hash, expiry boundary, status eligibility) + unit tests [tests/founder-invite-links.test.ts](tests/founder-invite-links.test.ts).
+- [x] **Service-role helpers** in [lib/auth/founders-admin.ts](lib/auth/founders-admin.ts) (`createFounderInviteLink`, `findFounderByInviteToken`, `resolveFounderInviteToken`, `revokeFounderInviteLinks`).
+- [x] **Public bridge** [app/[locale]/founders/invite/[token]/page.tsx](app/%5Blocale%5D/founders/invite/%5Btoken%5D/page.tsx) (GET confirm, no auth) + [confirm/route.ts](app/%5Blocale%5D/founders/invite/%5Btoken%5D/confirm/route.ts) (POST). `no-store` + `no-referrer` on both (route + [middleware.ts](middleware.ts)).
+- [x] **Admin API** [app/api/admin/founders/[id]/invite-link/route.ts](app/api/admin/founders/%5Bid%5D/invite-link/route.ts) — POST mints, DELETE revokes all. Does **not** touch `last_invited_at` (copying ≠ sending, keeps the stale-invite cron honest).
+- [x] **Admin UI** [app/admin/founders/[id]/page.tsx](app/admin/founders/%5Bid%5D/page.tsx) — "Copy invite link" / "Copy sign-in link" button + reveal box (URL + expiry + Copy + Revoke all links) + toast.
+- [x] **Login reason banner** [app/[locale]/founders/login/page.tsx](app/%5Blocale%5D/founders/login/page.tsx) (renders `?reason=expired|not_invited|revoked|...`). Strings under `founders.login.reasons` + `founders.invite` in all three locales.
+- [x] **Revocation hooks** — links deleted on archive ([revoke route](app/api/admin/founders/%5Bid%5D/revoke/route.ts)) and delete ([id route](app/api/admin/founders/%5Bid%5D/route.ts)).
+- [x] **Integration tests** [tests/integration/founder-invite-links.test.ts](tests/integration/founder-invite-links.test.ts) — lookup-by-hash, UNIQUE index, RLS lockdown, coexistence/revoke (self-skip without `SUPABASE_TEST_*`).
+
+### Bugs Fixed During Rollout
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Continue button did nothing | Confirm POST returned the default **307** redirect, which preserves the method → browser re-POSTed to the GET-only magic-link callback → 405 | Redirect with **303 See Other** (Post/Redirect/Get) so the browser switches to GET (`56e06d8`) |
+| Continue blocked by CSP | Post-submit redirect went to the canonical **apex** `siteUrl()` while founders browse **www** → cross-origin redirect tripped `form-action 'self'` ([next.config.mjs](next.config.mjs)) | Re-base the post-submit redirect onto the **request's own origin** so the whole chain stays same-origin (`a897f9e`) |
+
+### Security
+
+256-bit token (`randomBytes(32)`) stored only as a SHA-256 hash → a DB leak yields no usable links; 30-day expiry; revocable (manual + on archive/delete); confirm-on-POST defeats email scanners/previews; `no-store` + `no-referrer` on the credential-bearing hops. Admin endpoints gated by middleware + `requireAdmin`; the bridge only authenticates the matching founder, then hands off to the existing hardened callback.
+
+### Known Limitations / Out of Scope
+
+- Founder login email is not editable in the admin (`adminFounderUpdateSchema` has no `email`), so there is no email-change revocation hook.
+- **Canonical host:** `NEXT_PUBLIC_SITE_URL` is the apex but the site is served on `www`, so admin-copied links and emails use the apex (the confirm redirect is now origin-relative, so it still works wherever opened). Setting `NEXT_PUBLIC_SITE_URL=https://www.kwamebrathwaite.com` would make copied links/emails use `www` directly — a separate, optional cleanup.
+
+### Status
+
+Shipped to `main` and verified working in production. Commits `924d46c` (feature), `56e06d8` (303 fix), `a897f9e` (CSP origin fix).
 
 ---
 
