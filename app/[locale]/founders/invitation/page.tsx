@@ -87,7 +87,7 @@ export default async function FoundersInvitationPage({ params }: PageProps) {
           <div className="w-full md:w-[42%] md:flex-shrink-0">
             <div className="relative aspect-square w-full overflow-hidden rounded-sm bg-[#0a0a0a] shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)]">
               <Image
-                src="/founders/kb_self_founders.jpg"
+                src="/founders/founders_KB_2026.jpg"
                 alt={t('imageAlt')}
                 fill
                 priority
