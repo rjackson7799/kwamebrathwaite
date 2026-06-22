@@ -572,36 +572,36 @@
       "error": "Something went wrong sending your inquiry. Please try again in a moment, or write to us directly."
     },
     "login": {
-      "heading": "Sign in to the Founders Circle",
-      "intro": "Enter the email address on your invitation. We'll send you a single-use sign-in link.",
-      "email": "Email address",
-      "submit": "Send sign-in link",
-      "submitting": "Sending…",
-      "successHeading": "Check your inbox.",
-      "successBody": "If a Founders Circle member account exists for this address, we've sent a sign-in link. The link is valid for 24 hours and can only be used once. If you don't see the email within a few minutes, check your spam folder.",
-      "tryAgain": "Didn't receive it? Try again.",
-      "notInvitedHeading": "Not yet a member of the Founders Circle?",
-      "notInvitedBody": "Learn more about the program.",
-      "notInvitedLink": "Founders Circle program",
-      "error": "Something went wrong. Please try again in a moment.",
+      "heading": "Connexion au Cercle des Fondateurs",
+      "intro": "Saisissez l'adresse e-mail figurant sur votre invitation. Nous vous enverrons un lien de connexion à usage unique.",
+      "email": "Adresse e-mail",
+      "submit": "Envoyer le lien de connexion",
+      "submitting": "Envoi…",
+      "successHeading": "Consultez votre boîte de réception.",
+      "successBody": "Si un compte membre du Cercle des Fondateurs existe pour cette adresse, nous vous avons envoyé un lien de connexion. Le lien est valable 24 heures et ne peut être utilisé qu'une seule fois. Si vous ne voyez pas l'e-mail d'ici quelques minutes, vérifiez votre dossier spam.",
+      "tryAgain": "Vous ne l'avez pas reçu ? Réessayer.",
+      "notInvitedHeading": "Pas encore membre du Cercle des Fondateurs ?",
+      "notInvitedBody": "En savoir plus sur le programme.",
+      "notInvitedLink": "Programme du Cercle des Fondateurs",
+      "error": "Une erreur s'est produite. Veuillez réessayer dans un instant.",
       "reasons": {
-        "expired": "That sign-in link has expired or has already been used. Request a fresh link below.",
-        "notInvited": "This account isn’t on the Founders Circle list. If you believe this is an error, contact the stewardship team.",
-        "revoked": "Your Founders Circle access has been closed.",
-        "error": "Something went wrong opening that link. Request a fresh sign-in link below."
+        "expired": "Ce lien de connexion a expiré ou a déjà été utilisé. Demandez un nouveau lien ci-dessous.",
+        "notInvited": "Ce compte ne figure pas sur la liste du Cercle des Fondateurs. Si vous pensez qu'il s'agit d'une erreur, contactez l'équipe.",
+        "revoked": "Votre accès au Cercle des Fondateurs a été fermé.",
+        "error": "Une erreur s'est produite à l'ouverture de ce lien. Demandez un nouveau lien de connexion ci-dessous."
       }
     },
     "callback": {
-      "verifying": "Signing you in…",
-      "notInvitedHeading": "This account is not on the Founders Circle list.",
-      "notInvitedBody": "If you believe this is in error, please write to the stewardship team.",
-      "expiredHeading": "This sign-in link has expired or already been used.",
-      "expiredBody": "Request a new link from the sign-in page."
+      "verifying": "Connexion en cours…",
+      "notInvitedHeading": "Ce compte ne figure pas sur la liste du Cercle des Fondateurs.",
+      "notInvitedBody": "Si vous pensez qu'il s'agit d'une erreur, veuillez écrire à l'équipe.",
+      "expiredHeading": "Ce lien de connexion a expiré ou a déjà été utilisé.",
+      "expiredBody": "Demandez un nouveau lien depuis la page de connexion."
     },
     "invite": {
-      "heading": "Welcome, {name}.",
-      "body": "Select continue to finish signing in to the Founders Circle. This quick step confirms you opened the link yourself.",
-      "continue": "Continue to the Founders Circle"
+      "heading": "Bienvenue, {name}.",
+      "body": "Sélectionnez « Continuer » pour terminer votre connexion au Cercle des Fondateurs. Cette étape rapide confirme que vous avez ouvert le lien vous-même.",
+      "continue": "Continuer vers le Cercle des Fondateurs"
     },
     "portal": {
       "welcomeEyebrow": "Bienvenue",
@@ -677,6 +677,8 @@
       "imageAlt": "Kwame Brathwaite, autoportrait avec son appareil photo",
       "heading": "Bienvenue, {name}.",
       "intro": "Vous êtes invité·e à rejoindre le Cercle des Fondateurs — une occasion, sur invitation uniquement, de soutenir les archives et de collectionner un tirage spécial inédit de l'œuvre de Kwame Brathwaite. Veuillez consulter les conditions ci-dessous, puis faire votre don.",
+      "intro2": "Le Cercle des Fondateurs réunit un groupe restreint de personnes engagées à faire avancer la mission des archives Kwame Brathwaite.",
+      "intro3": "Votre contribution soutient l'infrastructure qui assure la préservation à long terme et l'accessibilité de l'une des archives photographiques les plus importantes du XXe siècle. Au-delà de la préservation du passé, votre soutien crée le cadre qui rend cette histoire accessible pour inspirer les générations futures. Dons de 10 000 $ ou plus, de la part d'un groupe restreint de soutiens.",
       "termsHeading": "Les conditions",
       "term20x20": "Un tirage spécial d'archive de 50,8 × 50,8 cm (20 × 20 po), jamais diffusé hors du Cercle des Fondateurs.",
       "termDonation": "Un don forfaitaire de 10 000 $ — sans paliers.",
@@ -684,6 +686,9 @@
       "holdUntil2036": "Les Fondateurs s'engagent à conserver leur tirage jusqu'en 2036.",
       "secondaryMarket": "Lors de toute revente future, {percent} du produit est reversé aux archives.",
       "whatYouReceiveHeading": "Ce que vous recevez",
+      "benefitFirstLook": "Accès en avant-première aux nouvelles œuvres grâce au Cercle des Fondateurs.",
+      "benefitExhibition": "Une mise à l'honneur lors de notre prochaine exposition personnelle en octobre 2026, co-organisée par moi-même et Jesse Williams.",
+      "benefitTax": "Un reçu conforme aux exigences de l'IRS pour votre contribution à l'organisme 501(c)(3). Les Fondateurs s'engagent à conserver leur tirage jusqu'en 2036.",
       "termsAgree": "J'ai lu et j'accepte les conditions du Cercle des Fondateurs ci-dessus, y compris l'engagement de conserver le tirage jusqu'en 2036 et la contribution sur le marché secondaire.",
       "donateCta": "Faire votre don",
       "accepting": "Enregistrement…",

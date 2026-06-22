@@ -572,36 +572,36 @@
       "error": "Something went wrong sending your inquiry. Please try again in a moment, or write to us directly."
     },
     "login": {
-      "heading": "Sign in to the Founders Circle",
-      "intro": "Enter the email address on your invitation. We'll send you a single-use sign-in link.",
-      "email": "Email address",
-      "submit": "Send sign-in link",
-      "submitting": "Sending…",
-      "successHeading": "Check your inbox.",
-      "successBody": "If a Founders Circle member account exists for this address, we've sent a sign-in link. The link is valid for 24 hours and can only be used once. If you don't see the email within a few minutes, check your spam folder.",
-      "tryAgain": "Didn't receive it? Try again.",
-      "notInvitedHeading": "Not yet a member of the Founders Circle?",
-      "notInvitedBody": "Learn more about the program.",
-      "notInvitedLink": "Founders Circle program",
-      "error": "Something went wrong. Please try again in a moment.",
+      "heading": "ファウンダーズ・サークルにサインイン",
+      "intro": "招待状に記載されたメールアドレスをご入力ください。一度だけ使用できるサインインリンクをお送りします。",
+      "email": "メールアドレス",
+      "submit": "サインインリンクを送信",
+      "submitting": "送信中…",
+      "successHeading": "受信トレイをご確認ください。",
+      "successBody": "このアドレスにファウンダーズ・サークルの会員アカウントが存在する場合、サインインリンクをお送りしました。リンクの有効期限は24時間で、一度のみご利用いただけます。数分待ってもメールが届かない場合は、迷惑メールフォルダをご確認ください。",
+      "tryAgain": "届きませんでしたか？ もう一度お試しください。",
+      "notInvitedHeading": "まだファウンダーズ・サークルの会員ではありませんか？",
+      "notInvitedBody": "プログラムの詳細をご覧ください。",
+      "notInvitedLink": "ファウンダーズ・サークル・プログラム",
+      "error": "問題が発生しました。しばらくしてからもう一度お試しください。",
       "reasons": {
-        "expired": "That sign-in link has expired or has already been used. Request a fresh link below.",
-        "notInvited": "This account isn’t on the Founders Circle list. If you believe this is an error, contact the stewardship team.",
-        "revoked": "Your Founders Circle access has been closed.",
-        "error": "Something went wrong opening that link. Request a fresh sign-in link below."
+        "expired": "このサインインリンクは有効期限が切れているか、すでに使用されています。下記から新しいリンクをリクエストしてください。",
+        "notInvited": "このアカウントはファウンダーズ・サークルのリストに登録されていません。誤りだと思われる場合は、スチュワードシップチームまでご連絡ください。",
+        "revoked": "ファウンダーズ・サークルへのアクセスは終了しました。",
+        "error": "リンクを開く際に問題が発生しました。下記から新しいサインインリンクをリクエストしてください。"
       }
     },
     "callback": {
-      "verifying": "Signing you in…",
-      "notInvitedHeading": "This account is not on the Founders Circle list.",
-      "notInvitedBody": "If you believe this is in error, please write to the stewardship team.",
-      "expiredHeading": "This sign-in link has expired or already been used.",
-      "expiredBody": "Request a new link from the sign-in page."
+      "verifying": "サインインしています…",
+      "notInvitedHeading": "このアカウントはファウンダーズ・サークルのリストに登録されていません。",
+      "notInvitedBody": "誤りだと思われる場合は、スチュワードシップチームまでご連絡ください。",
+      "expiredHeading": "このサインインリンクは有効期限が切れているか、すでに使用されています。",
+      "expiredBody": "サインインページから新しいリンクをリクエストしてください。"
     },
     "invite": {
-      "heading": "Welcome, {name}.",
-      "body": "Select continue to finish signing in to the Founders Circle. This quick step confirms you opened the link yourself.",
-      "continue": "Continue to the Founders Circle"
+      "heading": "{name} 様、ようこそ。",
+      "body": "「続ける」を選択して、ファウンダーズ・サークルへのサインインを完了してください。この簡単な手順で、ご本人がリンクを開いたことを確認します。",
+      "continue": "ファウンダーズ・サークルへ進む"
     },
     "portal": {
       "welcomeEyebrow": "ようこそ",
@@ -677,6 +677,8 @@
       "imageAlt": "カメラを構えるクワメ・ブラスウェイトのセルフポートレート",
       "heading": "{name} 様、ようこそ。",
       "intro": "ファウンダーズ・サークルへのご招待です。これは招待制で、アーカイブを支援し、クウェイメ・ブラスウェイトの未公開特別エディション・プリントを収蔵いただける機会です。以下の条件をご確認のうえ、ご寄付にお進みください。",
+      "intro2": "ファウンダーズ・サークルは、クウェイメ・ブラスウェイト・アーカイブの使命を前進させることに尽力する、限られた方々の集まりです。",
+      "intro3": "皆さまのご支援は、20世紀で最も重要な写真アーカイブのひとつを長期にわたり保存し、ご利用いただけるようにするための基盤を支えます。過去を守るだけでなく、この歴史を未来の世代へ受け継ぎ、人々の心を呼び起こすための枠組みを築きます。選ばれた支援者の皆さまによる、10,000ドル以上のご寄付をお願いしております。",
       "termsHeading": "条件",
       "term20x20": "50.8×50.8cm（20×20インチ）のアーカイバル特別エディション・プリント。ファウンダーズ・サークル外には一切提供されません。",
       "termDonation": "一律10,000ドルのご寄付（段階的な増額はありません）。",
@@ -684,6 +686,9 @@
       "holdUntil2036": "ファウンダーは、プリントを2036年まで保有することに同意します。",
       "secondaryMarket": "将来の二次販売の際には、売却額の{percent}をアーカイブに還元していただきます。",
       "whatYouReceiveHeading": "受け取るもの",
+      "benefitFirstLook": "ファウンダーズ・サークル会員として、新作をいち早くご覧いただけます。",
+      "benefitExhibition": "2026年10月に開催予定の個展（私とジェシー・ウィリアムズの共同キュレーション）にて、お名前を顕彰いたします。",
+      "benefitTax": "501(c)(3)団体へのご寄付として、IRS（米国内国歳入庁）の要件に準拠した寄付証明書を発行いたします。ファウンダーは、プリントを2036年まで保有することに同意します。",
       "termsAgree": "上記のファウンダーズ・サークルの条件（2036年までの保有の約束および二次市場での還元を含む）を読み、同意します。",
       "donateCta": "ご寄付に進む",
       "accepting": "保存中…",
