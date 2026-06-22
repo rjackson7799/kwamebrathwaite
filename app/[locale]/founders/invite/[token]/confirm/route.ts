@@ -63,7 +63,15 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       resolution.founder.email,
       resolution.founder.preferred_locale || 'en'
     )
-    return redirectGet(new URL(magicUrl))
+    // Re-base the callback onto the origin the founder is actually browsing
+    // (e.g. www vs apex). generateFounderMagicLink builds an absolute URL from
+    // the canonical siteUrl(), which can differ from the request host — and a
+    // cross-origin redirect after this POST trips the `form-action 'self'` CSP
+    // (next.config.mjs). The token is verified host-independently in the
+    // callback, so only the path + query matter.
+    const minted = new URL(magicUrl)
+    const sameOrigin = new URL(minted.pathname + minted.search, origin)
+    return redirectGet(sameOrigin)
   } catch (err) {
     console.error('founders invite confirm: magic link mint failed', err)
     return redirectGet(loginUrl)
