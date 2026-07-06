@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/founders-stale-invites",
       "schedule": "0 14 * * 1"
+    },
+    {
+      "path": "/api/cron/form-health",
+      "schedule": "0 8 * * *"
     }
   ]
 }
