@@ -1,7 +1,40 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** June 21, 2026
+**Last Updated:** July 6, 2026
+
+---
+
+## Licensing Form 500 Fix + Daily Form-Health Monitor (July 6, 2026)
+
+### Problem
+
+The public licensing form (`/licensing/request`) failed on every submission — `/api/licensing/types` and `/api/licensing/request` both returned 500, with cascading React hydration errors (#425/#418/#423) in the console.
+
+### Root Cause
+
+The licensing tables were **never created in Supabase**. `PGRST205 "Could not find the table 'public.license_types'"`. The schema lived only in [docs/SHOP_AND_LICENSING_SCHEMA.sql](docs/SHOP_AND_LICENSING_SCHEMA.sql) (a spec file, not an applied migration) — the exact "migration hygiene" gap flagged in the April 11 RLS entry below. The React errors were downstream of the failed fetch, not separate bugs.
+
+### What Was Fixed
+
+- [x] **Migration** [docs/migrations/2026-07-06_licensing_tables.sql](docs/migrations/2026-07-06_licensing_tables.sql) — creates `license_types`, `license_requests`, `license_request_artworks` (+ indexes, `updated_at` triggers, RLS, seed of the 5 default license types). Idempotent, wrapped in a transaction. **Applied to prod `jtsetwowalcnrmuygglb` 2026-07-06** and verified end-to-end (types 200, request 201). Commit `68cd4f1`.
+- [x] **Security (caught in review):** admin RLS uses `public.is_admin(auth.uid())`, NOT the pre-refactor `auth.role() = 'authenticated'`. Copying the old shop/licensing pattern would have let Founders Circle members (same `auth.users` pool) read all license-request PII via the anon REST API — the hole the [2026-05-22 refactor](docs/migrations/2026-05-22-admins-and-rls-refactor.sql) closed. **⚠️ `SHOP_AND_LICENSING_SCHEMA.sql`'s shop half still carries this flaw on `orders` (customer PII) — port to `is_admin()` before ever running it.**
+
+### Daily Form-Health Monitor (closes the April 9 "error monitoring / uptime pings" deferral)
+
+- [x] **Cron** [app/api/cron/form-health/route.ts](app/api/cron/form-health/route.ts) at `0 8 * * *` UTC ([vercel.json](vercel.json)). Synthetic monitor for the three public lead forms so a silent DB break (like this one) is caught within ~24h instead of by a lost lead.
+- Probes the **data layer** via the service-role client rather than firing real submissions (which would email the team + trip rate-limit/spam filters): reads `license_types`, and does an insert+delete round-trip against `inquiries` (contact + works/artwork paths) and `license_requests` (+ junction FK). Test rows are labelled, kept out of the admin "new" queue, and deleted before the response — nothing left behind.
+- **On failure:** emails `MONITOR_ALERT_EMAIL` (default `ryan.jackson.2009@gmail.com` — dev only, deliberately not the all-admins `sendAdminEmail`) via Resend and returns 500 so the failure also surfaces in Vercel's cron logs. Silent on success. Auth via `CRON_SECRET` like the other crons. Commit `9364480`.
+- Verified locally: wrong secret → 401, healthy → 200 all-pass, forced failure → 500 + alert delivered, cleanup leaves zero rows, typecheck clean.
+
+### To Tune / Operate
+
+- Frequency → edit the `form-health` schedule in [vercel.json](vercel.json); alert recipient → set `MONITOR_ALERT_EMAIL` in Vercel (no code change).
+- `CRON_SECRET` already set in Vercel (other crons use it). Manual trigger: Vercel dashboard → Cron Jobs → Run.
+
+### Status
+
+Both commits pushed to `main` and deployed via Vercel. Licensing form works in production (DB-only fix, no redeploy needed). Monitor registers on next deploy; first run next 08:00 UTC.
 
 ---
 
