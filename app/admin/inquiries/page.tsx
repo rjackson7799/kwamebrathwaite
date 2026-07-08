@@ -142,15 +142,13 @@ export default function AdminInquiriesPage() {
     }
   }
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return '—'
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
+  const formatDateParts = (dateString: string | null) => {
+    if (!dateString) return null
+    const d = new Date(dateString)
+    return {
+      date: d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+      time: d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+    }
   }
 
   const truncateText = (text: string | null, length: number = 50) => {
@@ -164,15 +162,16 @@ export default function AdminInquiriesPage() {
       label: 'Contact',
       sortable: true,
       render: (row) => (
-        <div>
-          <p className="font-medium text-gray-900">{row.name}</p>
-          <p className="text-xs text-gray-500">{row.email}</p>
+        <div className="max-w-[200px]">
+          <p className="font-medium text-gray-900 truncate" title={row.name}>{row.name}</p>
+          <p className="text-xs text-gray-500 truncate" title={row.email}>{row.email}</p>
         </div>
       ),
     },
     {
       key: 'source',
       label: 'Source',
+      className: 'whitespace-nowrap',
       render: (row) =>
         row.source === 'founder_inquiry' ? (
           <span className="inline-flex items-center gap-1 text-xs uppercase tracking-wider text-[#8a6f2b] bg-[#FAF6EC] border border-[#C9A961] px-2 py-0.5 rounded">
@@ -186,14 +185,15 @@ export default function AdminInquiriesPage() {
       key: 'subject',
       label: 'Subject',
       render: (row) => (
-        <span className="text-sm text-gray-600">
-          {truncateText(row.subject)}
+        <span className="block max-w-[260px] truncate text-sm text-gray-600" title={row.subject ?? undefined}>
+          {row.subject || '—'}
         </span>
       ),
     },
     {
       key: 'inquiry_type',
       label: 'Type',
+      className: 'whitespace-nowrap',
       render: (row) => (
         row.inquiry_type ? (
           <StatusBadge status={row.inquiry_type} />
@@ -205,6 +205,7 @@ export default function AdminInquiriesPage() {
     {
       key: 'status',
       label: 'Status',
+      className: 'whitespace-nowrap',
       render: (row) =>
         row.source === 'founder_inquiry' && row.founder_status ? (
           <StatusBadge status={row.founder_status} />
@@ -216,15 +217,22 @@ export default function AdminInquiriesPage() {
       key: 'created_at',
       label: 'Date',
       sortable: true,
-      render: (row) => (
-        <span className="text-sm text-gray-600">
-          {formatDate(row.created_at)}
-        </span>
-      ),
+      className: 'whitespace-nowrap',
+      render: (row) => {
+        const d = formatDateParts(row.created_at)
+        if (!d) return <span className="text-gray-400">—</span>
+        return (
+          <div className="whitespace-nowrap leading-tight">
+            <div className="text-sm text-gray-700">{d.date}</div>
+            <div className="text-xs text-gray-400">{d.time}</div>
+          </div>
+        )
+      },
     },
     {
       key: 'age',
       label: 'Age',
+      className: 'whitespace-nowrap',
       render: (row) => {
         const bucket = ageBucket(row)
         const age = formatAge(row.created_at)

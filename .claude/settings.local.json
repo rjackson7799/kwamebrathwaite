@@ -10,7 +10,8 @@
       "mcp__plugin_playwright_playwright__browser_navigate",
       "Skill(frontend-design)",
       "Skill(frontend-design:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "PowerShell(npm run build 2>&1)"
     ]
   }
 }
