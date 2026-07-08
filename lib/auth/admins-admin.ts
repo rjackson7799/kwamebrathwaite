@@ -7,7 +7,7 @@
 // touching the Supabase dashboard.
 
 import { createAdminClient } from '@/lib/supabase/server'
-import { sendUserEmail } from '@/lib/email/send'
+import { sendUserEmail, type SendEmailResult } from '@/lib/email/send'
 import { AdminPasswordResetEmail } from '@/lib/email/templates'
 import { siteUrl } from '@/lib/auth/site-url'
 
@@ -89,7 +89,7 @@ export async function generateAdminPasswordResetLink(
 export async function sendAdminPasswordResetEmail(args: {
   toEmail: string
   actionLink: string
-}): Promise<{ success: boolean }> {
+}): Promise<SendEmailResult> {
   return sendUserEmail(
     args.toEmail,
     'Reset your admin password · Kwame Brathwaite Archive',

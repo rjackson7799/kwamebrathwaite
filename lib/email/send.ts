@@ -8,7 +8,7 @@ interface SendEmailOptions {
   replyTo?: string
 }
 
-interface SendEmailResult {
+export interface SendEmailResult {
   success: boolean
   id?: string
   error?: string

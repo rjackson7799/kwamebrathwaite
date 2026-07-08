@@ -94,10 +94,15 @@ export async function POST(request: NextRequest) {
   // Real admin. Generate the recovery link and send it via Resend.
   try {
     const actionLink = await generateAdminPasswordResetLink(normalisedEmail)
-    await sendAdminPasswordResetEmail({
+    const emailResult = await sendAdminPasswordResetEmail({
       toEmail: normalisedEmail,
       actionLink,
     })
+    if (!emailResult.success) {
+      throw new Error(
+        `sendAdminPasswordResetEmail failed: ${emailResult.error ?? 'unknown error'}`
+      )
+    }
     return successResponse({ message: GENERIC_MESSAGE })
   } catch (err) {
     console.error('admin/auth/forgot-password send failed:', err)
