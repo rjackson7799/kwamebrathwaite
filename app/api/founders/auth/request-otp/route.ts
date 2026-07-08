@@ -11,22 +11,24 @@ import {
   founderEmailExists,
 } from '@/lib/auth/founders'
 import {
-  generateFounderMagicLink,
+  createFounderInviteLink,
   sendFounderMagicLinkEmail,
 } from '@/lib/auth/founders-admin'
 import { createAdminClient } from '@/lib/supabase/server'
 
 // POST /api/founders/auth/request-otp
 //
-// Public-facing magic-link request. Returns the SAME generic response whether
-// the email is a real Founder or not (membership-leak prevention).
+// Public-facing sign-in link request. Returns the SAME generic response
+// whether the email is a real Founder or not (membership-leak prevention).
+// Sends a durable 30-day multi-use bridge link (founder_invite_links) rather
+// than a raw one-time Supabase token, so old emails keep working — the
+// bridge's confirm step mints the fresh Supabase token at click time.
 //
 // Defenses:
 //   - Honeypot
 //   - Persistent per-IP and per-email rate limits (survives Vercel cold starts)
-//   - Membership-existence check before generateLink (no auth.users row gets
+//   - Membership-existence check before minting (no auth.users row gets
 //     silently created for unknown emails)
-//   - shouldCreateUser:false on generateLink as belt-and-braces
 export async function POST(request: NextRequest) {
   let body: unknown
   try {
@@ -108,24 +110,26 @@ export async function POST(request: NextRequest) {
     // locale-correct callback link.
     const { data: founder } = await supabase
       .from('founders')
-      .select('full_name, status, preferred_locale')
+      .select('user_id, full_name, status, preferred_locale')
       .eq('email', normalisedEmail)
       .maybeSingle()
 
-    // Don't send sign-in links to declined/archived members — they have no
-    // pending invitation or access. We still return the same generic response
-    // so this never reveals a member's terminal state.
-    if (founder && (founder.status === 'archived' || founder.status === 'declined')) {
+    // Only invited/active members can use a sign-in link — durable links
+    // dead-end for paused/declined and archived is revoked. We still return
+    // the same generic response so this never reveals a member's state.
+    if (!founder || (founder.status !== 'invited' && founder.status !== 'active')) {
       return successResponse({
         message:
           "If your email is on file, you'll receive a sign-in link shortly.",
       })
     }
 
-    const actionLink = await generateFounderMagicLink(
-      normalisedEmail,
-      founder?.preferred_locale ?? 'en'
-    )
+    const { link: actionLink } = await createFounderInviteLink({
+      userId: founder.user_id,
+      email: normalisedEmail,
+      locale: founder.preferred_locale ?? 'en',
+      createdBy: 'self:request-otp',
+    })
     await sendFounderMagicLinkEmail({
       toEmail: normalisedEmail,
       fullName: founder?.full_name ?? null,

@@ -5,7 +5,7 @@ import { requireAdmin, logActivity, getCurrentUserEmail } from '@/lib/api/admin'
 import { createAdminClient } from '@/lib/supabase/server'
 import {
   ensureAuthUserForEmail,
-  generateFounderMagicLink,
+  createFounderInviteLink,
   sendFounderInvitationEmail,
 } from '@/lib/auth/founders-admin'
 
@@ -143,7 +143,12 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const adminEmail = await getCurrentUserEmail()
     let inviteEmailSent = false
     try {
-      const actionLink = await generateFounderMagicLink(inquiry.email)
+      const { link: actionLink } = await createFounderInviteLink({
+        userId,
+        email: inquiry.email,
+        locale,
+        createdBy: adminEmail ?? null,
+      })
       const sendResult = await sendFounderInvitationEmail({
         toEmail: inquiry.email,
         fullName,

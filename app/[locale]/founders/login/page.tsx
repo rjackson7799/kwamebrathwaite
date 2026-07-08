@@ -18,6 +18,8 @@ function reasonMessageKey(reason: string | undefined): string | null {
       return 'reasons.notInvited'
     case 'revoked':
       return 'reasons.revoked'
+    case 'rate_limited':
+      return 'reasons.rateLimited'
     case 'server_error':
       return 'reasons.error'
     default:
@@ -76,7 +78,9 @@ export default async function FoundersLoginPage({ params, searchParams }: PagePr
             </div>
           )}
 
-          <MagicLinkRequestForm />
+          {/* When they arrived from a failed link, leave them one action:
+              type email → send. */}
+          <MagicLinkRequestForm autoFocusEmail={Boolean(reasonKey)} />
 
           {/* "Not a member yet?" learn-more link temporarily removed while /founders is
               unpublished. Restore the block linking to /founders (and the Link import +

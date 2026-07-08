@@ -573,21 +573,22 @@
     },
     "login": {
       "heading": "Connexion au Cercle des Fondateurs",
-      "intro": "Saisissez l'adresse e-mail figurant sur votre invitation. Nous vous enverrons un lien de connexion à usage unique.",
+      "intro": "Saisissez l'adresse e-mail figurant sur votre invitation. Nous vous enverrons un lien de connexion valable 30 jours.",
       "email": "Adresse e-mail",
       "submit": "Envoyer le lien de connexion",
       "submitting": "Envoi…",
       "successHeading": "Consultez votre boîte de réception.",
-      "successBody": "Si un compte membre du Cercle des Fondateurs existe pour cette adresse, nous vous avons envoyé un lien de connexion. Le lien est valable 24 heures et ne peut être utilisé qu'une seule fois. Si vous ne voyez pas l'e-mail d'ici quelques minutes, vérifiez votre dossier spam.",
+      "successBody": "Si un compte membre du Cercle des Fondateurs existe pour cette adresse, nous vous avons envoyé un lien de connexion. Le lien est valable 30 jours et peut être utilisé plusieurs fois — conservez l'e-mail et revenez-y à tout moment. Si vous ne le voyez pas d'ici quelques minutes, vérifiez votre dossier spam.",
       "tryAgain": "Vous ne l'avez pas reçu ? Réessayer.",
       "notInvitedHeading": "Pas encore membre du Cercle des Fondateurs ?",
       "notInvitedBody": "En savoir plus sur le programme.",
       "notInvitedLink": "Programme du Cercle des Fondateurs",
       "error": "Une erreur s'est produite. Veuillez réessayer dans un instant.",
       "reasons": {
-        "expired": "Ce lien de connexion a expiré ou a déjà été utilisé. Demandez un nouveau lien ci-dessous.",
+        "expired": "Ce lien de connexion a expiré — ce n'est pas grave. Saisissez votre adresse e-mail ci-dessous et nous vous en enverrons un nouveau immédiatement.",
         "notInvited": "Ce compte ne figure pas sur la liste du Cercle des Fondateurs. Si vous pensez qu'il s'agit d'une erreur, contactez l'équipe.",
         "revoked": "Votre accès au Cercle des Fondateurs a été fermé.",
+        "rateLimited": "Trop de tentatives de connexion en peu de temps. Veuillez patienter une minute, puis réessayez votre lien.",
         "error": "Une erreur s'est produite à l'ouverture de ce lien. Demandez un nouveau lien de connexion ci-dessous."
       }
     },
@@ -601,6 +602,8 @@
     "invite": {
       "heading": "Bienvenue, {name}.",
       "body": "Sélectionnez « Continuer » pour terminer votre connexion au Cercle des Fondateurs. Cette étape rapide confirme que vous avez ouvert le lien vous-même.",
+      "headingReturning": "Bon retour, {name}.",
+      "bodyReturning": "Sélectionnez « Continuer » pour vous connecter à votre espace du Cercle des Fondateurs. Cette étape rapide confirme que vous avez ouvert le lien vous-même.",
       "continue": "Continuer vers le Cercle des Fondateurs"
     },
     "portal": {

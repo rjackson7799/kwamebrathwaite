@@ -1,7 +1,31 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** July 6, 2026
+**Last Updated:** July 7, 2026
+
+---
+
+## Founders Circle: Evergreen Sign-in Links (July 7, 2026)
+
+### Problem
+
+Donor complaints: members went back to *previous* emails, clicked the old magic link, and hit "expired or already used" — blocking the exact people we want reaching the invitation page to donate. Root cause: every founder email carried a raw Supabase magic-link token (one-time, 24h).
+
+### What Changed
+
+- [x] **All founder-facing emails now carry the durable 30-day multi-use bridge link** (`/founders/invite/[token]`, built 2026-06-21 for admin copy-paste invites) instead of a raw one-time token. Swapped `generateFounderMagicLink` → `createFounderInviteLink` in [request-otp](app/api/founders/auth/request-otp/route.ts) (tagged `self:request-otp`), [admin create+invite](app/api/admin/founders/route.ts), [admin resend](app/api/admin/founders/[id]/invite/route.ts), and [inquiry convert](app/api/admin/inquiries/[id]/convert/route.ts). Any email in a donor's inbox now works for 30 days and can be clicked multiple times. No DB migration — reuses `founder_invite_links` as-is.
+- [x] Interstitial shows "Welcome back, {name}" for `active` members vs invitation copy for `invited`; confirm POST rate-limited (`founder_invite_confirm`, 10/min/IP → `?reason=rate_limited`). GET page deliberately not rate-limited.
+- [x] Warmer expired-link recovery: friendlier `reasons.expired` copy + email field autofocus on the login page when arriving from a failed link. New i18n keys (`rateLimited`, `headingReturning`, `bodyReturning`) in en/fr/ja.
+- [x] Email templates updated ("works for 30 days, use it more than once").
+- [x] request-otp now only sends to `invited`/`active` (paused/declined/archived get the same generic success — no state leak); admin resend tightened to `invited` only (409 otherwise). `createFounderInviteLink` clears the user's expired rows before insert (housekeeping).
+
+### Security tradeoff (deliberate, user-approved)
+
+30-day multi-use bearer link in email is weaker than 24h one-time. Mitigations preserved: POST-only confirm interstitial (defeats scanners), SHA-256-only storage, no-store/no-referrer, per-member revocation + global sign-out, `last_login_at` audit. Session security unchanged — the bridge mints a fresh one-time Supabase token at click time. TTL dial: `INVITE_LINK_TTL_MS` in [lib/founders/invite-links.ts](lib/founders/invite-links.ts).
+
+### Verified
+
+Typecheck clean, 25 unit tests pass, prod build passes. Live smoke (dev :3001): expired/rate_limited copy renders in en/fr/ja, bad-token invite redirects to login, unknown-email request-otp returns generic success, confirm rate limit trips at 11th POST/min. Note: 24h links already in inboxes stay dead (softened landing); every email sent from now on is evergreen.
 
 ---
 

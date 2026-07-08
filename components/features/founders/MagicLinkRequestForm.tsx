@@ -13,7 +13,12 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-export function MagicLinkRequestForm() {
+interface MagicLinkRequestFormProps {
+  /** Focus the email field on mount (used when arriving from a failed link). */
+  autoFocusEmail?: boolean
+}
+
+export function MagicLinkRequestForm({ autoFocusEmail = false }: MagicLinkRequestFormProps) {
   const t = useTranslations('founders.login')
 
   const [submitting, setSubmitting] = useState(false)
@@ -91,6 +96,7 @@ export function MagicLinkRequestForm() {
           id="founder-login-email"
           type="email"
           autoComplete="email"
+          autoFocus={autoFocusEmail}
           required
           className={`w-full bg-transparent border-0 border-b border-[#3a3a3a] py-2 text-[#E6E2D6] placeholder-[#5a5a5a] focus:outline-none focus:border-[#C9A961] transition-colors text-lg ${
             errors.email ? 'border-red-700' : ''

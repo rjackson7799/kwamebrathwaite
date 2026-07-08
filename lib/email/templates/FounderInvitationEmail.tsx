@@ -2,7 +2,7 @@ import { Text, Link, Section, Hr } from '@react-email/components'
 import { BaseLayout } from './BaseLayout'
 
 interface FounderInvitationEmailProps {
-  /** Action link minted by supabase.auth.admin.generateLink({ type: 'magiclink' }) */
+  /** Durable bridge link minted by createFounderInviteLink (30-day, multi-use) */
   actionLink: string
   /** Full name from the founders row, used for the salutation. */
   fullName: string
@@ -53,9 +53,9 @@ export function FounderInvitationEmail({
       </Section>
 
       <Text style={smallNote}>
-        This link is valid for 24 hours and can only be used once. You can
-        return anytime before you&rsquo;re ready to give &mdash; just request a
-        fresh sign-in link from the sign-in page.
+        This link works for 30 days and can be used more than once &mdash;
+        return to this email anytime. If it ever stops working, you can
+        request a fresh link from the sign-in page.
       </Text>
 
       <Hr style={divider} />

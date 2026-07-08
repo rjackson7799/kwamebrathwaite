@@ -2,7 +2,7 @@ import { Text, Link, Section, Hr } from '@react-email/components'
 import { BaseLayout } from './BaseLayout'
 
 interface FounderMagicLinkEmailProps {
-  /** Action link minted by supabase.auth.admin.generateLink({ type: 'magiclink' }) */
+  /** Durable bridge link minted by createFounderInviteLink (30-day, multi-use) */
   actionLink: string
   /** Full name from the founders row. Falls back to a generic salutation. */
   fullName?: string | null
@@ -25,8 +25,9 @@ export function FounderMagicLinkEmail({
       </Text>
 
       <Text style={paragraph}>
-        Use the link below to sign in to the Founders Circle. It is
-        valid for 24 hours and can be used once.
+        Use the link below to sign in to the Founders Circle. It works for
+        30 days and can be used more than once &mdash; feel free to come back
+        to this email whenever you&rsquo;d like to sign in.
       </Text>
 
       <Section style={buttonWrap}>

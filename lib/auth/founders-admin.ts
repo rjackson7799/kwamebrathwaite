@@ -198,7 +198,17 @@ export async function createFounderInviteLink(args: {
   const supabase = createAdminClient() as any
 
   const raw = randomBytes(32).toString('hex')
-  const expiresAt = new Date(Date.now() + INVITE_LINK_TTL_MS).toISOString()
+  const now = new Date()
+  const expiresAt = new Date(now.getTime() + INVITE_LINK_TTL_MS).toISOString()
+
+  // Best-effort housekeeping: sign-in requests mint rows regularly now that
+  // every founder email carries a durable link, so clear this user's already
+  // expired rows rather than letting them accumulate. Failure is non-fatal.
+  await supabase
+    .from('founder_invite_links')
+    .delete()
+    .eq('user_id', args.userId)
+    .lt('expires_at', now.toISOString())
 
   const { error } = await supabase.from('founder_invite_links').insert({
     user_id: args.userId,

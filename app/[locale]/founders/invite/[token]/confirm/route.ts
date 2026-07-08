@@ -4,6 +4,7 @@ import {
   generateFounderMagicLink,
 } from '@/lib/auth/founders-admin'
 import { foundersPath } from '@/lib/auth/founders'
+import { rateLimitPersistent, getClientIP } from '@/lib/api'
 
 // POST /founders/invite/[token]/confirm
 //
@@ -45,6 +46,24 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     `${foundersPath(locale, '/founders/login')}?reason=expired`,
     origin
   )
+
+  // Per-IP throttle on magic-link minting. The GET page is deliberately NOT
+  // rate-limited (a false positive there would lock out the members this
+  // bridge exists to help); token brute force is infeasible regardless
+  // (256-bit tokens, unique hash index).
+  const ipLimit = await rateLimitPersistent(
+    'founder_invite_confirm',
+    `ip:${getClientIP(request)}`,
+    10,
+    60 * 1000 // 10 per minute per IP
+  )
+  if (!ipLimit.success) {
+    const rateLimitedUrl = new URL(
+      `${foundersPath(locale, '/founders/login')}?reason=rate_limited`,
+      origin
+    )
+    return redirectGet(rateLimitedUrl)
+  }
 
   let resolution
   try {

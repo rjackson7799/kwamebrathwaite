@@ -12,7 +12,7 @@ import { getPagination } from '@/lib/api/pagination'
 import { createAdminClient } from '@/lib/supabase/server'
 import {
   ensureAuthUserForEmail,
-  generateFounderMagicLink,
+  createFounderInviteLink,
   sendFounderInvitationEmail,
 } from '@/lib/auth/founders-admin'
 
@@ -166,7 +166,12 @@ export async function POST(request: NextRequest) {
   if (!data.skip_invite) {
     try {
       const adminEmail = await getCurrentUserEmail()
-      const actionLink = await generateFounderMagicLink(data.email, data.preferred_locale ?? 'en')
+      const { link: actionLink } = await createFounderInviteLink({
+        userId,
+        email: data.email,
+        locale: data.preferred_locale ?? 'en',
+        createdBy: adminEmail ?? null,
+      })
       const result = await sendFounderInvitationEmail({
         toEmail: data.email,
         fullName: data.full_name,

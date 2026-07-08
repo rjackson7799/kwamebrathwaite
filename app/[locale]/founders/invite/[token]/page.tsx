@@ -40,6 +40,9 @@ export default async function FoundersInvitePage({ params }: PageProps) {
   const tFounders = await getTranslations({ locale, namespace: 'founders' })
   const name = resolution.founder.recognition_name || resolution.founder.full_name
   const confirmAction = foundersPath(locale, `/founders/invite/${token}/confirm`)
+  // Active members reach this page via the sign-in email; invited members via
+  // their invitation. Same bridge, different framing.
+  const returning = resolution.founder.status === 'active'
 
   return (
     <main className="bg-[#0e0e0e] text-[#E6E2D6] min-h-screen flex flex-col">
@@ -52,11 +55,11 @@ export default async function FoundersInvitePage({ params }: PageProps) {
           <div className="w-16 h-[2px] bg-[#C9A961] mx-auto mb-8" />
 
           <h1 className="font-heading font-light text-3xl sm:text-4xl text-[#F5EFE0] mb-6 leading-tight">
-            {t('heading', { name })}
+            {returning ? t('headingReturning', { name }) : t('heading', { name })}
           </h1>
 
           <p className="text-[#C0BBA8] text-sm sm:text-base leading-relaxed mb-10">
-            {t('body')}
+            {returning ? t('bodyReturning') : t('body')}
           </p>
 
           <form action={confirmAction} method="post">

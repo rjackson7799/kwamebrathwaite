@@ -610,21 +610,22 @@
     },
     "login": {
       "heading": "Sign in to the Founders Circle",
-      "intro": "Enter the email address on your invitation. We'll send you a single-use sign-in link.",
+      "intro": "Enter the email address on your invitation. We'll send you a sign-in link that works for 30 days.",
       "email": "Email address",
       "submit": "Send sign-in link",
       "submitting": "Sending…",
       "successHeading": "Check your inbox.",
-      "successBody": "If a Founders Circle member account exists for this address, we've sent a sign-in link. The link is valid for 24 hours and can only be used once. If you don't see the email within a few minutes, check your spam folder.",
+      "successBody": "If a Founders Circle member account exists for this address, we've sent a sign-in link. The link works for 30 days and can be used more than once — keep the email and come back to it anytime. If you don't see it within a few minutes, check your spam folder.",
       "tryAgain": "Didn't receive it? Try again.",
       "notInvitedHeading": "Not yet a member of the Founders Circle?",
       "notInvitedBody": "Learn more about the program.",
       "notInvitedLink": "Founders Circle program",
       "error": "Something went wrong. Please try again in a moment.",
       "reasons": {
-        "expired": "That sign-in link has expired or has already been used. Request a fresh link below.",
+        "expired": "That sign-in link has expired — no problem. Enter your email below and we'll send you a fresh one right away.",
         "notInvited": "This account isn’t on the Founders Circle list. If you believe this is an error, contact the stewardship team.",
         "revoked": "Your Founders Circle access has been closed.",
+        "rateLimited": "Too many sign-in attempts in a short time. Please wait a minute, then try your link again.",
         "error": "Something went wrong opening that link. Request a fresh sign-in link below."
       }
     },
@@ -638,6 +639,8 @@
     "invite": {
       "heading": "Welcome, {name}.",
       "body": "Select continue to finish signing in to the Founders Circle. This quick step confirms you opened the link yourself.",
+      "headingReturning": "Welcome back, {name}.",
+      "bodyReturning": "Select continue to sign in to your Founders Circle portal. This quick step confirms you opened the link yourself.",
       "continue": "Continue to the Founders Circle"
     },
     "portal": {

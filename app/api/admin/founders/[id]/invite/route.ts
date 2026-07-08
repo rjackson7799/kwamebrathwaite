@@ -3,7 +3,7 @@ import { successResponse, errorResponse, ErrorCodes } from '@/lib/api'
 import { requireAdmin, logActivity, getCurrentUserEmail } from '@/lib/api/admin'
 import { createAdminClient } from '@/lib/supabase/server'
 import {
-  generateFounderMagicLink,
+  createFounderInviteLink,
   sendFounderInvitationEmail,
 } from '@/lib/auth/founders-admin'
 
@@ -43,10 +43,11 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return errorResponse(ErrorCodes.NOT_FOUND, 'Founder not found', 404)
     }
 
-    // Resending an invitation only makes sense for a pending/declined invite.
-    // For active/paused/archived members, the sign-in link page is the right
-    // tool (this route is "Resend invitation", not "Send sign-in link").
-    if (founder.status !== 'invited' && founder.status !== 'declined') {
+    // Resending an invitation only makes sense for a pending invite — durable
+    // links dead-end for declined/paused, and for active/archived members the
+    // sign-in link page is the right tool (this route is "Resend invitation",
+    // not "Send sign-in link").
+    if (founder.status !== 'invited') {
       return errorResponse(
         'CONFLICT',
         `This founder is ${founder.status}; resending an invitation isn't applicable. To re-invite, set status to Invited first.`,
@@ -56,7 +57,12 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     const adminEmail = await getCurrentUserEmail()
 
-    const actionLink = await generateFounderMagicLink(founder.email, founder.preferred_locale ?? 'en')
+    const { link: actionLink } = await createFounderInviteLink({
+      userId: founder.user_id,
+      email: founder.email,
+      locale: founder.preferred_locale ?? 'en',
+      createdBy: adminEmail ?? null,
+    })
     const result = await sendFounderInvitationEmail({
       toEmail: founder.email,
       fullName: founder.full_name,
