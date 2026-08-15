@@ -25,6 +25,7 @@ interface ExhibitionFormData {
   image_url?: string | null
   thumbnail_image_url?: string | null
   exhibition_type?: 'past' | 'current' | 'upcoming' | null
+  entry_kind?: 'exhibition' | 'screening' | 'talk' | 'event'
   location_lat?: number | null
   location_lng?: number | null
   venue_url?: string | null
@@ -90,6 +91,7 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
       image_url: null,
       thumbnail_image_url: null,
       exhibition_type: null,
+      entry_kind: 'exhibition',
       location_lat: null,
       location_lng: null,
       venue_url: null,
@@ -340,12 +342,29 @@ export function ExhibitionForm({ exhibition, isEdit = false }: ExhibitionFormPro
                   />
                 </FormField>
 
-                <FormField label="Exhibition Type" htmlFor="exhibition_type">
+                <FormField
+                  label="Exhibition Type"
+                  htmlFor="exhibition_type"
+                  hint="When it runs, relative to today"
+                >
                   <Select id="exhibition_type" {...register('exhibition_type')}>
                     <option value="">Select type</option>
                     <option value="upcoming">Upcoming</option>
                     <option value="current">Current</option>
                     <option value="past">Past</option>
+                  </Select>
+                </FormField>
+
+                <FormField
+                  label="Entry Kind"
+                  htmlFor="entry_kind"
+                  hint="What it is. Separate from Exhibition Type — a screening is also upcoming or past."
+                >
+                  <Select id="entry_kind" {...register('entry_kind')}>
+                    <option value="exhibition">Exhibition</option>
+                    <option value="screening">Screening</option>
+                    <option value="talk">Talk</option>
+                    <option value="event">Event</option>
                   </Select>
                 </FormField>
               </div>

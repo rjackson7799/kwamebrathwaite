@@ -381,6 +381,13 @@ export const adminExhibitionSchema = z.object({
   image_url: z.string().url().optional().nullable().or(z.literal('')),
   thumbnail_image_url: z.string().url().optional().nullable().or(z.literal('')),
   exhibition_type: z.enum(['past', 'current', 'upcoming']).optional().nullable(),
+  // What KIND of entry this is — orthogonal to exhibition_type, which is
+  // temporal. Added by 2026-08-14-content-import.sql with a default of
+  // 'exhibition', so existing rows and older clients keep working.
+  entry_kind: z
+    .enum(['exhibition', 'screening', 'talk', 'event'])
+    .optional()
+    .default('exhibition'),
   location_lat: z.coerce.number().optional().nullable(),
   location_lng: z.coerce.number().optional().nullable(),
   venue_url: z.string().url().optional().nullable().or(z.literal('')),
@@ -755,4 +762,43 @@ export const generateRoomSchema = z.object({
   prompt: z.string().min(3, 'Prompt is required').max(500),
   email: z.string().email('Invalid email address').max(255),
   session_id: z.string().max(100),
+})
+
+// ============================================
+// Smart Import Schemas
+// ============================================
+
+/** Create + parse a batch. */
+export const contentImportCreateSchema = z.object({
+  raw_text: z.string().min(1, 'Paste some text first').max(40000, 'That paste is too large'),
+  source_label: z.string().max(200).optional().nullable(),
+  /**
+   * Echoed back by the client after a 409 COST_CONFIRMATION_REQUIRED. The
+   * server RE-COMPUTES the estimate and compares rather than trusting this
+   * number, so a client cannot skip the gate by sending a small value.
+   */
+  confirmed_cost_estimate: z.number().min(0).optional(),
+})
+
+/** Edit one staged item. All fields optional — this is a partial save. */
+export const contentImportItemPatchSchema = z.object({
+  edited_data: z.record(z.string(), z.unknown()).optional(),
+  apply_mask: z.array(z.string().max(64)).max(64).optional(),
+  action: z.enum(['create', 'update', 'skip']).optional(),
+  target_type: z.enum(['exhibition', 'press']).optional(),
+  entry_kind: z.enum(['exhibition', 'screening', 'talk', 'event']).optional().nullable(),
+  /** Marks a LIVE update as affirmatively reviewed. Cannot be unset via PATCH. */
+  reviewed: z.boolean().optional(),
+})
+
+/** Publish a selection of items from one batch. */
+export const contentImportPublishSchema = z.object({
+  itemIds: z.array(z.string().uuid()).min(1, 'Select at least one item').max(200),
+})
+
+export const contentImportFiltersSchema = paginationSchema.extend({
+  include_archived: z
+    .string()
+    .optional()
+    .transform((v) => v === 'true'),
 })

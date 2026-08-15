@@ -100,13 +100,24 @@
       "upcoming": "近日公開",
       "past": "終了"
     },
+    "entryKind": {
+      "exhibition": "展覧会",
+      "screening": "上映",
+      "talk": "トーク",
+      "event": "イベント"
+    },
     "detail": {
       "backToExhibitions": "展覧会一覧に戻る",
       "dates": "会期",
       "venue": "会場",
       "location": "所在地",
       "visitVenue": "会場ウェブサイトを見る",
-      "aboutExhibition": "この展覧会について",
+      "about": {
+        "exhibition": "この展覧会について",
+        "screening": "この上映について",
+        "talk": "このトークについて",
+        "event": "このイベントについて"
+      },
       "featuredWorks": "展示作品",
       "inquire": "この展覧会についてお問い合わせ",
       "viewFullSize": "フルサイズで表示"
@@ -122,6 +133,9 @@
       "setReminder": "リマインダー設定",
       "share": "共有",
       "addToCalendar": "カレンダーに追加",
+      "calendarDescription": "{location}での{kind}\n\n詳細: {url}",
+      "calendarLocationFallback": "会場は後日発表",
+      "calendarDownloaded": "カレンダーイベントをダウンロードしました",
       "getDirections": "道順を取得",
       "viewDetails": "詳細を見る",
       "blockedTitle": "Google Maps はブロックされています",

@@ -11,12 +11,17 @@ interface AddToCalendarButtonProps {
 
 export function AddToCalendarButton({ exhibition }: AddToCalendarButtonProps) {
   const t = useTranslations('exhibitions.map')
+  // Kind labels live one level up, alongside the temporal status labels.
+  const tExhibitions = useTranslations('exhibitions')
   const locale = useLocale()
   const [showToast, setShowToast] = useState(false)
 
   const handleAddToCalendar = () => {
-    if (!exhibition.start_date || !exhibition.end_date) {
-      console.error('Missing exhibition dates')
+    // Only start_date is required. Single-day entries — most screenings and
+    // talks — carry no end_date, and requiring one left this button
+    // permanently disabled for every one of them.
+    if (!exhibition.start_date) {
+      console.error('Missing exhibition start date')
       return
     }
 
@@ -28,9 +33,15 @@ export function AddToCalendarButton({ exhibition }: AddToCalendarButtonProps) {
       downloadICS({
         id: exhibition.id,
         title: exhibition.title,
-        description: `Exhibition at ${exhibition.venue || 'venue'}${
-          exhibition.city ? `, ${exhibition.city}` : ''
-        }${exhibition.country ? `, ${exhibition.country}` : ''}\n\nMore info: ${exhibitionUrl}`,
+        // Was a hard-coded English "Exhibition at …" — untranslated, and wrong
+        // for a screening or a talk. Both now come from the message files.
+        description: t('calendarDescription', {
+          kind: tExhibitions(`entryKind.${exhibition.entry_kind ?? 'exhibition'}`),
+          location:
+            [exhibition.venue, exhibition.city, exhibition.country].filter(Boolean).join(', ') ||
+            t('calendarLocationFallback'),
+          url: exhibitionUrl,
+        }),
         location: [exhibition.venue, exhibition.city, exhibition.country]
           .filter(Boolean)
           .join(', '),
@@ -50,7 +61,7 @@ export function AddToCalendarButton({ exhibition }: AddToCalendarButtonProps) {
     <div className="relative flex-1">
       <button
         onClick={handleAddToCalendar}
-        disabled={!exhibition.start_date || !exhibition.end_date}
+        disabled={!exhibition.start_date}
         className="w-full p-2 border border-gray-300 dark:border-[#333333] hover:bg-gray-50 dark:hover:bg-[#2A2A2A] transition-colors flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         title={t('addToCalendar')}
       >
@@ -62,8 +73,12 @@ export function AddToCalendarButton({ exhibition }: AddToCalendarButtonProps) {
 
       {/* Toast notification */}
       {showToast && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1 bg-black text-white text-xs rounded whitespace-nowrap">
-          Calendar event downloaded!
+        <div
+          role="status"
+          aria-live="polite"
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1 bg-black text-white text-xs rounded whitespace-nowrap"
+        >
+          {t('calendarDownloaded')}
         </div>
       )}
     </div>

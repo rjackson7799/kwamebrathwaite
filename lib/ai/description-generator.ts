@@ -6,6 +6,7 @@
 
 import OpenAI from 'openai'
 import { SYSTEM_PROMPT, buildUserPrompt, SEO_SYSTEM_PROMPT, buildSEOUserPrompt } from './prompts'
+import { GPT_MODEL, COST_PER_1K_INPUT_TOKENS, COST_PER_1K_OUTPUT_TOKENS } from './config'
 import { translateArtworkContent, translateSEOContent } from './translation-service'
 import type {
   GenerationOptions,
@@ -33,13 +34,8 @@ function getOpenAIClient(): OpenAI {
   return openaiClient
 }
 
-// Model configuration
-const GPT_MODEL = 'gpt-4o-2024-08-06'
-
-// Cost estimation (per OpenAI pricing as of Jan 2026)
-// GPT-4o: $2.50/1M input tokens, $10.00/1M output tokens
-const COST_PER_1K_INPUT_TOKENS = 0.0025
-const COST_PER_1K_OUTPUT_TOKENS = 0.01
+// Model configuration and pricing now live in ./config, so all three AI call
+// sites share one source of truth instead of duplicating the constants.
 
 /**
  * Default generated content to use as fallback in case of parsing errors

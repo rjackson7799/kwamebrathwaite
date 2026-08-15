@@ -21,6 +21,7 @@ export type EntityType =
   | 'briefing'                 // Phase 2A — Founder briefings
   | 'briefing_notification'    // Phase 2A — Briefing notification batches
   | 'founder_print_fulfillment' // Phase 2C — Per-founder physical Print tracking
+  | 'content_import'            // Smart Import — AI paste-and-parse batches
 
 /**
  * Require an authenticated admin for /api/admin/* routes.

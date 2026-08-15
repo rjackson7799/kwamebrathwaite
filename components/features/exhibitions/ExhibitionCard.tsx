@@ -18,6 +18,8 @@ export interface Exhibition {
   image_url?: string | null
   thumbnail_image_url?: string | null
   exhibition_type: 'past' | 'current' | 'upcoming'
+  /** What kind of entry this is. Defaults to 'exhibition' for all existing rows. */
+  entry_kind?: 'exhibition' | 'screening' | 'talk' | 'event' | null
 }
 
 interface ExhibitionCardProps {
@@ -87,6 +89,22 @@ export function ExhibitionCard({
     past: t('status.past'),
   }
 
+  // Kind badge — deliberately SEPARATE from statusStyles/statusLabels above.
+  // exhibition_type is temporal (past/current/upcoming); entry_kind is what the
+  // entry actually is. Merging them into one lookup would mean a screening
+  // could not also be "upcoming", and any unknown key would render an undefined
+  // className plus a missing-i18n-key error.
+  const entryKindStyles: Record<string, string> = {
+    screening: 'bg-charcoal/10 dark:bg-[#2A2A2A] text-charcoal dark:text-[#D8D8D8]',
+    talk: 'bg-charcoal/10 dark:bg-[#2A2A2A] text-charcoal dark:text-[#D8D8D8]',
+    event: 'bg-charcoal/10 dark:bg-[#2A2A2A] text-charcoal dark:text-[#D8D8D8]',
+  }
+
+  const entryKind = exhibition.entry_kind ?? 'exhibition'
+  // 'exhibition' is the default for every existing row, so it gets no badge —
+  // the badge exists to mark the exceptions.
+  const showKindBadge = entryKind !== 'exhibition' && entryKind in entryKindStyles
+
   const isHorizontal = orientation === 'horizontal'
   const isInverse = tone === 'inverse'
 
@@ -127,9 +145,18 @@ export function ExhibitionCard({
 
           {/* Content */}
           <div className="p-4 flex flex-col justify-center">
-            {showStatus && (
-              <div className={`self-start inline-block mb-2 px-2 py-0.5 text-caption font-medium rounded-sm ${statusStyles[exhibition.exhibition_type]}`}>
-                {statusLabels[exhibition.exhibition_type]}
+            {(showStatus || showKindBadge) && (
+              <div className="self-start flex flex-wrap items-center gap-1.5 mb-2">
+                {showStatus && (
+                  <span className={`inline-block px-2 py-0.5 text-caption font-medium rounded-sm ${statusStyles[exhibition.exhibition_type]}`}>
+                    {statusLabels[exhibition.exhibition_type]}
+                  </span>
+                )}
+                {showKindBadge && (
+                  <span className={`inline-block px-2 py-0.5 text-caption font-medium rounded-sm ${entryKindStyles[entryKind]}`}>
+                    {t(`entryKind.${entryKind}`)}
+                  </span>
+                )}
               </div>
             )}
             <h3 className="text-h4 font-medium text-black dark:text-[#F0F0F0]">{exhibition.title}</h3>

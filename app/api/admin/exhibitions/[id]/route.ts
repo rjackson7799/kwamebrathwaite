@@ -11,6 +11,9 @@ import type { Database } from '@/lib/supabase/types'
 type ExhibitionUpdate = Database['public']['Tables']['exhibitions']['Update'] & {
   preview_starts_at?: string | null
   preview_notes?: string | null
+  // From 2026-08-14-content-import.sql. Regenerate lib/supabase/types.ts after
+  // running that migration and this local widening can be dropped.
+  entry_kind?: 'exhibition' | 'screening' | 'talk' | 'event'
 }
 
 interface RouteParams {
@@ -96,6 +99,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       image_url: result.data.image_url || null,
       thumbnail_image_url: result.data.thumbnail_image_url || null,
       exhibition_type: result.data.exhibition_type,
+      // NOTE: this object enumerates every column explicitly, so a new field
+      // added only to adminExhibitionSchema would validate and then be silently
+      // dropped on save. Any future column needs a line here too.
+      entry_kind: result.data.entry_kind,
       location_lat: result.data.location_lat,
       location_lng: result.data.location_lng,
       venue_url: result.data.venue_url || null,

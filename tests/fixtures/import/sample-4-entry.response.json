@@ -1,0 +1,86 @@
+{
+  "items": [
+    {
+      "target_type": "exhibition",
+      "source_text": "Documentary Screening for African Film Festival Australia\nParramatta, AU\nSeptember 6, 2026",
+      "confidence": 0.86,
+      "warnings": [],
+      "data": {
+        "title": "Documentary Screening for African Film Festival Australia",
+        "entry_kind": "screening",
+        "venue": null,
+        "city": "Parramatta",
+        "state_region": null,
+        "country": "AU",
+        "start_date": "2026-09-06",
+        "end_date": "2026-09-06",
+        "description": null,
+        "venue_url": null,
+        "exhibition_url": null
+      }
+    },
+    {
+      "target_type": "exhibition",
+      "source_text": "Documentary Screening for ABFF PopUp\nWashington, DC\nSeptember 27, 2026\nWinner of ABFF Grand Jury Best Documentary",
+      "confidence": 0.82,
+      "warnings": [
+        "The line \"Winner of ABFF Grand Jury Best Documentary\" is an award, not a field — added to the description. Confirm placement."
+      ],
+      "data": {
+        "title": "Documentary Screening for ABFF PopUp",
+        "entry_kind": "screening",
+        "venue": null,
+        "city": "Washington",
+        "state_region": "DC",
+        "country": null,
+        "start_date": "2026-09-27",
+        "end_date": "2026-09-27",
+        "description": "Winner of ABFF Grand Jury Best Documentary",
+        "venue_url": null,
+        "exhibition_url": null
+      }
+    },
+    {
+      "target_type": "exhibition",
+      "source_text": "Solo Exhibition in collaboration with Jesse Williams and For Freedoms\nYou and I\nPhilip Martin Gallery, Los Angeles, CA\nOctober 1, 2026 - October 31, 2026",
+      "confidence": 0.78,
+      "warnings": [
+        "Read line 1 as a descriptor and line 2 as the title. Confirm \"You and I\" is correct."
+      ],
+      "data": {
+        "title": "You and I",
+        "entry_kind": "exhibition",
+        "venue": "Philip Martin Gallery",
+        "city": "Los Angeles",
+        "state_region": "CA",
+        "country": null,
+        "start_date": "2026-10-01",
+        "end_date": "2026-10-31",
+        "description": "Solo Exhibition in collaboration with Jesse Williams and For Freedoms",
+        "venue_url": null,
+        "exhibition_url": null
+      }
+    },
+    {
+      "target_type": "exhibition",
+      "source_text": "Documentary Screening at Nexus Art Week with talk with Kwame Samori\nSFMOMA/DeYoung/Yerba Buena\nSan Francisco, CA\nOctober 4, 2026",
+      "confidence": 0.8,
+      "warnings": [
+        "This is both a screening and a talk; classified as screening by precedence. The talk detail is kept in the description."
+      ],
+      "data": {
+        "title": "Documentary Screening at Nexus Art Week",
+        "entry_kind": "screening",
+        "venue": "SFMOMA/DeYoung/Yerba Buena",
+        "city": "San Francisco",
+        "state_region": "CA",
+        "country": null,
+        "start_date": "2026-10-04",
+        "end_date": "2026-10-04",
+        "description": "With a talk with Kwame Samori.",
+        "venue_url": null,
+        "exhibition_url": null
+      }
+    }
+  ]
+}

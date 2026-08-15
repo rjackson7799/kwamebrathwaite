@@ -22,6 +22,7 @@ export interface MapExhibition {
   location_lat: number
   location_lng: number
   exhibition_type: 'current' | 'upcoming' | 'past'
+  entry_kind?: 'exhibition' | 'screening' | 'talk' | 'event' | null
   start_date: string | null
   end_date: string | null
   image_url: string | null

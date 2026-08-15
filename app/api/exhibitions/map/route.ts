@@ -13,6 +13,7 @@ export interface MapExhibition {
   location_lat: number
   location_lng: number
   exhibition_type: 'current' | 'upcoming' | 'past'
+  entry_kind?: 'exhibition' | 'screening' | 'talk' | 'event' | null
   start_date: string | null
   end_date: string | null
   image_url: string | null
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from('exhibitions')
       .select(
-        'id, slug, title, venue, city, country, location_lat, location_lng, exhibition_type, start_date, end_date, image_url, venue_url'
+        'id, slug, title, venue, city, country, location_lat, location_lng, exhibition_type, entry_kind, start_date, end_date, image_url, venue_url'
       )
       .eq('status', 'published')
       .not('location_lat', 'is', null)

@@ -100,13 +100,24 @@
       "upcoming": "Bientôt",
       "past": "Passée"
     },
+    "entryKind": {
+      "exhibition": "Exposition",
+      "screening": "Projection",
+      "talk": "Rencontre",
+      "event": "Événement"
+    },
     "detail": {
       "backToExhibitions": "Retour aux expositions",
       "dates": "Dates",
       "venue": "Lieu",
       "location": "Adresse",
       "visitVenue": "Visiter le site du lieu",
-      "aboutExhibition": "À propos de cette exposition",
+      "about": {
+        "exhibition": "À propos de cette exposition",
+        "screening": "À propos de cette projection",
+        "talk": "À propos de cette rencontre",
+        "event": "À propos de cet événement"
+      },
       "featuredWorks": "Œuvres présentées",
       "inquire": "Renseignements sur cette exposition",
       "viewFullSize": "Voir en taille réelle"
@@ -122,6 +133,9 @@
       "setReminder": "Définir un rappel",
       "share": "Partager",
       "addToCalendar": "Ajouter au calendrier",
+      "calendarDescription": "{kind} à {location}\n\nPlus d'informations : {url}",
+      "calendarLocationFallback": "lieu à confirmer",
+      "calendarDownloaded": "Événement de calendrier téléchargé !",
       "getDirections": "Obtenir l'itinéraire",
       "viewDetails": "Voir les détails",
       "blockedTitle": "Google Maps est bloqué",

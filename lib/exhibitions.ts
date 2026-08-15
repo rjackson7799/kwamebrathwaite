@@ -11,6 +11,8 @@ export interface PublicExhibition {
   end_date: string | null
   image_url: string | null
   exhibition_type: 'past' | 'current' | 'upcoming'
+  /** Kind of entry. Separate from exhibition_type, which is temporal. */
+  entry_kind?: 'exhibition' | 'screening' | 'talk' | 'event' | null
 }
 
 // Type for the raw database response
@@ -24,6 +26,7 @@ interface ExhibitionRow {
   start_date: string | null
   end_date: string | null
   image_url: string | null
+  entry_kind: 'exhibition' | 'screening' | 'talk' | 'event' | null
 }
 
 /**
@@ -37,7 +40,7 @@ export async function getCurrentExhibitions(limit: number = 4): Promise<PublicEx
 
   const { data, error } = await supabase
     .from('exhibitions')
-    .select('id, slug, title, venue, city, country, start_date, end_date, image_url')
+    .select('id, slug, title, venue, city, country, start_date, end_date, image_url, entry_kind')
     .eq('status', 'published')
     .lte('start_date', today)
     .gte('end_date', today)
@@ -60,6 +63,7 @@ export async function getCurrentExhibitions(limit: number = 4): Promise<PublicEx
     start_date: e.start_date,
     end_date: e.end_date,
     image_url: e.image_url,
+    entry_kind: e.entry_kind,
     exhibition_type: 'current'
   }))
 }
@@ -75,7 +79,7 @@ export async function getUpcomingExhibitions(limit: number = 4): Promise<PublicE
 
   const { data, error } = await supabase
     .from('exhibitions')
-    .select('id, slug, title, venue, city, country, start_date, end_date, image_url')
+    .select('id, slug, title, venue, city, country, start_date, end_date, image_url, entry_kind')
     .eq('status', 'published')
     .gt('start_date', today)
     .order('start_date', { ascending: true })
@@ -96,6 +100,7 @@ export async function getUpcomingExhibitions(limit: number = 4): Promise<PublicE
     start_date: e.start_date,
     end_date: e.end_date,
     image_url: e.image_url,
+    entry_kind: e.entry_kind,
     exhibition_type: 'upcoming'
   }))
 }

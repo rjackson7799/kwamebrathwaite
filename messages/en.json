@@ -137,13 +137,24 @@
       "upcoming": "Coming Soon",
       "past": "Past"
     },
+    "entryKind": {
+      "exhibition": "Exhibition",
+      "screening": "Screening",
+      "talk": "Talk",
+      "event": "Event"
+    },
     "detail": {
       "backToExhibitions": "Back to Exhibitions",
       "dates": "Dates",
       "venue": "Venue",
       "location": "Location",
       "visitVenue": "Visit Venue Website",
-      "aboutExhibition": "About This Exhibition",
+      "about": {
+        "exhibition": "About This Exhibition",
+        "screening": "About This Screening",
+        "talk": "About This Talk",
+        "event": "About This Event"
+      },
       "featuredWorks": "Featured Works",
       "inquire": "Inquire About This Exhibition",
       "viewFullSize": "View full size"
@@ -159,6 +170,9 @@
       "setReminder": "Set Reminder",
       "share": "Share",
       "addToCalendar": "Add to Calendar",
+      "calendarDescription": "{kind} at {location}\n\nMore info: {url}",
+      "calendarLocationFallback": "venue to be announced",
+      "calendarDownloaded": "Calendar event downloaded!",
       "getDirections": "Get Directions",
       "viewDetails": "View Details",
       "blockedTitle": "Google Maps is blocked",

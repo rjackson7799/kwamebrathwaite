@@ -25,6 +25,9 @@ interface ExhibitionPressJoin {
 interface ExhibitionWithJoins extends DbExhibition {
   exhibition_artworks: ExhibitionArtworkJoin[] | null
   exhibition_press: ExhibitionPressJoin[] | null
+  // From 2026-08-14-content-import.sql. Regenerate lib/supabase/types.ts after
+  // running that migration and this local widening can be dropped.
+  entry_kind?: 'exhibition' | 'screening' | 'talk' | 'event' | null
 }
 
 // Fetch exhibition from database by slug
@@ -98,6 +101,7 @@ async function getExhibitionBySlug(slug: string): Promise<{ exhibition: Detailed
       description: exhibitionData.description,
       image_url: exhibitionData.image_url,
       exhibition_type: exhibitionData.exhibition_type || 'current',
+      entry_kind: exhibitionData.entry_kind ?? 'exhibition',
       venue_url: exhibitionData.venue_url,
       venue_description: exhibitionData.venue_description,
       exhibition_url: exhibitionData.exhibition_url,
@@ -182,18 +186,35 @@ export default async function ExhibitionDetailPage({ params }: Props) {
 
   const exhibitionsHref = locale === 'en' ? '/exhibitions' : `/${locale}/exhibitions`
 
-  // Schema.org structured data for ExhibitionEvent
+  // Schema.org structured data. The type follows entry_kind, not
+  // exhibition_type: a one-night screening described as an ExhibitionEvent is
+  // wrong for search engines, and entry_kind is exactly that distinction.
+  // schema.org has no ScreeningEvent subtype for talks, so those fall back to
+  // the generic Event.
+  const schemaTypes: Record<string, string> = {
+    exhibition: 'ExhibitionEvent',
+    screening: 'ScreeningEvent',
+    talk: 'Event',
+    event: 'Event',
+  }
+  const entryKind = exhibition.entry_kind ?? 'exhibition'
+
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'ExhibitionEvent',
+    '@type': schemaTypes[entryKind] ?? 'ExhibitionEvent',
     name: exhibition.title,
     description: exhibition.description,
     image: exhibition.image_url,
     startDate: exhibition.start_date,
-    endDate: exhibition.end_date,
-    eventStatus: exhibition.exhibition_type === 'past'
-      ? 'https://schema.org/EventCancelled'
-      : 'https://schema.org/EventScheduled',
+    // Single-day entries (most screenings and talks) carry no end_date. Emitting
+    // endDate: null makes the event look open-ended; repeating the start date is
+    // the correct representation of a one-day event.
+    endDate: exhibition.end_date ?? exhibition.start_date,
+    // A past event that actually happened is NOT EventCancelled — that value
+    // tells search engines the event was called off, and would be published for
+    // every past entry in the archive. EventScheduled is correct for anything
+    // that ran or is going to run as planned.
+    eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     location: {
       '@type': 'Place',

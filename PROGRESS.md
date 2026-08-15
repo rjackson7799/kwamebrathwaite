@@ -1,7 +1,54 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** July 7, 2026
+**Last Updated:** August 15, 2026
+
+---
+
+## Smart Import: AI paste-and-parse for exhibitions + press (August 15, 2026)
+
+### Problem
+
+The client keeps the exhibition/event schedule as a plain-text document ([docs/events.md](docs/events.md) is a real copy). Getting it onto the site meant retyping ~20 entries into `/admin/exhibitions/new` field by field, and re-deriving the diff by hand every revision. Line order varies, venue/city/state split unpredictably, and stray lines are accolades — not regex-able.
+
+### What Changed
+
+- [x] **`/admin/import`** — paste raw text, GPT-4o parses it into structured items, review and correct them, publish into `exhibitions` / `press`. Two DB-backed tables (`content_imports`, `content_import_items`) so a batch is resumable and auditable.
+- [x] **`entry_kind` on exhibitions** (`exhibition|screening|talk|event`), a NEW column — deliberately not `exhibition_type`, which is temporal (`past/current/upcoming`) and is consumed as an object key (`statusStyles[...]`) and i18n key (`t('status.…')`). A new value there would render an undefined className, a blank badge, and a missing-key error. Kind badge is a separate lookup with its own `entryKind.*` keys in en/fr/ja.
+- [x] **Duplicate matching by hard gates, not weighted scores.** Auto-update requires a canonical URL match, or exact normalized title **plus** same place **and** compatible dates. The archive tours the same show — *Sunday Best* (Toronto + Philadelphia), *Disco, I'm Coming Out* (Amsterdam/Munich/Antwerp) — so title similarity alone can never merge records. Those exact rows are seeded test fixtures.
+- [x] **`publish_import_item()` RPC** — the conditional `UPDATE … WHERE status='pending'` *is* the claim, which makes publish idempotent under double-click. Claim + write + transition + audit share one transaction, so a dead connection rolls back to `pending` and no lease machinery is needed. Failures persist via a nested `EXCEPTION` block (a raised exception would otherwise roll back the `failed` write too).
+
+### Safety model (deliberate, user-approved)
+
+**Creates always land as `draft`. No change — create or update — reaches the public site without a human approving it field-by-field.** Updates to *published* records apply immediately, gated by: a LIVE badge, an apply-mask that starts **empty** for live targets, and a required `reviewed_at` enforced **server-side** in both the route and the RPC. `slug` and `status` are never written on update. Stale targets (record changed after matching) fail and require **Refresh match**, not blind retry.
+
+### Kind-aware public surfaces + the null-date audit
+
+- [x] **`ExhibitionDetail`** carries `entry_kind`, renders the kind badge as its own lookup beside the temporal one, and takes a kind-aware heading (`detail.about.{kind}` — "About This Screening", not "About This Exhibition").
+- [x] **schema.org type follows `entry_kind`**, not `exhibition_type`: `ScreeningEvent` for screenings, `Event` for talks/events, `ExhibitionEvent` otherwise. Single-day entries emit `endDate = startDate` instead of null, which would read as open-ended.
+- [x] **Fixed: every past exhibition was published as `EventCancelled`.** That value tells search engines the event was *called off*. A past event that actually happened is `EventScheduled`.
+- [x] **Fixed: Add to Calendar was permanently disabled for single-day entries** — it required both `start_date` and `end_date`, and screenings have no end date. Now only `start_date` is required.
+- [x] **Fixed two ICS date bugs** surfaced by that: `DTEND` is *exclusive* for all-day events (RFC 5545 §3.8.2.2), so exports were a day short and a single-day event would have been zero-length; and dates were formatted with **local** getters off a UTC-parsed string, shifting the calendar date back a day for every US visitor. Both pinned by `tests/calendar-ics.test.ts`.
+- [x] Calendar description was hard-coded English `Exhibition at …`; now kind-aware and localized in en/fr/ja, along with the download toast.
+
+### Verified
+
+Typecheck clean, prod build passes, **183 unit tests** across parser/matching/mapping/service/calendar/locale-parity. Parser tests run against checked-in saved model responses so CI is deterministic.
+
+**Migration applied** (August 15, 2026) and verified live end-to-end against the real project — real GPT-4o calls, real writes, all test data deleted afterwards (0 batches, 0 items, 0 imported rows remaining).
+
+- **4-entry client sample: full pass.** #1 `screening` Parramatta/**Australia** (AU resolved to a country, no state) single-day 2026-09-06; #2 `screening` Washington/**DC**/United States with the ABFF award folded into `description` **and** a warning raised; #3 titled **"You and I"** — the real title from line 2, with the "Solo Exhibition in collaboration with…" descriptor correctly demoted to `description` — Philip Martin Gallery/Los Angeles/CA, Oct 1–31; #4 `screening` by precedence despite naming both a screening and a talk. All four published as `status='draft'` with derived slugs and `exhibition_type='upcoming'`. Cost $0.011, 8.5s.
+- **Re-paste proposes updates, not duplicates.** `docs/events.md` → 18 items, one chunk, ~$0.044, ~45s. Second paste of the same document: **18/18 update** on one run, **17/18** on a repeat.
+- **Fixed the 17/18.** The parser ran at `temperature: 0.1`. Matching uses hard gates, so a run that split a location line differently (venue `Museum of Contemporary Art` / city `San Diego` vs. together) fails to match and proposes a duplicate create. Extraction has nothing to be creative about — now `temperature: 0` with a fixed `seed`.
+- **The live-update gate is real, and it blocks headless publishing.** 13 of 18 items matched *published* archive records and got an **empty** `apply_mask` by design ([service.ts:229](lib/import/service.ts#L229)), so they refused to publish with "No fields are selected to apply." That is decision 5 working — those fields can only be ticked by a human in the review UI, which is therefore the one path a headless harness cannot cover.
+
+### Not done yet
+
+- **UI pass on dev :3001** — the review screen is the one thing the headless harness cannot exercise: ticking per-field apply checkboxes on a LIVE match, the `reviewed_at` gate, save-on-blur, and the responsive/keyboard pass.
+- **`lib/supabase/types.ts` regeneration is its own task, not a step here.** The plan assumed the file was pure generated output; it is not — ~90 lines of hand-written aliases at the bottom are what the app actually imports, and regenerating over the whole file deletes them. Regenerating properly (generated output + re-appended aliases) surfaces **26 pre-existing type errors across 9 files** — mostly `string | null` columns the old hand-tuned types declared as non-null, in artworks/hero/content. Reverted; the two local `entry_kind` widenings stay for now, both marked with a comment. Worth doing as a focused null-safety pass.
+- **Separate bug found while diffing types: `exhibition_reminders` does not exist in the live schema**, but three routes query it ([exhibitions/reminders](app/api/exhibitions/reminders/route.ts), [admin/exhibition-reminders](app/api/admin/exhibition-reminders/route.ts), and its export route). All three reach it through `as any`, so they compile and fail at runtime. Unrelated to Smart Import — either create the table or remove the routes.
+- Tests **written but unrun**: `tests/integration/content-import-rpc.test.ts` (17 tests, self-skips without `SUPABASE_TEST_*`) and the hand-run SQL probe [docs/migrations/tests/content-import-rls.test.sql](docs/migrations/tests/content-import-rls.test.sql). Both need a dedicated test project with this migration applied — deliberately not pointed at production.
+- `maxDuration = 300` is now the documented Vercel default on **all** plans, and the repo already ships two 300s routes ([leads/run](app/api/admin/leads/run/route.ts), [cron/leads-weekly](app/api/cron/leads-weekly/route.ts)). Still worth one timed max-size paste in production to confirm it holds in practice.
 
 ---
 

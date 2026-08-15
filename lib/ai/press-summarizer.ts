@@ -7,6 +7,7 @@
 import OpenAI from 'openai'
 import * as cheerio from 'cheerio'
 import { PRESS_SUMMARY_SYSTEM_PROMPT, buildPressSummaryPrompt } from './prompts'
+import { GPT_MODEL, COST_PER_1K_INPUT_TOKENS, COST_PER_1K_OUTPUT_TOKENS } from './config'
 import type { PressSummaryResult } from './types'
 
 // Lazy-load OpenAI client (same pattern as description-generator.ts)
@@ -24,9 +25,8 @@ function getOpenAIClient(): OpenAI {
   return openaiClient
 }
 
-const GPT_MODEL = 'gpt-4o-2024-08-06'
-const COST_PER_1K_INPUT_TOKENS = 0.0025
-const COST_PER_1K_OUTPUT_TOKENS = 0.01
+// GPT_MODEL and the COST_PER_1K_* constants come from ./config — see the import
+// above. They used to be redeclared here and in description-generator.ts.
 const MAX_BODY_SIZE = 500 * 1024 // 500KB
 const FETCH_TIMEOUT = 10_000 // 10 seconds
 const MAX_ARTICLE_WORDS = 4000
