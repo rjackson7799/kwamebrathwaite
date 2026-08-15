@@ -1,7 +1,7 @@
 'use client'
 
-import { use, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import { AlertCircle } from 'lucide-react'
 import { PageHeader } from '@/components/admin/PageHeader'
 import { ImportReviewList } from '@/components/admin/ImportReviewList'
@@ -19,12 +19,14 @@ interface ImportBatchDetail {
   items: ImportItem[]
 }
 
-export default function ImportReviewPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const { id } = use(params)
+// params is read with useParams(), not taken as a prop. On Next.js 14 a page's
+// `params` is a PLAIN OBJECT; the `use(params)` form is the Next 15 idiom and
+// hands React a non-Promise, which throws React #438 during render and blanks
+// the page. It compiles and builds — only the browser catches it.
+// tests/next14-params-convention.test.ts pins this repo-wide.
+export default function ImportReviewPage() {
+  const params = useParams<{ id: string }>()
+  const id = params.id
   const router = useRouter()
 
   const [batch, setBatch] = useState<ImportBatchDetail | null>(null)
