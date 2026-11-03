@@ -108,6 +108,12 @@ export const ROOM_SCENES: RoomScene[] = [
 /** Default room scene ID */
 export const DEFAULT_ROOM_ID = 'gallery-white-cube'
 
+/**
+ * Shows the AI "Custom Room" option in the View on a Wall strip. Off because
+ * generation is broken (dall-e-3 was retired); see Blockers in PROGRESS.md.
+ */
+export const CUSTOM_ROOM_ENABLED = false
+
 /** Find a room scene by ID, falling back to the default */
 export function getRoomScene(id: string): RoomScene {
   return ROOM_SCENES.find((s) => s.id === id) ?? ROOM_SCENES[0]

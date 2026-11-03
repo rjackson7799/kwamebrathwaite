@@ -1297,7 +1297,7 @@ Ideas for future enhancements (not yet planned for implementation):
 
 ## Blockers / Questions
 
-*None currently*
+- **Custom Room generation is broken on production (found November 3, 2026).** `app/api/generate-room/route.ts` calls `dall-e-3`, which OpenAI lists as shut down on 2026-05-12, and also sends `response_format`, which OpenAI now rejects. Replaying the route's request returned `400 Unknown parameter: 'response_format'`; without that parameter it returned `400 The model 'dall-e-3' does not exist`. Email capture still collects leads and notifies the admin, so visitors can hand over an email for a feature that cannot finish. Fix needs more than a model rename: GPT image models return base64 rather than a URL (so results need Supabase Storage), and `quality: 'standard'` is not valid. Not yet fixed; the Custom Room button is hidden with `CUSTOM_ROOM_ENABLED = false` in `lib/constants/roomScenes.ts` until it is. The 8 preset rooms are static files and are unaffected. `scripts/generate-room-images.mjs` has the same stale model.
 
 ---
 
