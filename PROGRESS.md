@@ -1,7 +1,17 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** August 15, 2026
+**Last Updated:** November 3, 2026
+
+---
+
+## HonuVibe.ai footer credit (November 3, 2026)
+
+- [x] **Footer credit** after the copyright line: divider, turtle mark, "A HonuVibe.ai site", linking to `http://honuvibe.ai` in a new tab ([components/layout/Footer.tsx](components/layout/Footer.tsx)).
+- [x] **`public/images/honuvibe-mark.png`** cut from the supplied logo PNG with the white background removed, so it sits on the black footer. No vector master exists in the repo or `HonuVibe2025`; swap in an SVG if one turns up.
+- [x] **`footer.credit`** added to en/fr/ja through `t.rich`, because the word order changes per locale. The fr and ja strings need a human read.
+- [x] Copyright row moved from a fixed `sm:` breakpoint to `flex-wrap`, since the left group is wider now and the fr links are longer than en.
+- [x] **Desktop layout approved by Ryan** from a screenshot of the English footer. Markup in all three locales, the image optimizer and compiled classes were verified over HTTP, with `tsc` and the full test suite passing. Phone width and the fr/ja layouts have not been viewed.
 
 ---
 

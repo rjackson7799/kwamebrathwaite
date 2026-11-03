@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
+import Image from 'next/image'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
@@ -126,10 +127,32 @@ export function Footer() {
         </div>
 
         {/* Minimal copyright + links */}
-        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <p className="text-[11px] uppercase tracking-[0.15em] text-white/55">
-            &copy; {currentYear} Kwame Brathwaite Archive
-          </p>
+        <div className="border-t border-white/10 pt-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+            <p className="text-[11px] uppercase tracking-[0.15em] text-white/55">
+              &copy; {currentYear} Kwame Brathwaite Archive
+            </p>
+            <span aria-hidden="true" className="hidden sm:block h-6 w-px bg-white/15" />
+            <a
+              href="http://honuvibe.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 text-[15px] text-white/80 hover:text-white transition-colors"
+            >
+              <Image
+                src="/images/honuvibe-mark.png"
+                alt=""
+                width={118}
+                height={112}
+                className="h-7 w-auto"
+              />
+              <span>
+                {t.rich('credit', {
+                  brand: (chunks) => <strong className="font-semibold text-white">{chunks}</strong>,
+                })}
+              </span>
+            </a>
+          </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
             <div className="flex items-center gap-4 text-[11px] uppercase tracking-[0.1em] text-white/50">
