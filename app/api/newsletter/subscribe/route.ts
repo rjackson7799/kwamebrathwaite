@@ -10,6 +10,7 @@ import {
 } from '@/lib/api'
 import { sendUserEmail } from '@/lib/email/send'
 import { NewsletterConfirmEmail } from '@/lib/email/templates'
+import { requireTurnstile } from '@/lib/api/turnstile'
 
 // Per-email throttling for confirmation emails.
 // Defeats the email-bomb vector where an attacker rotates IPs (in-memory rate
@@ -100,6 +101,9 @@ export async function POST(request: NextRequest) {
     if (website) {
       return successResponse(GENERIC_PENDING_RESPONSE)
     }
+
+    const turnstileRejection = await requireTurnstile(body, request)
+    if (turnstileRejection) return turnstileRejection
 
     const supabase = createAdminClient()
 

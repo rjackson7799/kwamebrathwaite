@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
+import { TurnstileField, useTurnstile } from '@/components/ui/TurnstileField'
 
 const inquiryFormSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255),
@@ -42,11 +43,20 @@ export function ArtworkInquiryModal({
   const tContact = useTranslations('contact')
   const tForm = useTranslations('contact.form')
   const tTypes = useTranslations('contact.inquiryTypes')
+  const tTurnstile = useTranslations('turnstile')
 
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error' | 'captcha'>('idle')
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
+  // When the visitor first saw the form, for the server's timing check. The
+  // modal stays mounted while closed, so this is stamped on each open.
+  const renderedAtRef = useRef<number>(0)
+  const turnstile = useTurnstile()
+
+  useEffect(() => {
+    if (isOpen) renderedAtRef.current = Date.now()
+  }, [isOpen])
 
   const {
     register,
@@ -131,9 +141,15 @@ export function ArtworkInquiryModal({
           artwork_id: artwork.id,
           subject: `Inquiry: ${artwork.title}`,
           locale,
+          renderedAt: renderedAtRef.current,
+          turnstileToken: turnstile.token,
         }),
       })
 
+      if (response.status === 403) {
+        setSubmitStatus('captcha')
+        return
+      }
       if (!response.ok) {
         throw new Error('Failed to submit inquiry')
       }
@@ -145,6 +161,7 @@ export function ArtworkInquiryModal({
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
+      turnstile.reset()
     }
   }
 
@@ -341,15 +358,20 @@ export function ArtworkInquiryModal({
                 {...register('website')}
               />
 
+              <TurnstileField {...turnstile.fieldProps} />
+
               {/* Error message */}
               {submitStatus === 'error' && (
                 <p className="text-sm text-error">{t('error')}</p>
+              )}
+              {submitStatus === 'captcha' && (
+                <p className="text-sm text-error">{tTurnstile('rejected')}</p>
               )}
 
               {/* Submit button */}
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !turnstile.ready}
                 className="btn-primary w-full flex items-center justify-center gap-2"
               >
                 {isSubmitting && (
@@ -373,7 +395,7 @@ export function ArtworkInquiryModal({
                     />
                   </svg>
                 )}
-                {t('submit')}
+                {turnstile.ready ? t('submit') : tTurnstile('preparing')}
               </button>
             </>
           )}

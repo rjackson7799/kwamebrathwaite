@@ -326,6 +326,11 @@
       "error": "Une erreur s'est produite lors de la soumission. Veuillez réessayer."
     }
   },
+  "turnstile": {
+    "preparing": "Préparation de l'envoi…",
+    "loadFailed": "La vérification de sécurité n'a pas pu se charger. Veuillez recharger la page et réessayer.",
+    "rejected": "Non envoyé : la vérification de sécurité a échoué. Vos informations sont conservées, veuillez réessayer."
+  },
   "common": {
     "skipToContent": "Aller au contenu principal",
     "loading": "Chargement...",

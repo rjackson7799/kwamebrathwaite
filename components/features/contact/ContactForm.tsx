@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useLocale, useTranslations } from 'next-intl'
+import { TurnstileField, useTurnstile } from '@/components/ui/TurnstileField'
 
 const contactFormSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255),
@@ -23,10 +24,12 @@ export function ContactForm() {
   const t = useTranslations('contact')
   const tForm = useTranslations('contact.form')
   const tTypes = useTranslations('contact.inquiryTypes')
+  const tTurnstile = useTranslations('turnstile')
 
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error' | 'captcha'>('idle')
   const renderedAtRef = useRef<number>(Date.now())
+  const turnstile = useTurnstile()
 
   const {
     register,
@@ -58,9 +61,14 @@ export function ContactForm() {
           ...data,
           locale,
           renderedAt: renderedAtRef.current,
+          turnstileToken: turnstile.token,
         }),
       })
 
+      if (response.status === 403) {
+        setSubmitStatus('captcha')
+        return
+      }
       if (!response.ok) {
         throw new Error('Failed to submit')
       }
@@ -72,6 +80,7 @@ export function ContactForm() {
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
+      turnstile.reset()
     }
   }
 
@@ -207,15 +216,20 @@ export function ContactForm() {
         {...register('website')}
       />
 
+      <TurnstileField {...turnstile.fieldProps} />
+
       {/* Error message */}
       {submitStatus === 'error' && (
         <p className="text-sm text-error">{t('error')}</p>
+      )}
+      {submitStatus === 'captcha' && (
+        <p className="text-sm text-error">{tTurnstile('rejected')}</p>
       )}
 
       {/* Submit */}
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || !turnstile.ready}
         className="btn-primary w-full flex items-center justify-center gap-2"
       >
         {isSubmitting && (
@@ -239,7 +253,7 @@ export function ContactForm() {
             />
           </svg>
         )}
-        {tForm('submit')}
+        {turnstile.ready ? tForm('submit') : tTurnstile('preparing')}
       </button>
     </form>
   )

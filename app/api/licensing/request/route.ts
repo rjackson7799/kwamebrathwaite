@@ -13,6 +13,7 @@ import {
   LicensingRequestUserEmail,
   LicensingRequestAdminEmail,
 } from '@/lib/email/templates'
+import { requireTurnstile } from '@/lib/api/turnstile'
 
 /**
  * Generate a unique license request number: LIC-YYYY-NNN
@@ -81,6 +82,9 @@ export async function POST(request: NextRequest) {
         message: 'Your license request has been submitted successfully.',
       })
     }
+
+    const turnstileRejection = await requireTurnstile(body, request)
+    if (turnstileRejection) return turnstileRejection
 
     // Service-role client to bypass RLS on public licensing request inserts.
     const supabase = createAdminClient()

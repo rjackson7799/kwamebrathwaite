@@ -9,6 +9,7 @@ import {
   ExhibitionReminderUserEmail,
   ExhibitionReminderAdminEmail,
 } from '@/lib/email/templates'
+import { requireTurnstile } from '@/lib/api/turnstile'
 
 export async function POST(request: NextRequest) {
   try {
@@ -48,6 +49,9 @@ export async function POST(request: NextRequest) {
         201
       )
     }
+
+    const turnstileRejection = await requireTurnstile(body, request)
+    if (turnstileRejection) return turnstileRejection
 
     // Service-role client to bypass RLS on public exhibition reminder inserts.
     const supabase = createAdminClient()

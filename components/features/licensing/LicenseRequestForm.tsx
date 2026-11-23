@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Image from 'next/image'
 import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder'
+import { TurnstileField, useTurnstile } from '@/components/ui/TurnstileField'
 
 // Form schema (client-side validation)
 const formSchema = z.object({
@@ -54,7 +55,9 @@ const DEFAULT_LICENSE_TYPES: LicenseType[] = [
 
 export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormProps) {
   const t = useTranslations('licensing.request')
+  const tTurnstile = useTranslations('turnstile')
   const locale = useLocale()
+  const turnstile = useTurnstile()
 
   const [currentStep, setCurrentStep] = useState<number>(0)
   const [selectedArtworks, setSelectedArtworks] = useState<Artwork[]>([])
@@ -218,12 +221,15 @@ export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormP
           ...data,
           artwork_ids: selectedArtworks.map((a) => a.id),
           locale,
+          turnstileToken: turnstile.token,
         }),
       })
 
       const json = await res.json()
 
-      if (json.success) {
+      if (res.status === 403) {
+        setSubmitResult({ success: false, message: tTurnstile('rejected') })
+      } else if (json.success) {
         setSubmitResult({
           success: true,
           requestNumber: json.data.request_number,
@@ -239,6 +245,7 @@ export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormP
       setSubmitResult({ success: false, message: t('error') })
     } finally {
       setIsSubmitting(false)
+      turnstile.reset()
     }
   }
 
@@ -643,6 +650,8 @@ export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormP
               </dl>
             </div>
 
+            <TurnstileField {...turnstile.fieldProps} />
+
             {submitResult && !submitResult.success && (
               <p className="text-sm text-red-600 dark:text-[#EF5350]">{submitResult.message}</p>
             )}
@@ -662,10 +671,10 @@ export function LicenseRequestForm({ preselectedArtworkId }: LicenseRequestFormP
           {STEPS[currentStep] === 'review' ? (
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !turnstile.ready}
               className="btn-primary px-8 py-2 disabled:opacity-50"
             >
-              {isSubmitting ? t('submitting') : t('submit')}
+              {isSubmitting ? t('submitting') : turnstile.ready ? t('submit') : tTurnstile('preparing')}
             </button>
           ) : (
             <button

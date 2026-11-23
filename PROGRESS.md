@@ -1,7 +1,45 @@
 # Project Progress Tracker
 ## Kwame Brathwaite Archive Website
 
-**Last Updated:** November 3, 2026
+**Last Updated:** November 22, 2026
+
+---
+
+## Form spam hardening + Cloudflare Turnstile (November 22, 2026)
+
+### Problem
+Bot submissions were still reaching the team as real inquiries (e.g. Nov 19: name `IRzCAJgxymBsHaso`, subject `ctHidsmbDISUMOewuvACOod`, a real stranger's web.de address). That one scored 0. The name's consonant ratio was exactly 3 against a `> 3` rule, and the bot posted straight to the API, so the timing check never ran. Every submission, flagged or not, also sent a "we received your inquiry" email to whatever address the bot supplied. That's inbox-flooding a stranger from our domain.
+
+### What Changed
+- [x] **Scorer** ([lib/api/spam.ts](lib/api/spam.ts)): new `looksLikeRandomMixedCase()` (one token, ≥10 letters, ≥4 inner capitals making up ≥25% of the letters) feeds `gibberish_name` / `gibberish_subject`. A missing `renderedAt` now adds 2 (`missing_render_timestamp`). On its own that's under the threshold of 3.
+- [x] **ArtworkInquiryModal** now sends `renderedAt`, stamped each time the modal opens, so the missing-timestamp signal is safe to use.
+- [x] **No emails at all for flagged spam** on `/api/inquiries` and `/api/founders/inquire`. Before, only the admin email was skipped.
+- [x] **Turnstile, both halves** (vault pattern `patterns/captcha-both-halves.md`):
+  - Server: [lib/api/turnstile.ts](lib/api/turnstile.ts) `requireTurnstile()` runs after validation and the honeypot on `/api/inquiries`, `/api/founders/inquire`, `/api/licensing/request`, `/api/newsletter/subscribe` and `/api/exhibitions/reminders`.
+  - Client: [components/ui/TurnstileField.tsx](components/ui/TurnstileField.tsx) + `useTurnstile()` in Contact, Artwork inquiry, Founders, Licensing (review step only), Footer newsletter (loads on first focus or press, not on every page view) and Exhibition reminder.
+  - Interaction-only (invisible unless Cloudflare wants a click). Submit says "Getting ready to send…" until a token exists. A 403 shows a retryable "not sent, your entries are still here" message. The widget resets after every response.
+- [x] CSP: `https://challenges.cloudflare.com` added to `script-src` + `frame-src`.
+- [x] i18n: new `turnstile.*` namespace in en/fr/ja. **The fr/ja strings need a human read.**
+
+### Behaviour by config
+- No keys (current state): Turnstile is off, the forms work as before, and the scorer fixes apply.
+- Both keys: enforced.
+- Only one key: allowed through, with a loud `Turnstile MISCONFIGURED` log on every submission.
+- Cloudflare unreachable: fails open and logs. Spam scoring still runs on the inquiry routes.
+
+### Verified
+- `tsc` clean. Full vitest suite 213/213, including new `tests/spam-scoring.test.ts` (the Nov 19 submission now scores ≥ 3) and `tests/turnstile.test.ts`.
+- Dev server with Cloudflare's always-fail test secret: all 5 routes return 403 without a token. A dummy token was rejected by the real siteverify (`invalid-input-response`). The honeypot still gets its fake 200. CSP header confirmed. No passing submission was sent, because dev shares the prod DB.
+- **Not yet seen in a browser** (DevTools policy blocks automation): widget rendering, the "Getting ready" state, the footer arming.
+
+### To activate (Ryan)
+1. Cloudflare dashboard → Turnstile → Add widget: hostnames `kwamebrathwaite.com` (+ `www`, + any Vercel preview domain you test on), mode **Managed**.
+2. Vercel → Environment Variables: `NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY` (Production + Preview), then **redeploy**. The site key is inlined at build time.
+3. Smoke test: send the contact form once in production.
+
+### Not done
+- `/api/generate-room/register` (View on a Wall email capture, currently hidden) has no Turnstile. It only emails admin, once per address.
+- Licensing has no spam scoring (Turnstile only). Its honeypot input isn't wired into react-hook-form, so it's never sent.
 
 ---
 

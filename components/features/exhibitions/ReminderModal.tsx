@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import type { MapExhibition, ReminderFormData } from './types'
+import { TurnstileField, useTurnstile } from '@/components/ui/TurnstileField'
 
 interface ReminderModalProps {
   exhibition: MapExhibition
@@ -16,7 +17,9 @@ export function ReminderModal({
   source = 'map',
 }: ReminderModalProps) {
   const t = useTranslations('exhibitions.reminder')
+  const tTurnstile = useTranslations('turnstile')
   const locale = useLocale()
+  const turnstile = useTurnstile()
   const modalRef = useRef<HTMLDivElement>(null)
 
   const [formData, setFormData] = useState<ReminderFormData>({
@@ -68,11 +71,16 @@ export function ReminderModal({
           locale,
           source,
           website: honeypot, // Honeypot field
+          turnstileToken: turnstile.token,
         }),
       })
 
       const data = await response.json()
 
+      if (response.status === 403) {
+        setError(tTurnstile('rejected'))
+        return
+      }
       if (!response.ok) {
         throw new Error(data.error?.message || 'Failed to submit reminder')
       }
@@ -88,6 +96,7 @@ export function ReminderModal({
       setError(err instanceof Error ? err.message : t('error'))
     } finally {
       setIsSubmitting(false)
+      turnstile.reset()
     }
   }
 
@@ -212,6 +221,8 @@ export function ReminderModal({
                 </select>
               </div>
 
+              <TurnstileField {...turnstile.fieldProps} />
+
               {/* Buttons */}
               <div className="flex gap-3 pt-2">
                 <button
@@ -225,15 +236,17 @@ export function ReminderModal({
                 <button
                   type="submit"
                   className="flex-1 py-2 px-4 bg-black text-white hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !turnstile.ready}
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center gap-2">
                       <LoadingSpinner />
                       Submitting...
                     </span>
-                  ) : (
+                  ) : turnstile.ready ? (
                     t('submit')
+                  ) : (
+                    tTurnstile('preparing')
                   )}
                 </button>
               </div>

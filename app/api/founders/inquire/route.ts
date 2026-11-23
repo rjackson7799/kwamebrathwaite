@@ -14,6 +14,7 @@ import {
   FounderInquiryAdminEmail,
 } from '@/lib/email/templates'
 import { scoreInquiry } from '@/lib/api/spam'
+import { requireTurnstile } from '@/lib/api/turnstile'
 
 const SPAM_THRESHOLD = 3
 
@@ -70,6 +71,9 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    const turnstileRejection = await requireTurnstile(body, request)
+    if (turnstileRejection) return turnstileRejection
+
     // Service-role client: the inquiries table has a public-insert RLS policy,
     // but the spam-scoring path also reads from inquiries to detect repeat
     // submitters, so we use the admin client (matches /api/inquiries pattern).
@@ -124,16 +128,17 @@ export async function POST(request: NextRequest) {
     const result = inserted as { id: string } | null
 
     if (result) {
-      const emailTasks: Array<Promise<{ success: boolean }>> = [
-        sendUserEmail(
-          data.email,
-          'We received your Founders Circle inquiry',
-          FounderInquiryAckEmail({ name: data.name })
-        ),
-      ]
+      // Spam gets no email at all: the address is usually a stranger's, and
+      // acknowledging it floods their inbox and hurts our sender reputation.
+      const emailTasks: Array<Promise<{ success: boolean }>> = []
 
       if (!isSpam) {
         emailTasks.push(
+          sendUserEmail(
+            data.email,
+            'We received your Founders Circle inquiry',
+            FounderInquiryAckEmail({ name: data.name })
+          ),
           sendAdminEmail(
             `Founders Circle inquiry from ${data.name} — 24–48h SLA`,
             FounderInquiryAdminEmail({
@@ -146,7 +151,7 @@ export async function POST(request: NextRequest) {
           )
         )
       } else {
-        console.warn('Founder inquiry flagged as spam; admin email skipped', {
+        console.warn('Founder inquiry flagged as spam; emails skipped', {
           inquiryId: result.id,
           score,
           reasons,

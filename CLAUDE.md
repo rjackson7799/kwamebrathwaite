@@ -138,7 +138,8 @@ Always check and update `PROGRESS.md` in the project root:
 - Protect all `/admin` routes and `/api/admin/*` endpoints
 
 ### Forms
-- Use honeypot field for spam protection (not CAPTCHA)
+- Spam protection is layered: honeypot field, server-side spam scoring (`lib/api/spam.ts`), and Cloudflare Turnstile in invisible "interaction-only" mode (`components/ui/TurnstileField.tsx` + `requireTurnstile()` in `lib/api/turnstile.ts`). No visible CAPTCHA puzzles. New public forms that send email must use all three
+- Never send a confirmation email to a submission flagged as spam (bots use real strangers' addresses)
 - Server-side validation on all inputs
 - Rate limiting on public form submissions
 

@@ -363,6 +363,11 @@
       "error": "There was an error submitting your request. Please try again."
     }
   },
+  "turnstile": {
+    "preparing": "Getting ready to send…",
+    "loadFailed": "The security check didn't load. Please reload the page and try again.",
+    "rejected": "Not sent: the security check failed. Everything you entered is still here, so please try again."
+  },
   "common": {
     "skipToContent": "Skip to main content",
     "loading": "Loading...",

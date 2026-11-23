@@ -5,14 +5,21 @@ import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { TurnstileField, useTurnstile, turnstileEnabled } from '@/components/ui/TurnstileField'
 
 export function Footer() {
   const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'alreadySubscribed' | 'error' | 'rateLimited'>('idle')
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'alreadySubscribed' | 'error' | 'rateLimited' | 'captcha'>('idle')
+  // The footer is on every page, so Turnstile only loads once someone starts
+  // typing an email, not on every page view.
+  const [turnstileArmed, setTurnstileArmed] = useState(false)
+  const turnstile = useTurnstile()
+  const canSubmit = !turnstileEnabled || (turnstileArmed && turnstile.ready)
 
   const locale = useLocale()
   const t = useTranslations('footer')
+  const tTurnstile = useTranslations('turnstile')
 
   const getLocalizedHref = (href: string) => {
     return locale === 'en' ? href : `/${locale}${href}`
@@ -21,6 +28,12 @@ export function Footer() {
   const handleNewsletterSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!email || isSubmitting) return
+    if (!canSubmit) {
+      // Submitted before the check finished (e.g. Enter on an autofilled
+      // field). Arm it; the button shows "Getting ready" until it can send.
+      setTurnstileArmed(true)
+      return
+    }
 
     setIsSubmitting(true)
     setSubmitStatus('idle')
@@ -30,9 +43,18 @@ export function Footer() {
       const response = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, locale, website: honeypot }),
+        body: JSON.stringify({
+          email,
+          locale,
+          website: honeypot,
+          turnstileToken: turnstile.token,
+        }),
       })
 
+      if (response.status === 403) {
+        setSubmitStatus('captcha')
+        return
+      }
       if (response.status === 429) {
         setSubmitStatus('rateLimited')
         return
@@ -53,6 +75,7 @@ export function Footer() {
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
+      turnstile.reset()
     }
   }
 
@@ -69,7 +92,12 @@ export function Footer() {
           >
             Subscribe to updates
           </label>
-          <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md">
+          <form
+            onSubmit={handleNewsletterSubmit}
+            onFocus={() => setTurnstileArmed(true)}
+            onPointerDown={() => setTurnstileArmed(true)}
+            className="flex flex-col sm:flex-row gap-3 max-w-md"
+          >
             <input
               id="footer-email"
               type="email"
@@ -94,16 +122,24 @@ export function Footer() {
             />
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || (turnstileArmed && !canSubmit)}
               className="px-5 py-2.5 text-[11px] uppercase tracking-[0.1em]
                          bg-white/12 text-white/85 border border-white/20
                          hover:bg-white/18 hover:text-white transition-colors
                          disabled:opacity-50 disabled:cursor-not-allowed
                          sm:w-auto w-full"
             >
-              {t('newsletter.subscribe')}
+              {turnstileArmed && !canSubmit ? tTurnstile('preparing') : t('newsletter.subscribe')}
             </button>
           </form>
+          {turnstileArmed && (
+            <TurnstileField {...turnstile.fieldProps} theme="dark" className="mt-3" />
+          )}
+          {submitStatus === 'captcha' && (
+            <p role="alert" className="mt-2 text-[11px] tracking-[0.05em] text-red-400/70">
+              {tTurnstile('rejected')}
+            </p>
+          )}
           {submitStatus === 'success' && (
             <p role="status" className="mt-2 text-[11px] tracking-[0.05em] text-green-400/70">
               {t('newsletter.success')}

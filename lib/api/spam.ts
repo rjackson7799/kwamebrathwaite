@@ -55,6 +55,23 @@ function looksLikeGibberish(value: string, minLen: number): boolean {
   return consonants / vowels > 3
 }
 
+/**
+ * Bot-generated filler like "IRzCAJgxymBsHaso": one token, with capitals
+ * scattered through it. These strings aren't short on vowels, so the
+ * consonant-ratio check above misses them. Real names top out at two or three
+ * inner capitals in a long run (McDonald, DeShawn, McDonaldMacArthur) and stay
+ * well under a quarter of the letters; random case lands near half.
+ */
+export function looksLikeRandomMixedCase(value: string): boolean {
+  const trimmed = value.trim()
+  if (/\s/.test(trimmed)) return false
+  const letters = trimmed.replace(/[^a-zA-Z]/g, '')
+  if (letters.length < 10) return false
+  if (!/[a-z]/.test(letters)) return false // ALL CAPS is shouting, not random
+  const innerCaps = (letters.slice(1).match(/[A-Z]/g) || []).length
+  return innerCaps >= 4 && innerCaps / letters.length >= 0.25
+}
+
 function countUrls(value: string): number {
   return (value.match(URL_RE) || []).length
 }
@@ -89,7 +106,7 @@ export async function scoreInquiry(
     reasons.push(reason)
   }
 
-  if (looksLikeGibberish(input.name, 13)) {
+  if (looksLikeGibberish(input.name, 13) || looksLikeRandomMixedCase(input.name)) {
     add(3, 'gibberish_name')
   }
   if (URL_RE.test(input.name)) {
@@ -98,7 +115,10 @@ export async function scoreInquiry(
   }
   URL_RE.lastIndex = 0
 
-  if (input.subject && looksLikeGibberish(input.subject, 13)) {
+  if (
+    input.subject &&
+    (looksLikeGibberish(input.subject, 13) || looksLikeRandomMixedCase(input.subject))
+  ) {
     add(2, 'gibberish_subject')
   }
 
@@ -116,6 +136,10 @@ export async function scoreInquiry(
     if (elapsed >= 0 && elapsed < 3000) {
       add(2, 'submitted_too_fast')
     }
+  } else {
+    // Every form that posts here sends renderedAt, so its absence means the
+    // request didn't come from our page. Not enough alone to call it spam.
+    add(2, 'missing_render_timestamp')
   }
 
   const domain = emailDomain(input.email)

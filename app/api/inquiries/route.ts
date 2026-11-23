@@ -12,6 +12,7 @@ import type { InquiryInsert } from '@/lib/supabase/types'
 import { sendUserEmail, sendAdminEmail } from '@/lib/email/send'
 import { InquiryUserEmail, InquiryAdminEmail } from '@/lib/email/templates'
 import { scoreInquiry } from '@/lib/api/spam'
+import { requireTurnstile } from '@/lib/api/turnstile'
 
 const SPAM_THRESHOLD = 3
 
@@ -58,6 +59,9 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    const turnstileRejection = await requireTurnstile(body, request)
+    if (turnstileRejection) return turnstileRejection
+
     // Use service-role client to bypass RLS on the public inquiries insert.
     // The route validates input via Zod and rate-limits per IP, so the trust
     // boundary is enforced here rather than at the database policy layer.
@@ -101,20 +105,22 @@ export async function POST(request: NextRequest) {
     const result = data as { id: string } | null
 
     if (result) {
-      const emailTasks: Array<Promise<{ success: boolean }>> = [
-        sendUserEmail(
-          inquiryData.email,
-          'Your inquiry has been received',
-          InquiryUserEmail({
-            name: inquiryData.name,
-            inquiryType: inquiryData.inquiry_type || null,
-            subject: inquiryData.subject || null,
-          })
-        ),
-      ]
+      // Spam gets no email at all. Bots fill these forms with a real
+      // stranger's address, so a "we received your inquiry" email would flood
+      // that person's inbox and damage our sending reputation with Resend.
+      const emailTasks: Array<Promise<{ success: boolean }>> = []
 
       if (!isSpam) {
         emailTasks.push(
+          sendUserEmail(
+            inquiryData.email,
+            'Your inquiry has been received',
+            InquiryUserEmail({
+              name: inquiryData.name,
+              inquiryType: inquiryData.inquiry_type || null,
+              subject: inquiryData.subject || null,
+            })
+          ),
           sendAdminEmail(
             `New ${inquiryData.inquiry_type || 'general'} inquiry from ${inquiryData.name}`,
             InquiryAdminEmail({
@@ -130,7 +136,7 @@ export async function POST(request: NextRequest) {
           )
         )
       } else {
-        console.warn('Inquiry flagged as spam; admin email skipped', {
+        console.warn('Inquiry flagged as spam; emails skipped', {
           inquiryId: result.id,
           score,
           reasons,

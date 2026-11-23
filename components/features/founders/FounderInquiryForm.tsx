@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useLocale, useTranslations } from 'next-intl'
+import { TurnstileField, useTurnstile } from '@/components/ui/TurnstileField'
 
 const founderInquiryFormSchema = z.object({
   name: z.string().min(1).max(255),
@@ -19,10 +20,12 @@ type FormData = z.infer<typeof founderInquiryFormSchema>
 export function FounderInquiryForm() {
   const locale = useLocale()
   const t = useTranslations('founders.form')
+  const tTurnstile = useTranslations('turnstile')
 
   const [submitting, setSubmitting] = useState(false)
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'success' | 'error' | 'captcha'>('idle')
   const renderedAtRef = useRef<number>(Date.now())
+  const turnstile = useTurnstile()
 
   const {
     register,
@@ -51,9 +54,14 @@ export function FounderInquiryForm() {
           ...data,
           locale,
           renderedAt: renderedAtRef.current,
+          turnstileToken: turnstile.token,
         }),
       })
 
+      if (response.status === 403) {
+        setStatus('captcha')
+        return
+      }
       if (!response.ok) throw new Error('Failed to submit')
 
       setStatus('success')
@@ -63,6 +71,7 @@ export function FounderInquiryForm() {
       setStatus('error')
     } finally {
       setSubmitting(false)
+      turnstile.reset()
     }
   }
 
@@ -156,17 +165,22 @@ export function FounderInquiryForm() {
         {...register('website')}
       />
 
+      <TurnstileField {...turnstile.fieldProps} theme="dark" />
+
       {status === 'error' && (
         <p className="text-sm text-red-400">{t('error')}</p>
+      )}
+      {status === 'captcha' && (
+        <p className="text-sm text-red-400">{tTurnstile('rejected')}</p>
       )}
 
       <div className="pt-2">
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || !turnstile.ready}
           className="w-full sm:w-auto px-8 py-3 bg-[#C9A961] hover:bg-[#d4b572] text-[#0e0e0e] text-sm uppercase tracking-[0.18em] font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {submitting ? t('submitting') : t('submit')}
+          {submitting ? t('submitting') : turnstile.ready ? t('submit') : tTurnstile('preparing')}
         </button>
       </div>
     </form>
